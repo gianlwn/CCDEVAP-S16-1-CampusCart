@@ -1,1 +1,202 @@
+/* 1. VARIABLES */
+:root {
+  --bg-color: #e8d5a3;
+  --card-bg: #f0e0b8;
+  --accent: #5c3d1e;
+  --dark-bg: #3b2410;
+  --dark-text: #ffffff;
+  --text-color: #333333;
+  --sidebar-width: 200px;
+  --nav-height: 60px;
+}
 
+/* 2. RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+}
+
+/* 3. TOP NAVBAR */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+  width: 100%;
+  height: var(--nav-height);
+  background-color: var(--card-bg);
+  position: fixed;
+  top:0;
+  padding:0 20px;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-icons {
+  display: flex;
+  cursor: pointer;
+  padding: 5px;
+  color: var(--accent);
+}
+
+.nav-icons button {
+  background: none; 
+  border: none;      
+  cursor: pointer;  
+  padding: 5px;
+  color: var(--accent);
+  font-size: 20px;
+}
+.nav-icons button:hover {
+  opacity: .75;
+}
+
+/* 4. SIDE NAVBAR */
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;        
+  width: var(--sidebar-width); 
+  background-color: var(--card-bg);
+  position: fixed;
+  top: 0;
+  left: 0;               
+  padding: 10px;
+}
+
+.side-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  list-style: none;
+}
+
+.side-nav ul li {
+  border-radius: 5px;  
+}
+
+.side-nav ul li:hover {
+  background-color: var(--bg-color);
+}
+
+.side-nav ul li a {
+  display: flex;    
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;  
+  color: var(--text-color); 
+  text-decoration: none;     
+  
+}
+
+.side-nav ul li.active a {
+  color: var(--accent); 
+  font-weight: bold;
+  background-color: var(--bg-color);
+  border-radius: 5px;
+}
+
+.signout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.signout-btn:hover {
+  opacity: .75;
+}
+
+/* 5. MAIN LAYOUT */
+.page-wrapper {
+  display: flex;
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+}
+
+/* 6. STAT BOXES */
+.stat-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.stat-box {
+  background: var(--bg-color);
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* 7. CLAIMED ROWS */
+.claimed-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.item-thumb {
+  width: var(--nav-height);
+  height: var(--nav-height);
+  background: grey;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.item-stars {
+  color: var(--accent);
+}
+
+.msg-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;  
+  padding: 5px;
+}
+
+/* 8. RATINGS ROWS */
+.ratings-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row-actions {
+  display: flex;
+  gap: 5px;
+}
+
+/* 9. CHART AREA */
+.chart-container {
+  width: 100%;
+  height: 300px;
+}
+
+/* 10. DARK MODE */
+body.darkMode,
+body.darkMode .top-nav,
+body.darkMode .side-nav,
+body.darkMode .stat-box,
+body.darkMode .claimed-row,
+body.darkMode .ratings-row {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* 11. MOBILE */
+@media (max-width: 768px) { }
