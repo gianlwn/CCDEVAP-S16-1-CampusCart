@@ -25,10 +25,102 @@
                     Logged in as <strong>Administrator</strong>
                 </div>
             </div>
-            <main class="main-content"></main>
+            <main class="main-content">
+                <div class="users-toolbar">
+                    <div class="toolbar-left-panel">
+                        <h3>Registered Users</h3>
+                        <span class="users-counter-text">Total Users: 1,204</span>
+                    </div>
+                    <div class="toolbar-right-panel">
+                        <div class="filter-wrapper">
+                            <select class="status-filter-dropdown">
+                                <option value="all">All Statuses</option>
+                                <option value="active">Active Only</option>
+                                <option value="suspended">Suspended Only</option>
+                                <option value="banned">Banned Only</option>
+                            </select>
+                        </div>
+                        <div class="search-capsule-box">
+                            <input type="text" placeholder="Search users....." class="search-input-field">
+                            <button class="search-glass-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="users-stack-list">
+                    <div class="user-identity-row-card">
+                        <div class="avatar-wireframe-box"></div>
+                        <div class="user-text-details">
+                            <span class="user-display-name">Giancarlo Lawan</span>
+                            <span class="user-display-email">giancarlo_lawan@dlsu.edu.ph</span>
+                        </div>
+                        <div class="user-info-extra">
+                            <span class="info-label">Joined:</span>
+                            <span class="info-value">Jun 12, 2026</span>
+                        </div>
+                        <div class="user-status-badge-zone">
+                            <span class="badge-pill pill-status-active">Active</span>
+                        </div>
+                        <div class="user-actions-button-group">
+                            <button class="action-trigger view-trigger-btn">
+                                <i class="fa-solid fa-eye"></i> View
+                            </button>
+                            <div class="button-inner-divider"></div>
+                            <button class="action-trigger ban-trigger-btn">
+                                <i class="fa-solid fa-ban"></i> Ban
+                            </button>
+                        </div>
+                    </div>
+                    <div class="user-identity-row-card">
+                        <div class="avatar-wireframe-box"></div>
+                        <div class="user-text-details">
+                            <span class="user-display-name">Camille Erika Sarabia</span>
+                            <span class="user-display-email">camille_erika_sarabia@dlsu.edu.ph</span>
+                        </div>
+                        <div class="user-info-extra">
+                            <span class="info-label">Joined:</span>
+                            <span class="info-value">May 28, 2026</span>
+                        </div>
+                        <div class="user-status-badge-zone">
+                            <span class="badge-pill pill-status-suspended">Suspended</span>
+                        </div>
+                        <div class="user-actions-button-group">
+                            <button class="action-trigger view-trigger-btn">
+                                <i class="fa-solid fa-eye"></i> View
+                            </button>
+                            <div class="button-inner-divider"></div>
+                            <button class="action-trigger ban-trigger-btn">
+                                <i class="fa-solid fa-user-check"></i> Unsuspend
+                            </button>
+                        </div>
+                    </div>
+                    <div class="user-identity-row-card">
+                        <div class="avatar-wireframe-box"></div>
+                        <div class="user-text-details">
+                            <span class="user-display-name">Sky Hannah Parado</span>
+                            <span class="user-display-email">sky_parado@dlsu.edu.ph</span>
+                        </div>
+                        <div class="user-info-extra">
+                            <span class="info-label">Joined:</span>
+                            <span class="info-value">Apr 04, 2026</span>
+                        </div>
+                        <div class="user-status-badge-zone">
+                            <span class="badge-pill pill-status-banned">Banned</span>
+                        </div>
+                        <div class="user-actions-button-group">
+                            <button class="action-trigger view-trigger-btn">
+                                <i class="fa-solid fa-eye"></i> View
+                            </button>
+                            <div class="button-inner-divider"></div>
+                            <button class="action-trigger ban-trigger-btn">
+                                <i class="fa-solid fa-rotate-left"></i> Pardon
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
-
+    
     <script src="../js/components.js"></script>
     <script>
         loadTopNav();
