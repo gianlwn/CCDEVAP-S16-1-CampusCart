@@ -569,8 +569,11 @@ body {
 
 .approval-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .approval-header h1 {
@@ -582,10 +585,8 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-
-  margin-left: auto;
-  margin-right: 80px;
-  /* adjust */
+  flex: 1;
+  justify-content: flex-end;
 }
 
 .pending-count {
@@ -628,7 +629,7 @@ body {
 
 .approval-grid {
   display: grid;
-  grid-template-columns: repeat(3, 370px);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 25px;
 }
 
