@@ -704,11 +704,6 @@ body {
   font-size: 1.25rem;
   color: #4d3826;
   margin-bottom: 6px;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .listing-info p {
