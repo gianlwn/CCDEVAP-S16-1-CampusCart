@@ -638,8 +638,12 @@ body {
   background: #c7a878;
   border-radius: 18px;
   padding: 20px;
-  width: 350px;
+  width: 370px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* TOP HALF */
@@ -662,6 +666,10 @@ body {
   border-radius: 10px;
 
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .listing-image::before,
@@ -694,7 +702,12 @@ body {
 .listing-info h3 {
   font-size: 1.25rem;
   color: #4d3826;
-  margin-bottom: 3px;
+  margin-bottom: 6px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .listing-info p {
@@ -716,14 +729,15 @@ body {
   font-size: 0.8rem;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
   font-weight: 500;
+  margin-bottom: 12px;
 }
 
 /* BUTTONS */
 .listing-actions {
+  margin-top: auto;
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 12px;
 }
 
 .approve-btn,
