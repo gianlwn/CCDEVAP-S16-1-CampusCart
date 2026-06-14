@@ -127,6 +127,7 @@ body {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
+  margin-left: 15px;
 }
 
 .placeholder-card {
@@ -627,7 +628,7 @@ body {
 
 .approval-grid {
   display: grid;
-  grid-template-columns: repeat(3, 350px);
+  grid-template-columns: repeat(3, 370px);
   gap: 25px;
 }
 
