@@ -156,7 +156,9 @@ body {
   box-shadow: 0 8px 20px rgba(59, 36, 16, 0.12);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .analytics-card:hover {
@@ -404,8 +406,7 @@ body {
   background-color: rgba(92, 61, 30, 0.25);
 }
 
-.empty-admins-msg,
-.empty-users-msg {
+.empty-msg {
   text-align: center;
   padding: 40px;
   color: var(--dark-bg);
@@ -556,7 +557,6 @@ body {
   }
 }
 
-
 /* ==========================
    LISTING APPROVAL PAGE
 ========================== */
@@ -626,29 +626,25 @@ body {
 }
 
 /* GRID */
-
-.approval-grid {
+#approval-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 25px;
 }
 
 /* CARD */
-
 .listing-card {
   background: #c7a878;
   border-radius: 18px;
   padding: 20px;
   width: 370px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 /* TOP HALF */
-
 .card-top {
   display: flex;
   gap: 12px;
@@ -656,18 +652,14 @@ body {
 }
 
 /* IMAGE */
-
 .listing-image {
   width: 150px;
   height: 150px;
   min-width: 150px;
-
   background: #f5ebd5;
   border: 2px solid #4d3826;
   border-radius: 10px;
-
   position: relative;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -680,7 +672,6 @@ body {
   width: 90%;
   height: 2px;
   background: #4d3826;
-
   top: 50%;
   left: 5%;
 }
@@ -698,25 +689,32 @@ body {
 .listing-info {
   flex: 1;
   margin-left: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-.listing-info h3 {
-  font-size: 1.25rem;
+.listing-info h2 {
+  font-size: 1.5rem;
   color: #4d3826;
   margin-bottom: 6px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .listing-info p {
-  font-size: 0.95rem;
+  font-size: 1.15rem;
   color: #3d2c1f;
   margin-bottom: 2px;
   font-weight: 500;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* STATUS */
 
 .status-badge {
   display: inline-block;
+  align-self: flex-start;
   margin-top: 6px;
   background: #f3dc9b;
   color: #5b442d;

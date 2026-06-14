@@ -39,75 +39,9 @@
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
                         </div>
-
                     </div>
                 </div>
-                <div class="approval-grid">
-                    <div class="listing-card">
-                        <div class="card-top">
-                            <div class="listing-image"></div>
-                            <div class="listing-info">
-                                <h2>Product Name</h2>
-                                <p>LST-1001</p>
-                                <p>PHP 250.00</p>
-                                <p>Garrett Graham</p>
-                                <span class="status-badge">Pending Review</span>
-                            </div>
-                        </div>
-                        <div class="listing-actions">
-                            <button class="approve-btn">Approve</button>
-                            <button class="reject-btn">Reject</button>
-                        </div>
-                    </div>
-                    <div class="listing-card">
-                        <div class="card-top">
-                            <div class="listing-image"></div>
-                            <div class="listing-info">
-                                <h2>Engineering Drafting Kit</h2>
-                                <p>LST-1002</p>
-                                <p>PHP 1200.00</p>
-                                <p>Kimi Antonelli</p>
-                                <span class="status-badge">Pending Review</span>
-                            </div>
-                        </div>
-                        <div class="listing-actions">
-                            <button class="approve-btn">Approve</button>
-                            <button class="reject-btn">Reject</button>
-                        </div>
-                    </div>
-                    <div class="listing-card">
-                        <div class="card-top">
-                            <div class="listing-image"></div>
-                            <div class="listing-info">
-                                <h2>Laptop Stand Adjustable</h2>
-                                <p>LST-1003</p>
-                                <p>PHP 900.00</p>
-                                <p>Kathryn Bernardo</p>
-                                <span class="status-badge">Pending Review</span>
-                            </div>
-                        </div>
-                        <div class="listing-actions">
-                            <button class="approve-btn">Approve</button>
-                            <button class="reject-btn">Reject</button>
-                        </div>
-                    </div>
-                    <div class="listing-card">
-                        <div class="card-top">
-                            <div class="listing-image"></div>
-                            <div class="listing-info">
-                                <h2>Scientific Calculator Casio fx-991EX</h2>
-                                <p>LST-1004</p>
-                                <p>PHP 450.00</p>
-                                <p>Jeron Teng</p>
-                                <span class="status-badge">Pending Review</span>
-                            </div>
-                        </div>
-                        <div class="listing-actions">
-                            <button class="approve-btn">Approve</button>
-                            <button class="reject-btn">Reject</button>
-                        </div>
-                    </div>
-                </div>
+                <div id="approval-grid"></div>
             </main>
         </div>
     </div>
@@ -117,6 +51,7 @@
     <script>
         loadTopNav();
         loadAdminSideNav('listingApproval.html');
+        displayListingApprovals();
     </script>
 
 </body>

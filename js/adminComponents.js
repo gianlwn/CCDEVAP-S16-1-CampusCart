@@ -40,7 +40,7 @@ function displayAdmins() {
 
         if (adminsArray.length === 0) {
             container.innerHTML = `
-            <div class="empty-admins-msg">
+            <div class="empty-msg">
                 No administrators found. Click "Add Administrator" to create one.
             </div>
             `;
@@ -51,7 +51,7 @@ function displayAdmins() {
                 const statusText = isActive ? 'Active' : 'Inactive';
 
                 return `
-                <div class="admin-identity-row-card">
+                    <div class="admin-identity-row-card">
                         <div class="avatar-wireframe-box"></div>
                         <div class="admin-text-details">
                             <span class="admin-display-name">${admin.username}</span>
@@ -91,14 +91,14 @@ function displayUsers() {
 
         if (usersArray.length === 0) {
             container.innerHTML = `
-            <div class="empty-users-msg">
+            <div class="empty-msg">
                 No users found.
             </div>
             `;
         } else {
             container.innerHTML = usersArray.map(user => {
                 return `
-                <div class="user-identity-row-card">
+                    <div class="user-identity-row-card">
                         <div class="avatar-wireframe-box"></div>
                         <div class="user-text-details">
                             <span class="user-display-name">${user.username}</span>
@@ -119,6 +119,51 @@ function displayUsers() {
                             <button class="action-trigger ban-trigger-btn">
                                 <i class="fa-solid fa-ban"></i> Ban
                             </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+}
+
+function displayListingApprovals() {
+    const container = document.getElementById("approval-grid");
+
+    if (!container) {
+        return;
+    } else {
+        const listingApprovalsArray = [
+            // temporary
+            { productName: "Test Product", listingId: "LST-1001", price: 250, seller: "Kathryn Bernardo" },
+            { productName: "Test Product", listingId: "LST-1002", price: 950, seller: "Kimi Antonelli" },
+            { productName: "Test Product", listingId: "LST-1003", price: 500.50, seller: "Garrett Graham" },
+            { productName: "Test Product", listingId: "LST-1004", price: 310, seller: "Jeron Teng" },
+        ];
+
+        if (listingApprovalsArray.length === 0) {
+            container.innerHTML = `
+            <div class="empty-msg">
+                No listings needed for approval.
+            </div>
+            `;
+        } else {
+            container.innerHTML = listingApprovalsArray.map(listing => {
+                return `
+                    <div class="listing-card">
+                        <div class="card-top">
+                            <div class="listing-image"></div>
+                            <div class="listing-info">
+                                <h2>${listing.productName}</h2>
+                                <p>${listing.listingId}</p>
+                                <p>PHP ${listing.price.toFixed(2)}</p>
+                                <p>${listing.seller}</p>
+                                <span class="status-badge">Pending Review</span>
+                            </div>
+                        </div>
+                        <div class="listing-actions">
+                            <button class="approve-btn">Approve</button>
+                            <button class="reject-btn">Reject</button>
                         </div>
                     </div>
                 `;
