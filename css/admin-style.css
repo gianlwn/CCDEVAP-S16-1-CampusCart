@@ -627,7 +627,7 @@ body {
 
 .approval-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 350px);
   gap: 25px;
 }
 
@@ -636,9 +636,8 @@ body {
 .listing-card {
   background: #c7a878;
   border-radius: 18px;
-  padding: 16px;
-  width: 270px;
-
+  padding: 20px;
+  width: 350px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -653,9 +652,9 @@ body {
 /* IMAGE */
 
 .listing-image {
-  width: 90px;
-  height: 90px;
-  min-width: 90px;
+  width: 150px;
+  height: 150px;
+  min-width: 150px;
 
   background: #f5ebd5;
   border: 2px solid #4d3826;
@@ -688,16 +687,17 @@ body {
 
 .listing-info {
   flex: 1;
+  margin-left: 10px;
 }
 
 .listing-info h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #4d3826;
   margin-bottom: 3px;
 }
 
 .listing-info p {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #3d2c1f;
   margin-bottom: 2px;
   font-weight: 500;
@@ -729,10 +729,10 @@ body {
 .reject-btn {
   border: none;
   border-radius: 999px;
-  padding: 8px 20px;
+  padding: 10px 40px;
   font-size: 0.85rem;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 500px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);
 }
 
