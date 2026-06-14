@@ -1,1 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/admin-style.css" />
+  <link rel="stylesheet" href="../css/top-nav.css" />
+  <link rel="stylesheet" href="../css/user-dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <title>CampusCart | My Profile</title>
+</head>
+<body>
 
+  <div id="top-nav-container"></div>
+  
+  <div class="app-body">
+    <aside id="user-side-nav">
+      <div class="nav-links">
+        <a href="dashboard.html" class="nav-item">
+          <i class="fa-solid fa-table-columns"></i> Overview
+        </a> 
+        <a href="userListings.html" class="nav-item">
+          <i class="fa-solid fa-tags"></i> My Listings
+        </a>
+        <a href="claimed.html" class="nav-item">
+          <i class="fa-solid fa-cart-shopping"></i> Claimed
+        </a>
+        <a href="ratings.html" class="nav-item">
+          <i class="fa-solid fa-star"></i> Ratings
+        </a>
+        <a href="userprofile.html" class="nav-item active">
+          <i class="fa-solid fa-circle-user"></i> Profile
+        </a>
+      </div>
+      <div class="sign-out-box">
+        <a href="#" class="sign-out-btn">Sign Out</a>
+      </div>
+    </aside>
+
+    <div class="main-container">
+      <main class="main-content">
+        
+        <form id="dashboardProfileForm" class="profile-dashboard-matrix-wrapper" onsubmit="saveProfileEdits(event)">
+          <div class="avatar-setup-container">
+            <div class="avatar-circle-frame">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <a href="#" id="avatarLinkBtn" class="edit-avatar-trigger-btn hidden-action-node" onclick="triggerMockFileSelection(event)">Edit Image</a>
+          </div>
+
+          <div class="profile-grid-fields-matrix">
+            <div class="profile-matrix-column">
+              <div class="profile-row-inline-align">
+                <label for="profileFullName">full name</label>
+                <input type="text" id="profileFullName" class="auth-pill-input profile-dashboard-input" value="Juan Dela Cruz" readonly />
+              </div>
+
+              <div class="profile-row-inline-align">
+                <label for="profileEmail">email</label>
+                <input type="email" id="profileEmail" class="auth-pill-input profile-dashboard-input static-lock-node" value="username@university.edu.ph" readonly disabled />
+              </div>
+
+              <div class="profile-row-inline-align">
+                <label for="profilePhone">phone</label>
+                <input type="text" id="profilePhone" class="auth-pill-input profile-dashboard-input" value="09123456789" readonly />
+              </div>
+            </div>
+
+            <div class="profile-matrix-column">
+              <div class="profile-row-inline-align">
+                <label for="profilePassword">change password</label>
+                <input type="password" id="profilePassword" class="auth-pill-input profile-dashboard-input" value="password123" readonly />
+              </div>
+
+              <div class="profile-row-inline-align">
+                <label for="profileSchool">school/university</label>
+                <div class="dropdown-wrapper" style="width: 100%;">
+                  <select id="profileSchool" class="auth-pill-input profile-dashboard-input select-arrow-reset" disabled required>
+                    <option value="UPD">University of the Philippines Diliman</option>
+                    <option value="ADMU">Ateneo de Manila University</option>
+                    <option value="DLSU" selected>De La Salle University</option>
+                    <option value="UST">University of Santo Tomas</option>
+                    <option value="PUP">Polytechnic University of the Philippines</option>
+                    <option value="UPM">University of the Philippines Manila</option>
+                    <option value="MAPUA">Mapúa University</option>
+                    <option value="FEU">Far Eastern University</option>
+                    <option value="UA&P">University of Asia and the Pacific</option>
+                    <option value="PLM">Pamantasan ng Lungsod ng Maynila</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="profile-row-inline-align">
+                <label for="profileCourse">course code</label>
+                <input type="text" id="profileCourse" class="auth-pill-input profile-dashboard-input" value="BS-CS" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-mode-actions-row-zone">
+            <button type="button" id="toggleEditModeBtn" class="profile-dashboard-operational-btn edit-state-btn" onclick="activateProfileEditMode()">Edit Profile</button>
+            <button type="submit" id="saveProfileEditsBtn" class="profile-dashboard-operational-btn save-state-btn hidden-action-node">Save Changes</button>
+            <button type="button" id="cancelEditModeBtn" class="profile-dashboard-operational-btn cancel-state-btn hidden-action-node" onclick="discardProfileEditChanges()">Cancel</button>
+          </div>
+        </form>
+
+        <div class="dashboard-floating-utilities-cluster">
+          <button type="button" class="utility-floating-icon-btn trash-accent-btn" title="Delete Account" onclick="triggerAccountDeletionSequence()">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+          <button type="button" class="utility-floating-icon-btn helper-accent-btn" title="Contact Help Center" onclick="routeToHelpCenterHub()">
+            <i class="fa-solid fa-circle-question"></i>
+          </button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/toggletheme.js"></script>
+  <script src="../js/profile.js"></script>
+  <script>
+    loadTopNav();
+  </script>
+</body>
+</html>
