@@ -105,6 +105,19 @@ body {
   margin-bottom: 2px;
 }
 
+.toolbar-left-panel h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dark-bg);
+  margin-bottom: 2px;
+}
+
+.toolbar-right-panel {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .search-capsule-box {
   display: flex;
   align-items: center;
@@ -143,6 +156,7 @@ body {
   font-size: 14px;
 }
 
+/* 5. MAIN CONTENT BUTTONS */
 .action-button-group {
   display: flex;
   align-items: center;
@@ -177,6 +191,14 @@ body {
   background-color: rgba(92, 61, 30, 0.25);
 }
 
+@media (max-width: 850px) {
+  .responsive-row-card {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+
+/* 6. BADGES & PILLS */
 .badge-pill {
   padding: 6px 24px;
   border-radius: 20px;
@@ -191,8 +213,15 @@ body {
   color: var(--dark-bg);
 }
 
-.pill-status-warning {
+.pill-status-warning,
+.pill-status-suspended,
+.pill-status-inactive {
   background-color: var(--warning-pill);
+  color: var(--dark-text);
+}
+
+.pill-status-banned {
+  background-color: #d62013;
   color: var(--dark-text);
 }
 

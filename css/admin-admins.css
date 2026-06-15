@@ -1,29 +1,7 @@
-.admins-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.toolbar-left-panel h3 {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--dark-bg);
-  margin-bottom: 2px;
-}
-
 .admins-counter-text {
   font-size: 14px;
   color: var(--text-color);
   font-weight: 600;
-}
-
-.toolbar-right-panel {
-  display: flex;
-  align-items: center;
-  gap: 20px;
 }
 
 .add-admin-action-btn {
@@ -116,17 +94,7 @@
   align-items: center;
 }
 
-.pill-status-inactive {
-  background-color: #d19241;
-  color: var(--dark-text);
-}
-
 @media (max-width: 850px) {
-  .admin-identity-row-card {
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
   .admin-status-badge-zone {
     flex: none;
   }

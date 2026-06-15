@@ -53,7 +53,7 @@ function displayAdmins() {
                 const statusText = isActive ? 'Active' : 'Inactive';
 
                 return `
-                    <div class="admin-identity-row-card">
+                    <div class="admin-identity-row-card responsive-row-card">
                         <div class="avatar-wireframe-box"></div>
                         <div class="admin-text-details">
                             <span class="admin-display-name">${admin.username}</span>
@@ -105,7 +105,7 @@ function displayUsers() {
                 const statusText = isActive ? 'Active' : (isSuspended ? 'Suspended' : 'Banned');
 
                 return `
-                    <div class="user-identity-row-card">
+                    <div class="user-identity-row-card responsive-row-card">
                         <div class="avatar-wireframe-box"></div>
                         <div class="user-text-details">
                             <span class="user-display-name">${user.username}</span>
