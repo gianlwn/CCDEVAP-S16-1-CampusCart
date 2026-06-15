@@ -22,6 +22,8 @@ function loadAdminSideNav(page) {
     }
 }
 
+// function displayCharts() {}
+
 function displayAdmins() {
     const container = document.getElementById("admins-stack-list");
 
@@ -171,3 +173,7 @@ function displayListingApprovals() {
         }
     }
 }
+
+// function displayCategories() {}
+
+// function displayReports() {}
