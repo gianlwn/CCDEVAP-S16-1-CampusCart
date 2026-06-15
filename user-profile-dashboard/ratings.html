@@ -108,15 +108,6 @@
     let editingId   = null;
     let pickedStar  = 0;
 
-    /* ── Chart theme ── */
-    function chartTheme() {
-      const dark = document.body.classList.contains('darkMode');
-      return {
-        text: dark ? '#f5e8c8' : '#2c1810',
-        grid: dark ? 'rgba(212,169,106,0.10)' : 'rgba(92,61,30,0.07)',
-      };
-    }
-
     /* ── Render average rating display ── */
     function renderAvg(items) {
       if (!items.length) return;
@@ -136,7 +127,7 @@
 
     /* ── Build distribution chart ── */
     function buildDistChart(items) {
-      const t    = chartTheme();
+      const t    = getChartTheme();
       const dist = [0, 0, 0, 0, 0];
       items.forEach(i => dist[i.rating - 1]++);
 
@@ -264,7 +255,7 @@
     /* ── Theme change: update chart ── */
     document.addEventListener('themeChanged', () => {
       if (!distChart) return;
-      const t = chartTheme();
+      const t = getChartTheme();
       distChart.options.scales.x.ticks.color = t.text;
       distChart.options.scales.y.ticks.color = t.text;
       distChart.options.scales.x.grid.color  = t.grid;

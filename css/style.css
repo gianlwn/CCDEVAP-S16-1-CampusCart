@@ -26,6 +26,10 @@
   --pending-bg:    rgba(160, 120, 60, 0.12);
   --pending-text:  #6b4a1e;
 
+  --chart-grid:    rgba(92, 61, 30, 0.07);
+  --chart-bar:     rgba(92, 61, 30, 0.70);
+  --chart-bar-rgb: 92, 61, 30;
+
   --sidebar-width: 210px;
   --nav-height:    64px;
   --radius:        12px;
@@ -35,27 +39,30 @@
 }
 
 body.darkMode {
-  --bg:            #1c0f08;
-  --card-bg:       #2d1a0d;
-  --nav-bg:        #3b2410;
-  --accent:        #d4a96a;
-  --accent-light:  rgba(212, 169, 106, 0.10);
-  --accent-hover:  #e0bf88;
-  --text:          #f5e8c8;
-  --text-muted:    #a89070;
-  --border:        rgba(212, 169, 106, 0.14);
-  --shadow:        0 2px 8px  rgba(0, 0, 0, 0.30);
-  --shadow-card:   0 4px 18px rgba(0, 0, 0, 0.40);
-  --star-fill:     #f0c840;
-  --star-empty:    #5c3d1e;
-  --success-bg:    rgba(90, 156, 110, 0.20);
-  --success-text:  #7dd4a0;
-  --warning-bg:    rgba(212, 145, 90, 0.20);
-  --warning-text:  #e0b880;
-  --danger-bg:     rgba(200, 90, 90, 0.20);
-  --danger-text:   #e08080;
-  --pending-bg:    rgba(212, 169, 106, 0.20);
-  --pending-text:  #d4a96a;
+  --bg:            #0e0c09;
+  --card-bg:       #261e14;
+  --nav-bg:        #2e2418;
+  --accent:        #e8c878;
+  --accent-light:  rgba(232, 200, 120, 0.14);
+  --accent-hover:  #f2d890;
+  --text:          #faf3e4;
+  --text-muted:    #c8a882;
+  --border:        rgba(232, 200, 120, 0.20);
+  --shadow:        0 2px 10px rgba(0, 0, 0, 0.50);
+  --shadow-card:   0 4px 24px rgba(0, 0, 0, 0.62);
+  --star-fill:     #f4cc40;
+  --star-empty:    #4a3520;
+  --success-bg:    rgba(68, 158, 94, 0.18);
+  --success-text:  #82e0a4;
+  --warning-bg:    rgba(218, 148, 72, 0.18);
+  --warning-text:  #ecc87a;
+  --danger-bg:     rgba(210, 68, 68, 0.18);
+  --danger-text:   #ee8888;
+  --pending-bg:    rgba(195, 155, 78, 0.18);
+  --pending-text:  #c8a86c;
+  --chart-grid:    rgba(220, 186, 114, 0.08);
+  --chart-bar:     rgba(220, 186, 114, 0.70);
+  --chart-bar-rgb: 220, 186, 114;
 }
 
 /* 2. RESET & BASE */
@@ -63,13 +70,17 @@ body.darkMode {
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--bg);
+  background: linear-gradient(145deg, #f5e3bb 0%, #fdf5e4 45%, #fbe5cf 100%) fixed;
   color: var(--text);
   font-family: 'Segoe UI', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.55;
-  transition: background-color var(--transition), color var(--transition);
+  transition: color var(--transition);
   min-height: 100vh;
+}
+
+body.darkMode {
+  background: linear-gradient(145deg, #0e0c09 0%, #151108 55%, #110e0b 100%) fixed;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -121,6 +132,9 @@ img { max-width: 100%; display: block; }
   border-radius: var(--radius-xs);
   transition: background-color var(--transition);
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-icons button:hover { background-color: var(--accent-light); }
@@ -137,6 +151,46 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 3b. USER CHIP (dashboard top nav) */
+.nav-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 6px;
+  background: var(--accent-light);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 4px;
+  user-select: none;
+  transition: all var(--transition);
+}
+
+.nav-user-chip:hover { background: var(--accent); color: #fff; }
+
+.nav-avatar {
+  width: 26px; height: 26px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+  transition: background-color var(--transition);
+}
+
+.nav-user-chip:hover .nav-avatar { background: rgba(255, 255, 255, 0.25); }
+
+.nav-username {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
 }
 
 /* 4. SIDE NAVBAR */
@@ -180,9 +234,11 @@ img { max-width: 100%; display: block; }
 }
 
 .side-nav ul li.active a {
-  background-color: var(--accent-light);
+  background: linear-gradient(90deg, var(--accent-light) 0%, transparent 100%);
   color: var(--accent);
   font-weight: 600;
+  border-left: 3px solid var(--accent);
+  padding-left: 8px;
 }
 
 .nav-icon { width: 20px; text-align: center; font-size: 16px; flex-shrink: 0; }
@@ -279,13 +335,28 @@ img { max-width: 100%; display: block; }
   padding: 20px 16px;
   text-align: center;
   box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
   transition: background-color var(--transition), border-color var(--transition),
               transform var(--transition), box-shadow var(--transition);
 }
 
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+  opacity: 0.7;
+}
+
 .stat-box:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card), 0 0 0 2px var(--border);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card), 0 8px 28px rgba(92, 61, 30, 0.14);
+}
+
+body.darkMode .stat-box:hover {
+  box-shadow: var(--shadow-card), 0 8px 28px rgba(220, 186, 114, 0.10);
 }
 
 .stat-number {
@@ -293,6 +364,13 @@ img { max-width: 100%; display: block; }
   font-weight: 700;
   color: var(--accent);
   line-height: 1.15;
+}
+
+body.darkMode .stat-number {
+  background: linear-gradient(135deg, #f8e090 0%, #dcba72 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .stat-label {
@@ -362,6 +440,8 @@ img { max-width: 100%; display: block; }
 .item-row:hover {
   box-shadow: var(--shadow-card);
   transform: translateX(3px);
+  border-left-color: var(--accent);
+  border-left-width: 3px;
 }
 
 .item-thumb {
@@ -447,7 +527,7 @@ img { max-width: 100%; display: block; }
   justify-content: center;
   gap: 6px;
   padding: 10px 20px;
-  background: var(--accent);
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
   color: #fff;
   border: none;
   border-radius: var(--radius-xs);
@@ -459,9 +539,13 @@ img { max-width: 100%; display: block; }
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px var(--accent-light);
+  box-shadow: 0 4px 14px rgba(92, 61, 30, 0.28);
+}
+
+body.darkMode .btn-primary:hover {
+  box-shadow: 0 4px 14px rgba(220, 186, 114, 0.30);
 }
 
 /* 13. STATUS BADGES */
@@ -742,6 +826,7 @@ img { max-width: 100%; display: block; }
 
   .top-nav { padding: 0 14px; }
   .nav-brand span:last-child { display: none; }
+  .nav-username { display: none; }
 }
 
 @media (max-width: 480px) {

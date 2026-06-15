@@ -67,7 +67,6 @@
     </main>
   </div>
 
-  <!-- Chart.js via CDN (allowed per project spec) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
@@ -77,18 +76,6 @@
   <script>
     const charts = {};
 
-    function chartTheme() {
-      const dark = document.body.classList.contains('darkMode');
-      return {
-        accent:      dark ? '#d4a96a' : '#5c3d1e',
-        barBg:       dark ? 'rgba(212,169,106,0.72)' : 'rgba(92,61,30,0.70)',
-        barBgHover:  dark ? 'rgba(212,169,106,0.90)' : 'rgba(92,61,30,0.88)',
-        text:        dark ? '#f5e8c8' : '#2c1810',
-        grid:        dark ? 'rgba(212,169,106,0.10)' : 'rgba(92,61,30,0.07)',
-        cardBg:      dark ? '#2d1a0d' : '#fdf3de',
-      };
-    }
-
     const REPORT_COLORS = [
       'rgba(74,124,89,0.82)',
       'rgba(92,61,30,0.58)',
@@ -96,7 +83,7 @@
     ];
 
     function buildCharts(data) {
-      const t = chartTheme();
+      const t = getChartTheme();
 
       /* ── Chart 1: Seller Rating Bar ── */
       charts.rating = new Chart(document.getElementById('chart-seller-rating'), {
@@ -138,10 +125,8 @@
 
       /* ── Chart 2: Items per Category (horizontal bar) ── */
       const catColors = data.itemsByCategory.map((_, i) => {
-        const alpha = 0.80 - i * 0.12;
-        return document.body.classList.contains('darkMode')
-          ? `rgba(212,169,106,${Math.max(alpha, 0.25)})`
-          : `rgba(92,61,30,${Math.max(alpha, 0.20)})`;
+        const a = Math.max(0.80 - i * 0.12, 0.20);
+        return `rgba(${t.barRgb}, ${a})`;
       });
 
       charts.categories = new Chart(document.getElementById('chart-categories'), {
@@ -213,7 +198,7 @@
     }
 
     function refreshChartTheme() {
-      const t = chartTheme();
+      const t = getChartTheme();
       ['rating', 'categories'].forEach(key => {
         const ch = charts[key];
         if (!ch) return;
