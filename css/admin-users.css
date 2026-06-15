@@ -1,0 +1,84 @@
+.users-counter-text {
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.status-filter-dropdown {
+  background-color: #c4b187;
+  border: 1.5px solid var(--accent);
+  padding: 8px 16px;
+  border-radius: 14px;
+  font-weight: 700;
+  color: var(--dark-bg);
+  outline: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#users-stack-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-identity-row-card {
+  background-color: var(--row-card-bg);
+  border-radius: 20px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(59, 36, 16, 0.08);
+}
+
+.user-text-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 24px;
+  width: 240px;
+}
+
+.user-display-name {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--dark-bg);
+  letter-spacing: -0.3px;
+}
+
+.user-display-email {
+  font-size: 14px;
+  color: rgba(59, 36, 16, 0.85);
+  font-weight: 500;
+}
+
+.user-info-extra {
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+}
+
+.info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: rgba(59, 36, 16, 0.6);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark-bg);
+}
+
+.user-status-badge-zone {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 850px) {
+  .user-info-extra {
+    display: none;
+  }
+}
