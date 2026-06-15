@@ -156,8 +156,8 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, min: 0 }
+            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid }, border: { color: t.axisBorder } },
+            y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, border: { color: t.axisBorder }, min: 0 }
           },
           plugins: { legend: { display: false } }
         }
@@ -256,10 +256,12 @@
     document.addEventListener('themeChanged', () => {
       if (!distChart) return;
       const t = getChartTheme();
-      distChart.options.scales.x.ticks.color = t.text;
-      distChart.options.scales.y.ticks.color = t.text;
-      distChart.options.scales.x.grid.color  = t.grid;
-      distChart.options.scales.y.grid.color  = t.grid;
+      distChart.options.scales.x.ticks.color  = t.text;
+      distChart.options.scales.y.ticks.color  = t.text;
+      distChart.options.scales.x.grid.color   = t.grid;
+      distChart.options.scales.y.grid.color   = t.grid;
+      distChart.options.scales.x.border.color = t.axisBorder;
+      distChart.options.scales.y.border.color = t.axisBorder;
       distChart.update('none');
     });
 
