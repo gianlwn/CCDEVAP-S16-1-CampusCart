@@ -55,26 +55,16 @@
   <script>
     let catChart = null;
 
-    function chartTheme() {
-      const dark = document.body.classList.contains('darkMode');
-      return {
-        accent: dark ? '#d4a96a' : '#5c3d1e',
-        text:   dark ? '#f5e8c8' : '#2c1810',
-        grid:   dark ? 'rgba(212,169,106,0.10)' : 'rgba(92,61,30,0.07)',
-      };
-    }
-
     function buildCatChart(items) {
       const counts = {};
       items.forEach(it => { counts[it.category] = (counts[it.category] || 0) + 1; });
       const labels = Object.keys(counts);
       const values = Object.values(counts);
-      const t = chartTheme();
+      const t = getChartTheme();
 
-      const dark = document.body.classList.contains('darkMode');
       const bgs = labels.map((_, i) => {
         const a = Math.max(0.78 - i * 0.14, 0.22);
-        return dark ? `rgba(212,169,106,${a})` : `rgba(92,61,30,${a})`;
+        return `rgba(${t.barRgb}, ${a})`;
       });
 
       catChart = new Chart(document.getElementById('chart-cat'), {
@@ -135,7 +125,7 @@
 
     document.addEventListener('themeChanged', () => {
       if (!catChart) return;
-      const t = chartTheme();
+      const t = getChartTheme();
       catChart.options.scales.x.ticks.color = t.text;
       catChart.options.scales.y.ticks.color = t.text;
       catChart.options.scales.x.grid.color  = t.grid;
