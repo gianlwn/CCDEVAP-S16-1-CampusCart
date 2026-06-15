@@ -1,0 +1,54 @@
+#admin-side-nav {
+  width: var(--sidebar-width);
+  background-color: var(--card-bg);
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 2px solid var(--accent);
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  display: block;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: var(--dark-bg);
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1.5px solid var(--accent);
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.nav-item:hover {
+  background-color: rgba(92, 61, 30, 0.08);
+}
+
+.nav-item.active {
+  background-color: var(--bg-color);
+  color: var(--accent);
+  border-right: 4px solid var(--dark-bg);
+}
+
+.sign-out-box {
+  padding: 20px;
+  text-align: center;
+}
+
+.sign-out-btn {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.sign-out-btn:hover {
+  color: var(--dark-bg);
+  font-weight: 700;
+}

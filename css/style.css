@@ -23,45 +23,7 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* 3. TOP NAVBAR */
-.top-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;  
-  width: 100%;
-  height: var(--nav-height);
-  background-color: var(--card-bg);
-  position: fixed;
-  top:0;
-  padding:0 20px;
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.nav-icons {
-  display: flex;
-  cursor: pointer;
-  padding: 5px;
-  color: var(--accent);
-}
-
-.nav-icons button {
-  background: none; 
-  border: none;      
-  cursor: pointer;  
-  padding: 5px;
-  color: var(--accent);
-  font-size: 20px;
-}
-.nav-icons button:hover {
-  opacity: .75;
-}
-
-/* 4. SIDE NAVBAR */
+/* 3. SIDE NAVBAR */
 .side-nav {
   display: flex;
   flex-direction: column;
@@ -117,7 +79,7 @@ body {
   opacity: .75;
 }
 
-/* 5. MAIN LAYOUT */
+/* 4. MAIN LAYOUT */
 .page-wrapper {
   display: flex;
 }
@@ -126,7 +88,7 @@ body {
   margin-left: var(--sidebar-width);
 }
 
-/* 6. STAT BOXES */
+/* 5. STAT BOXES */
 .stat-boxes {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -139,7 +101,7 @@ body {
   border-radius: 5px;
 }
 
-/* 7. CLAIMED ROWS */
+/* 6. CLAIMED ROWS */
 .claimed-row {
   display: flex;
   align-items: center;
@@ -169,7 +131,7 @@ body {
   padding: 5px;
 }
 
-/* 8. RATINGS ROWS */
+/* 7. RATINGS ROWS */
 .ratings-row {
   display: flex;
   align-items: center;
@@ -181,13 +143,13 @@ body {
   gap: 5px;
 }
 
-/* 9. CHART AREA */
+/* 8. CHART AREA */
 .chart-container {
   width: 100%;
   height: 300px;
 }
 
-/* 10. DARK MODE */
+/* 9. DARK MODE */
 body.darkMode,
 body.darkMode .top-nav,
 body.darkMode .side-nav,
@@ -198,5 +160,5 @@ body.darkMode .ratings-row {
   color: var(--dark-text);
 }
 
-/* 11. MOBILE */
+/* 10. MOBILE */
 @media (max-width: 768px) { }
