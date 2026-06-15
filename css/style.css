@@ -27,13 +27,13 @@ body {
 .top-nav {
   display: flex;
   justify-content: space-between;
-  align-items: center;  
+  align-items: center;
   width: 100%;
   height: var(--nav-height);
   background-color: var(--card-bg);
   position: fixed;
-  top:0;
-  padding:0 20px;
+  top: 0;
+  padding: 0 20px;
 }
 
 .nav-brand {
@@ -50,15 +50,15 @@ body {
 }
 
 .nav-icons button {
-  background: none; 
-  border: none;      
-  cursor: pointer;  
+  background: none;
+  border: none;
+  cursor: pointer;
   padding: 5px;
   color: var(--accent);
   font-size: 20px;
 }
 .nav-icons button:hover {
-  opacity: .75;
+  opacity: 0.75;
 }
 
 /* 4. SIDE NAVBAR */
@@ -66,12 +66,12 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;        
-  width: var(--sidebar-width); 
+  height: 100vh;
+  width: var(--sidebar-width);
   background-color: var(--card-bg);
   position: fixed;
   top: 0;
-  left: 0;               
+  left: 0;
   padding: 10px;
 }
 
@@ -83,7 +83,7 @@ body {
 }
 
 .side-nav ul li {
-  border-radius: 5px;  
+  border-radius: 5px;
 }
 
 .side-nav ul li:hover {
@@ -91,17 +91,16 @@ body {
 }
 
 .side-nav ul li a {
-  display: flex;    
+  display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;  
-  color: var(--text-color); 
-  text-decoration: none;     
-  
+  padding: 8px 10px;
+  color: var(--text-color);
+  text-decoration: none;
 }
 
 .side-nav ul li.active a {
-  color: var(--accent); 
+  color: var(--accent);
   font-weight: bold;
   background-color: var(--bg-color);
   border-radius: 5px;
@@ -114,7 +113,7 @@ body {
 }
 
 .signout-btn:hover {
-  opacity: .75;
+  opacity: 0.75;
 }
 
 /* 5. MAIN LAYOUT */
@@ -165,7 +164,7 @@ body {
   background: none;
   border: none;
   color: var(--accent);
-  cursor: pointer;  
+  cursor: pointer;
   padding: 5px;
 }
 
@@ -199,4 +198,5 @@ body.darkMode .ratings-row {
 }
 
 /* 11. MOBILE */
-@media (max-width: 768px) { }
+@media (max-width: 768px) {
+}

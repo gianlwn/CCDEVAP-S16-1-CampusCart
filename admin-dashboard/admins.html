@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/admin-style.css" />
+    <link rel="stylesheet" href="../css/top-nav.css">
+    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/admin-admins.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>CampusCart | Admins</title>
+</head>
+
+<body>
+    <div id="top-nav-container"></div>
+    <div class="app-body">
+        <aside id="admin-side-nav"></aside>
+        <div class="main-container">
+            <div class="sub-header">
+                <h2>Admin Panel</h2>
+                <div class="login-status">
+                    Logged in as <strong>Administrator</strong>
+                </div>
+            </div>
+            <main class="main-content">
+                <div class="page-toolbar">
+                    <div class="toolbar-left-panel">
+                        <h3>Administrators</h3>
+                        <span class="admins-counter-text">Current Admins: 5</span>
+                    </div>
+                    <div class="toolbar-right-panel">
+                        <button class="add-admin-action-btn">
+                            <i class="fa-solid fa-plus"></i> Add Administrator
+                        </button>
+                        <div class="search-capsule-box">
+                            <input type="text" placeholder="Search....." class="search-input-field">
+                            <button class="search-glass-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="admins-stack-list"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/components.js"></script>
+    <script src="../js/adminComponents.js"></script>
+    <script>
+        loadTopNav();
+        loadAdminSideNav('admins.html');
+        displayAdmins();
+    </script>
+</body>
+
+</html>

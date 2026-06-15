@@ -1,0 +1,233 @@
+/* 1. VARIABLES */
+:root {
+  --bg-color: #e8d5a3;
+  --card-bg: #f0e0b8;
+  --accent: #5c3d1e;
+  --dark-bg: #3b2410;
+  --dark-text: #ffffff;
+  --text-color: #333333;
+  --sidebar-width: 200px;
+  --nav-height: 60px;
+  --row-card-bg: #cbb993;
+  --search-box-bg: #c4b187;
+  --btn-group-bg: #e5d6b4;
+  --success-pill: #a3ca56;
+  --warning-pill: #d19241;
+}
+
+/* 2. UNIVERSAL */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 3. MAIN LAYOUT CONTAINER */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 4. MAIN CONTENT AREA */
+.main-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 10px 24px;
+  border-bottom: 1px groove #9d9167;
+}
+
+.sub-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--dark-bg);
+  margin-bottom: 8px;
+}
+
+.login-status {
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text-color);
+}
+
+.login-status strong {
+  color: var(--dark-bg);
+  font-style: normal;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  margin-left: 15px;
+}
+
+.placeholder-card {
+  border: 2px dashed var(--accent);
+  border-radius: 8px;
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-style: italic;
+}
+
+.page-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.page-toolbar-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dark-bg);
+  margin-bottom: 2px;
+}
+
+.toolbar-left-panel h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dark-bg);
+  margin-bottom: 2px;
+}
+
+.toolbar-right-panel {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search-capsule-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--search-box-bg);
+  border-radius: 24px;
+  padding: 3px 4px 3px 18px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.search-input-field {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 6px 0;
+  font-size: 15px;
+  color: var(--dark-bg);
+  font-weight: 600;
+  width: 180px;
+}
+
+.search-input-field::placeholder {
+  color: rgba(59, 36, 16, 0.6);
+}
+
+.search-glass-btn {
+  background-color: var(--dark-bg);
+  border: none;
+  color: var(--dark-text);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* 5. MAIN CONTENT BUTTONS */
+.action-button-group {
+  display: flex;
+  align-items: center;
+  background-color: var(--btn-group-bg);
+  border-radius: 14px;
+  border: 1.5px solid rgba(92, 61, 30, 0.25);
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.action-trigger {
+  background: transparent;
+  border: none;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--dark-bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.action-trigger:hover {
+  background-color: rgba(92, 61, 30, 0.08);
+}
+
+.button-inner-divider {
+  width: 1.5px;
+  height: 24px;
+  background-color: rgba(92, 61, 30, 0.25);
+}
+
+@media (max-width: 850px) {
+  .responsive-row-card {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+
+/* 6. BADGES & PILLS */
+.badge-pill {
+  padding: 6px 24px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: -0.2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.pill-status-active {
+  background-color: var(--success-pill);
+  color: var(--dark-bg);
+}
+
+.pill-status-warning,
+.pill-status-suspended,
+.pill-status-inactive {
+  background-color: var(--warning-pill);
+  color: var(--dark-text);
+}
+
+.pill-status-banned {
+  background-color: #d62013;
+  color: var(--dark-text);
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 40px;
+  color: var(--dark-bg);
+  font-weight: 600;
+}
