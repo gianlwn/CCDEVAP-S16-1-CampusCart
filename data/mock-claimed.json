@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Casio FX-991es",
+    "price": "₱450",
+    "category": "Electronics",
+    "rating": 5,
+    "status": "completed",
+    "date": "2025-05-10",
+    "seller": "John D."
+  },
+  {
+    "id": 2,
+    "name": "Purple T-Shirt",
+    "price": "₱100",
+    "category": "Clothing",
+    "rating": 4,
+    "status": "completed",
+    "date": "2025-04-22",
+    "seller": "Ana M."
+  },
+  {
+    "id": 3,
+    "name": "Lab Gown",
+    "price": "₱450",
+    "category": "Lab Tools",
+    "rating": 4,
+    "status": "completed",
+    "date": "2025-04-15",
+    "seller": "Carlo R."
+  },
+  {
+    "id": 4,
+    "name": "Arduino Starter Kit",
+    "price": "₱150",
+    "category": "Electronics",
+    "rating": 5,
+    "status": "pending",
+    "date": "2025-06-01",
+    "seller": "Bea S."
+  },
+  {
+    "id": 5,
+    "name": "Engineering Drawing Set",
+    "price": "₱220",
+    "category": "Lab Tools",
+    "rating": 3,
+    "status": "completed",
+    "date": "2025-03-18",
+    "seller": "Ken L."
+  },
+  {
+    "id": 6,
+    "name": "Fluid Mechanics Textbook",
+    "price": "₱350",
+    "category": "Books",
+    "rating": 4,
+    "status": "completed",
+    "date": "2025-03-05",
+    "seller": "Mia P."
+  },
+  {
+    "id": 7,
+    "name": "Stainless Water Bottle",
+    "price": "₱180",
+    "category": "Others",
+    "rating": 4,
+    "status": "completed",
+    "date": "2025-02-20",
+    "seller": "Reyes J."
+  }
+]

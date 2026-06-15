@@ -1,0 +1,28 @@
+{
+  "stats": {
+    "activeListings": 4,
+    "claimedItems": 7,
+    "rating": 4.2,
+    "liked": 234
+  },
+  "sellerRatingHistory": [
+    { "month": "Jan", "rating": 3.5 },
+    { "month": "Feb", "rating": 4.0 },
+    { "month": "Mar", "rating": 3.8 },
+    { "month": "Apr", "rating": 4.2 },
+    { "month": "May", "rating": 4.5 },
+    { "month": "Jun", "rating": 4.2 }
+  ],
+  "itemsByCategory": [
+    { "category": "Electronics", "count": 3 },
+    { "category": "Books",       "count": 2 },
+    { "category": "Lab Tools",   "count": 4 },
+    { "category": "Clothing",    "count": 1 },
+    { "category": "Others",      "count": 1 }
+  ],
+  "reportsOnListing": [
+    { "label": "Sold",     "value": 57.5 },
+    { "label": "Unsold",   "value": 28.3 },
+    { "label": "Refunded", "value": 14.2 }
+  ]
+}

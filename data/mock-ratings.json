@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Casio FX-991es",
+    "price": "₱450",
+    "category": "Electronics",
+    "rating": 5,
+    "review": "The calculator works perfectly, very good condition!"
+  },
+  {
+    "id": 2,
+    "name": "Purple T-Shirt",
+    "price": "₱100",
+    "category": "Clothing",
+    "rating": 4,
+    "review": "Ripped a little on the seam but still wearable."
+  },
+  {
+    "id": 3,
+    "name": "Lab Gown",
+    "price": "₱450",
+    "category": "Lab Tools",
+    "rating": 4,
+    "review": "Fits well, clean and presentable."
+  },
+  {
+    "id": 4,
+    "name": "Arduino Starter Kit",
+    "price": "₱150",
+    "category": "Electronics",
+    "rating": 5,
+    "review": "Complete set, all components included. Great deal!"
+  },
+  {
+    "id": 5,
+    "name": "Engineering Drawing Set",
+    "price": "₱220",
+    "category": "Lab Tools",
+    "rating": 3,
+    "review": "Good but a few pencils were missing."
+  },
+  {
+    "id": 6,
+    "name": "Fluid Mechanics Textbook",
+    "price": "₱350",
+    "category": "Books",
+    "rating": 4,
+    "review": "Minimal highlights, still very readable."
+  }
+]

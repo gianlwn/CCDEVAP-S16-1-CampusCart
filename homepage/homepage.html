@@ -1,1 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusCart – Home</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ── Homepage-specific styles ── */
+    .hp-hero {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
 
+    .hp-search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .hp-search-bar input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: all var(--transition);
+    }
+
+    .hp-search-bar input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    .hp-search-bar button {
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color var(--transition);
+    }
+
+    .hp-search-bar button:hover { background: var(--accent-hover); }
+
+    .hp-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .hp-filter-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .hp-filter-btn.active,
+    .hp-filter-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .hp-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .hp-item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .hp-item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .hp-item-thumb {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hp-item-info { padding: 10px 12px; }
+    .hp-item-name { font-weight: 600; font-size: 13px; color: var(--text); }
+    .hp-item-price { font-size: 13px; color: var(--accent); font-weight: 700; margin-top: 3px; }
+
+    @media (max-width: 900px) {
+      .hp-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .hp-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="top-nav"></div>
+
+  <div class="page-top-only">
+
+    <p class="hp-hero">Offering You Student Essentials at Student Prices!</p>
+
+    <div class="hp-search-bar">
+      <input type="text" id="search-input" placeholder="Search keyword, shop names…">
+      <button onclick="handleSearch()">🔍</button>
+    </div>
+
+    <div class="hp-filters">
+      <button class="hp-filter-btn active" onclick="filterBy('all', this)">Trending</button>
+      <button class="hp-filter-btn"        onclick="filterBy('all', this)">For You</button>
+      <button class="hp-filter-btn"        onclick="filterBy('Electronics', this)">Electronics</button>
+      <button class="hp-filter-btn"        onclick="filterBy('Books', this)">Books</button>
+      <button class="hp-filter-btn"        onclick="filterBy('Lab Tools', this)">Lab Tools</button>
+      <button class="hp-filter-btn"        onclick="filterBy('Clothing', this)">Clothing</button>
+    </div>
+
+    <div class="hp-grid" id="item-grid"></div>
+
+  </div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/toggleTheme.js"></script>
+  <script src="../js/toastNotification.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    const EMOJI = { Electronics: '💻', Books: '📚', 'Lab Tools': '🧪', Clothing: '👕', Others: '📦' };
+    let allItems  = [];
+    let activeFilter = 'all';
+
+    function renderGrid(items) {
+      const grid = document.getElementById('item-grid');
+      if (!items.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><p>No items found.</p></div>`;
+        return;
+      }
+      grid.innerHTML = items.map(item => `
+        <div class="hp-item-card" onclick="viewItem(${item.id})">
+          <div class="hp-item-thumb">${EMOJI[item.category] || '📦'}</div>
+          <div class="hp-item-info">
+            <p class="hp-item-name">${item.name}</p>
+            <p class="hp-item-price">₱${item.price}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterBy(cat, btn) {
+      document.querySelectorAll('.hp-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = cat;
+      applyFilters();
+    }
+
+    function handleSearch() {
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('search-input').value.toLowerCase().trim();
+      let results = allItems;
+      if (activeFilter !== 'all') results = results.filter(i => i.category === activeFilter);
+      if (q) results = results.filter(i => i.name.toLowerCase().includes(q) || i.description.toLowerCase().includes(q));
+      renderGrid(results);
+    }
+
+    function viewItem(id) {
+      showToast('Item Details', 'Item detail page coming soon!', 'info');
+    }
+
+    document.getElementById('search-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleSearch();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      fetch('../data/mock-listings.json')
+        .then(r => r.json())
+        .then(items => {
+          /* Show only active listings on homepage */
+          allItems = items.filter(i => i.status === 'active');
+          /* Pad with more mock items for visual fullness */
+          const extras = [
+            { id: 10, name: 'Graph Paper Notebook', price: 60,  category: 'Books',       status: 'active', description: 'Engineering graph pad', image: null },
+            { id: 11, name: 'Soldering Iron Set',   price: 280, category: 'Electronics', status: 'active', description: 'Adjustable temperature', image: null },
+            { id: 12, name: 'Safety Goggles',       price: 75,  category: 'Lab Tools',   status: 'active', description: 'Clear polycarbonate lens', image: null },
+            { id: 13, name: 'Denim Jacket (M)',      price: 250, category: 'Clothing',    status: 'active', description: 'Barely worn, good condition', image: null },
+            { id: 14, name: 'Thermodynamics Book',   price: 400, category: 'Books',       status: 'active', description: 'Cengel & Boles 9th ed', image: null },
+            { id: 15, name: 'Breadboard + Wires',    price: 120, category: 'Electronics', status: 'active', description: '830 tie-point breadboard', image: null },
+          ];
+          allItems = [...allItems, ...extras];
+          renderGrid(allItems);
+        })
+        .catch(() => showToast('Error', 'Could not load listings.', 'error'));
+    });
+  </script>
+</body>
+</html>
