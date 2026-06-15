@@ -94,7 +94,7 @@ function displayUsers() {
         if (usersArray.length === 0) {
             container.innerHTML = `
             <div class="empty-msg">
-                No users found.
+                No reports found.
             </div>
             `;
         } else {
@@ -221,4 +221,65 @@ function displayCategories() {
     }
 }
 
-// function displayReports() {}
+function displayReports() {
+    const container = document.getElementById("reports-stack-list");
+
+    if (!container) {
+        return;
+    } else {
+        const reportsArray = [
+            // temporary only (for frontend purposes only)
+            { reportType: "User Report", reportId: "RPT-3012", reporter: "Andie Kirsten Woo",status: "Pending Review", reason: "Spam account repeatedly posting misleading listings." },
+            { reportType: "Listing Report", reportId: "RPT-3013", reporter: "Alexa Nicole Pleyto", status: "Pending Review", reason: "Possible scam listing requesting payment outside website." },
+            { reportType: "User Report", reportId: "RPT-3014", reporter: "Christine Cote", status: "Pending Review", reason: "Hate speech directed toward another user." },
+        ];
+
+        if (reportsArray.length === 0) {
+            container.innerHTML = `
+            <div class="empty-msg">
+                No users found.
+            </div>
+            `;
+        } else {
+            container.innerHTML = reportsArray.map(report => {
+                
+                return `
+                    <div class="report-row-card">
+
+                        <div class="avatar-wireframe-box"></div>
+        
+                        <div class="report-text-details">
+                            <span class="report-type">${report.reportType}</span>
+                            <span class="report-id">#${report.reportId}</span>
+                            <span class="report-reporter">${report.reporter}</span>
+                        </div>
+        
+                        <div class="report-status-zone">
+                            <span class="report-status-badge">
+                                ${report.status}
+                            </span>
+                        </div>
+        
+                        <div class="report-reason-section">
+                            <span class="reason-title">Reason:</span>
+                            <span class="reason-content">
+                                ${report.reason}
+                            </span>
+                        </div>
+        
+                        <div class="report-action-group">
+                            <button class="warning-btn">
+                                Warning
+                            </button>
+        
+                            <button class="dismiss-btn">
+                                Dismiss
+                            </button>
+                        </div>
+        
+                    </div> 
+                `;
+            }).join('');
+        }
+    }
+}
