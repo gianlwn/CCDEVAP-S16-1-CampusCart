@@ -181,12 +181,13 @@ function getChartTheme() {
   const s = getComputedStyle(document.documentElement);
   const get = v => s.getPropertyValue(v).trim();
   return {
-    accent:  get('--accent'),
-    text:    get('--text'),
-    grid:    get('--chart-grid'),
-    barBg:   get('--chart-bar'),
-    cardBg:  get('--card-bg'),
-    barRgb:  get('--chart-bar-rgb'),
+    accent:     get('--accent'),
+    text:       get('--text'),
+    grid:       get('--chart-grid'),
+    axisBorder: get('--chart-axis'),
+    barBg:      get('--chart-bar'),
+    cardBg:     get('--card-bg'),
+    barRgb:     get('--chart-bar-rgb'),
   };
 }
 

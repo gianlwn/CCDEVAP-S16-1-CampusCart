@@ -84,8 +84,8 @@
           responsive: true,
           maintainAspectRatio: false,
           scales: {
-            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, min: 0 }
+            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid }, border: { color: t.axisBorder } },
+            y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, border: { color: t.axisBorder }, min: 0 }
           },
           plugins: { legend: { display: false } }
         }
@@ -126,11 +126,13 @@
     document.addEventListener('themeChanged', () => {
       if (!catChart) return;
       const t = getChartTheme();
-      catChart.options.scales.x.ticks.color = t.text;
-      catChart.options.scales.y.ticks.color = t.text;
-      catChart.options.scales.x.grid.color  = t.grid;
-      catChart.options.scales.y.grid.color  = t.grid;
-      catChart.data.datasets[0].borderColor = t.accent;
+      catChart.options.scales.x.ticks.color  = t.text;
+      catChart.options.scales.y.ticks.color  = t.text;
+      catChart.options.scales.x.grid.color   = t.grid;
+      catChart.options.scales.y.grid.color   = t.grid;
+      catChart.options.scales.x.border.color = t.axisBorder;
+      catChart.options.scales.y.border.color = t.axisBorder;
+      catChart.data.datasets[0].borderColor  = t.accent;
       catChart.update('none');
     });
 
