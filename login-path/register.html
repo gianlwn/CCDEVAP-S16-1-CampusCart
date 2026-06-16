@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusCart – Register</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
 
+  <div class="auth-page">
+    <div class="auth-card" style="width:min(520px,100%);">
+
+      <div class="auth-logo">
+        <div class="auth-logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+        <p class="auth-title">Create Your Account</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="reg-name"
+            placeholder="Sky Hannah G. Parado" autocomplete="name">
+        </div>
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">School Email</label>
+          <input type="email" class="form-input" id="reg-email"
+            placeholder="account@university.edu.ph" autocomplete="email">
+          <p class="form-warning"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Only valid .edu.ph addresses are accepted</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="reg-pw"
+            placeholder="••••••••" autocomplete="new-password">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-input" id="reg-pw2"
+            placeholder="••••••••" autocomplete="new-password">
+        </div>
+
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">School / University</label>
+          <select class="form-select" id="reg-school">
+            <option value="">Select…</option>
+            <option>De La Salle University</option>
+            <option>University of Santo Tomas</option>
+            <option>Ateneo de Manila University</option>
+            <option>University of the Philippines</option>
+            <option>Mapua University</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Course Code</label>
+          <input type="text" class="form-input" id="reg-course" placeholder="e.g. BSECE">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input type="tel" class="form-input" id="reg-phone" placeholder="0000 000 0000">
+        </div>
+
+      </div>
+
+      <button class="auth-btn" onclick="handleRegister()">CREATE ACCOUNT</button>
+
+      <div class="auth-footer">
+        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">
+          already have an account? login here!
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../js/toggleTheme.js"></script>
+  <script src="../js/toastNotification.js"></script>
+
+  <script>
+    (function () {
+      const saved = localStorage.getItem('campuscart-theme');
+      if (saved === 'darkMode') document.body.classList.add('darkMode');
+    })();
+
+    function handleRegister() {
+      const name   = document.getElementById('reg-name').value.trim();
+      const email  = document.getElementById('reg-email').value.trim();
+      const pw     = document.getElementById('reg-pw').value;
+      const pw2    = document.getElementById('reg-pw2').value;
+      const school = document.getElementById('reg-school').value;
+
+      if (!name || !email || !pw || !school) {
+        showToast('Missing Fields', 'Please fill in all required fields.', 'warning');
+        return;
+      }
+
+      if (!email.toLowerCase().endsWith('.edu.ph')) {
+        showToast('Invalid Email', 'Only valid .edu.ph addresses are accepted.', 'error');
+        return;
+      }
+
+      if (pw !== pw2) {
+        showToast('Password Mismatch', 'Passwords do not match.', 'error');
+        return;
+      }
+
+      showToast('Verifying…', 'Sending verification code to your email.', 'info', 1500);
+      setTimeout(() => {
+        window.location.href = '../login-path/emailVerification.html';
+      }, 1200);
+    }
+  </script>
+</body>
+</html>

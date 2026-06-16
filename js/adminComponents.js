@@ -64,11 +64,11 @@ function displayAdmins() {
                         </div>
                         <div class="action-button-group">
                             <button class="action-trigger edit-trigger-btn">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                ${ICONS.edit} Edit
                             </button>
                             <div class="button-inner-divider"></div>
                             <button class="action-trigger revoke-trigger-btn">
-                                <i class="fa-solid fa-user-slash"></i> Revoke
+                                ${ICONS.userSlash} Revoke
                             </button>
                         </div>
                     </div>
@@ -120,11 +120,11 @@ function displayUsers() {
                         </div>
                         <div class="action-button-group">
                             <button class="action-trigger view-trigger-btn">
-                                <i class="fa-solid fa-eye"></i> View
+                                ${ICONS.eye} View
                             </button>
                             <div class="button-inner-divider"></div>
                             <button class="action-trigger ban-trigger-btn">
-                                <i class="fa-solid fa-ban"></i> Ban
+                                ${ICONS.ban} Ban
                             </button>
                         </div>
                     </div>
@@ -169,8 +169,8 @@ function displayListingApprovals() {
                             </div>
                         </div>
                         <div class="listing-actions">
-                            <button class="approve-btn">Approve</button>
-                            <button class="reject-btn">Reject</button>
+                            <button class="approve-btn" onclick="handleApproval('approve','${listing.listingId}',this)">${ICONS.check} Approve</button>
+                            <button class="reject-btn"  onclick="handleApproval('reject', '${listing.listingId}',this)">${ICONS.close} Reject</button>
                         </div>
                     </div>
                 `;
@@ -211,8 +211,8 @@ function displayCategories() {
                             </div>
                         </div>
                         <div class="category-actions">
-                            <button class="edit-btn">Edit</button>
-                            <button class="delete-btn">Delete</button>
+                            <button class="edit-btn"   onclick="handleCategory('edit',  '${category.categoryId}',this)">${ICONS.edit}  Edit</button>
+                            <button class="delete-btn" onclick="handleCategory('delete','${category.categoryId}',this)">${ICONS.trash} Delete</button>
                         </div>
                     </div>
                 `;
@@ -262,16 +262,49 @@ function displayReports() {
                             </span>
                         </div>
                         <div class="report-action-group">
-                            <button class="warning-btn">
-                                Warning
+                            <button class="warning-btn" onclick="handleReportAction('warning','${report.reportId}',this)">
+                                ${ICONS.shield} Warning
                             </button>
-                            <button class="dismiss-btn">
-                                Dismiss
+                            <button class="dismiss-btn" onclick="handleReportAction('dismiss','${report.reportId}',this)">
+                                ${ICONS.close} Dismiss
                             </button>
                         </div>
-                    </div> 
+                    </div>
                 `;
             }).join('');
         }
+    }
+}
+
+function handleApproval(action, listingId, btn) {
+    const card = btn.closest('.listing-card');
+    if (action === 'approve') {
+        showToast('Approved', `Listing ${listingId} has been approved.`, 'success');
+    } else {
+        showToast('Rejected', `Listing ${listingId} has been rejected.`, 'error');
+    }
+    if (card) card.style.opacity = '0.4';
+    btn.closest('.listing-actions').querySelectorAll('button').forEach(b => b.disabled = true);
+}
+
+function handleReportAction(action, reportId, btn) {
+    const row = btn.closest('.report-row-card');
+    if (action === 'warning') {
+        showToast('Warning Issued', `Warning sent for report #${reportId}.`, 'warning');
+    } else {
+        showToast('Dismissed', `Report #${reportId} has been dismissed.`, 'info');
+    }
+    if (row) row.style.opacity = '0.4';
+    btn.closest('.report-action-group').querySelectorAll('button').forEach(b => b.disabled = true);
+}
+
+function handleCategory(action, categoryId, btn) {
+    if (action === 'edit') {
+        showToast('Edit Category', `Editing ${categoryId} — coming soon.`, 'info');
+    } else {
+        if (!confirm('Delete this category?')) return;
+        const card = btn.closest('.category-card');
+        showToast('Deleted', `Category ${categoryId} removed.`, 'success');
+        if (card) card.remove();
     }
 }

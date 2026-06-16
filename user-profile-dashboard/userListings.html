@@ -3,34 +3,223 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart | Listings</title>
+  <title>CampusCart – My Listings</title>
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/top-nav.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
-  <div id="top-nav-container"></div>
+  <div id="top-nav"></div>
 
   <div class="page-wrapper">
     <div id="side-nav"></div>
 
     <main class="main-content">
-      <h1>My Listings</h1>
+      <h1 class="page-title">My Listings</h1>
 
-      <div id="listings-list"></div>
+      <!-- Add Listing Form -->
+      <div class="add-listing-card">
+        <div class="listing-form-row">
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Item Name</label>
+            <input type="text" class="form-input" id="inp-name" placeholder="e.g. Casio FX-991EX">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Price (₱)</label>
+            <input type="number" class="form-input" id="inp-price" placeholder="0.00" min="0">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Category</label>
+            <select class="form-select" id="inp-category">
+              <option value="">Select…</option>
+              <option>Electronics</option>
+              <option>Books</option>
+              <option>Lab Tools</option>
+              <option>Clothing</option>
+              <option>Others</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="inp-desc" placeholder="Add up to 150 words…" rows="2"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <button class="btn-add-img" id="btn-img" onclick="handleAddImage()">+ Add Image</button>
+          <button class="btn-add-listing" style="flex:1;max-width:200px;" onclick="handleAddListing()">ADD LISTING</button>
+        </div>
+      </div>
+
+      <!-- Two-column layout: list + chart -->
+      <div class="listings-grid">
+
+        <!-- Left: My Listings -->
+        <div>
+          <p class="section-title">My Listings</p>
+          <div class="item-list" id="listings-list">
+            <p style="color:var(--text-muted);padding:16px 0;">Loading…</p>
+          </div>
+        </div>
+
+        <!-- Right: Reports chart -->
+        <div>
+          <div class="side-panel-card">
+            <h3>Reports on Listing</h3>
+            <div class="chart-container-sm">
+              <canvas id="chart-reports"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </main>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/main.js"></script>
+
   <script>
+    const CAT_ICONS = {
+      Electronics: ICONS.laptop, Books: ICONS.book,
+      'Lab Tools': ICONS.flask,  Clothing: ICONS.shirt, Others: ICONS.package,
+    };
+    let allListings = [];
+    let reportsChart = null;
+
+    const STATUS_LABEL = { active: 'Active', pending_review: 'Pending Review', claimed: 'Claimed' };
+
+    function renderListings() {
+      const el = document.getElementById('listings-list');
+      if (!allListings.length) {
+        el.innerHTML = `<div class="empty-state"><div class="empty-icon-svg">${ICONS.tag}</div><p>No listings yet. Add one above!</p></div>`;
+        return;
+      }
+      el.innerHTML = allListings.map(item => `
+        <div class="listing-row" id="listing-${item.id}">
+          <div class="listing-thumb">${CAT_ICONS[item.category] || ICONS.package}</div>
+          <div class="item-info">
+            <p class="item-name">${item.name}</p>
+            <p class="item-meta">₱${item.price} · ${item.category}</p>
+          </div>
+          <span class="badge-status ${item.status}">${STATUS_LABEL[item.status] || item.status}</span>
+          <div style="display:flex;gap:3px;flex-shrink:0;">
+            <button class="btn-icon" title="Edit" onclick="editListing(${item.id})">${ICONS.edit}</button>
+            <button class="btn-icon danger" title="Delete" onclick="deleteListing(${item.id})">${ICONS.trash}</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function buildReportsChart(items) {
+      const t = getChartTheme();
+      const statuses = { active: 0, pending_review: 0, claimed: 0 };
+      items.forEach(i => { if (statuses[i.status] !== undefined) statuses[i.status]++; });
+
+      const labels = ['Active', 'Pending', 'Claimed'];
+      const values = [statuses.active, statuses.pending_review, statuses.claimed];
+      const colors = [
+        'rgba(74,124,89,0.82)',
+        'rgba(200,121,65,0.80)',
+        'rgba(157,145,103,0.75)',
+      ];
+
+      if (reportsChart) reportsChart.destroy();
+
+      reportsChart = new Chart(document.getElementById('chart-reports'), {
+        type: 'doughnut',
+        data: {
+          labels,
+          datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderColor: t.cardBg,
+            borderWidth: 3,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: t.text, font: { size: 11 }, padding: 12 }
+            }
+          }
+        }
+      });
+    }
+
+    function editListing(id) {
+      showToast('Edit', 'Edit mode coming soon!', 'info');
+    }
+
+    function deleteListing(id) {
+      if (!confirm('Delete this listing?')) return;
+      allListings = allListings.filter(l => l.id !== id);
+      renderListings();
+      buildReportsChart(allListings);
+      showToast('Deleted', 'Listing removed.', 'success');
+    }
+
+    function handleAddImage() {
+      showToast('Add Image', 'Image upload coming soon!', 'info');
+    }
+
+    function handleAddListing() {
+      const name  = document.getElementById('inp-name').value.trim();
+      const price = document.getElementById('inp-price').value.trim();
+      const cat   = document.getElementById('inp-category').value;
+      const desc  = document.getElementById('inp-desc').value.trim();
+
+      if (!name || !price || !cat) {
+        showToast('Missing Fields', 'Please fill in Name, Price, and Category.', 'warning');
+        return;
+      }
+
+      const newItem = {
+        id: Date.now(),
+        name,
+        price: parseFloat(price),
+        category: cat,
+        description: desc,
+        status: 'pending_review',
+      };
+      allListings.unshift(newItem);
+      renderListings();
+      buildReportsChart(allListings);
+
+      document.getElementById('inp-name').value  = '';
+      document.getElementById('inp-price').value = '';
+      document.getElementById('inp-category').value = '';
+      document.getElementById('inp-desc').value  = '';
+
+      showToast('Listing Added', 'Your listing is pending admin review.', 'success');
+    }
+
+    document.addEventListener('themeChanged', () => {
+      if (!reportsChart) return;
+      const t = getChartTheme();
+      reportsChart.data.datasets[0].borderColor = t.cardBg;
+      reportsChart.options.plugins.legend.labels.color = t.text;
+      reportsChart.update('none');
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
-      loadUserListingsRows('listings-list');
+      fetch('../data/mock-listings.json')
+        .then(r => r.json())
+        .then(items => {
+          allListings = items;
+          renderListings();
+          buildReportsChart(items);
+        })
+        .catch(() => {
+          document.getElementById('listings-list').innerHTML =
+            '<p style="color:var(--text-muted);">Could not load listings.</p>';
+          showToast('Error', 'Failed to load listings.', 'error');
+        });
     });
   </script>
 </body>

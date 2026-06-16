@@ -4,22 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/admin-style.css" />
-  <link rel="stylesheet" href="../css/top-nav.css">
   <link rel="stylesheet" href="../css/admin-sidebar.css">
   <link rel="stylesheet" href="../css/admin-dashboard.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js"
-    integrity="sha512-n/G+dROKbKL3GVngGWmWfwK0yPctjZQM752diVYnXZtD/48agpUKLIn0xDQL9ydZ91x6BiOmTIFwWjjFi2kEFg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <title>CampusCart | Admin Dashboard</title>
 </head>
 
 <body>
-  <div id="top-nav-container"></div>
-  <div class="app-body">
+  <div id="top-nav"></div>
+  <div class="app-body" style="margin-top:var(--nav-height);height:calc(100vh - var(--nav-height));">
     <aside id="admin-side-nav"></aside>
     <div class="main-container">
       <div class="sub-header">
@@ -59,11 +53,78 @@
     </div>
   </div>
   
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
+  <script src="../js/toggleTheme.js"></script>
+  <script src="../js/toastNotification.js"></script>
   <script src="../js/adminComponents.js"></script>
   <script>
     loadTopNav();
+    storeTheme();
     loadAdminSideNav('adminDashboard.html');
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var accent = '#84592B';
+      var grid   = 'rgba(132,89,43,0.14)';
+      var text   = '#442D1C';
+      if (document.body.classList.contains('darkMode')) {
+        accent = '#E8D1A7'; grid = 'rgba(232,209,167,0.22)'; text = '#F5EDD8';
+      }
+
+      new Chart(document.getElementById('userStatusChart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Active','Suspended','Banned'],
+          datasets: [{ data: [678, 24, 8],
+            backgroundColor: ['rgba(74,124,89,0.82)','rgba(200,121,65,0.80)','rgba(200,50,50,0.80)'],
+            borderColor: 'transparent', borderWidth: 0 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '58%',
+          plugins: { legend: { position: 'bottom', labels: { color: text, font: { size: 10 }, padding: 10 } } } }
+      });
+
+      new Chart(document.getElementById('reportsMonthlyChart'), {
+        type: 'line',
+        data: {
+          labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+          datasets: [{ label: 'Reports', data: [12,18,9,24,31,28,19,22,15,30,26,20],
+            borderColor: accent, backgroundColor: accent + '22', borderWidth: 2,
+            tension: 0.4, fill: true, pointRadius: 3 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false,
+          scales: { x: { ticks: { color: text, font: { size: 10 } }, grid: { color: grid } },
+                    y: { ticks: { color: text }, grid: { color: grid }, min: 0 } },
+          plugins: { legend: { display: false } } }
+      });
+
+      new Chart(document.getElementById('popularCategoriesChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Electronics','Books','Lab Tools','Clothing','Others'],
+          datasets: [{ label: 'Items', data: [80, 60, 55, 30, 20],
+            backgroundColor: accent + 'BB', borderColor: accent, borderWidth: 1, borderRadius: 4 }]
+        },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          scales: { x: { ticks: { color: text }, grid: { color: grid } },
+                    y: { ticks: { color: text }, grid: { color: grid } } },
+          plugins: { legend: { display: false } } }
+      });
+
+      new Chart(document.getElementById('listingsStatusChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Approved','Pending','Rejected'],
+          datasets: [{ label: 'Listings',
+            data: [320, 45, 12],
+            backgroundColor: ['rgba(74,124,89,0.82)','rgba(200,121,65,0.80)','rgba(200,50,50,0.80)'],
+            borderRadius: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false,
+          scales: { x: { ticks: { color: text }, grid: { color: grid } },
+                    y: { ticks: { color: text }, grid: { color: grid }, min: 0 } },
+          plugins: { legend: { display: false } } }
+      });
+    });
   </script>
 
 </body>

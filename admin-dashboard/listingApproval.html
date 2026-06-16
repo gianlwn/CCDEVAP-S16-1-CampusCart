@@ -4,19 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin-style.css">
-    <link rel="stylesheet" href="../css/top-nav.css">
     <link rel="stylesheet" href="../css/admin-sidebar.css">
     <link rel="stylesheet" href="../css/admin-listingsApproval.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
     <title>CampusCart | Listing Approvals</title>
 </head>
 
 <body>
-    <div id="top-nav-container"></div>
-    <div class="app-body">
+    <div id="top-nav"></div>
+    <div class="app-body" style="margin-top:var(--nav-height);height:calc(100vh - var(--nav-height));">
         <aside id="admin-side-nav"></aside>
         <div class="main-container">
             <div class="sub-header">
@@ -35,7 +32,7 @@
                         <div class="search-capsule-box">
                             <input type="text" placeholder="Search..." class="search-input-field">
                             <button class="search-glass-btn">
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                             </button>
                         </div>
                     </div>
@@ -46,9 +43,12 @@
     </div>
 
     <script src="../js/components.js"></script>
+    <script src="../js/toggleTheme.js"></script>
+    <script src="../js/toastNotification.js"></script>
     <script src="../js/adminComponents.js"></script>
     <script>
         loadTopNav();
+        storeTheme();
         loadAdminSideNav('listingApproval.html');
         displayListingApprovals();
     </script>

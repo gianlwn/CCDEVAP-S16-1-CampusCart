@@ -97,26 +97,29 @@
   <script src="../js/main.js"></script>
 
   <script>
-    const EMOJI = { Electronics: '💻', Books: '📚', 'Lab Tools': '🧪', Clothing: '👕', Others: '📦' };
+    const CAT_ICONS = {
+      Electronics: ICONS.laptop, Books: ICONS.book,
+      'Lab Tools': ICONS.flask,  Clothing: ICONS.shirt, Others: ICONS.package,
+    };
     let cartItems = [];
 
     function renderCart() {
       const el = document.getElementById('cart-list');
       if (!cartItems.length) {
-        el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>Your cart is empty.</p></div>`;
+        el.innerHTML = `<div class="empty-state"><div class="empty-icon-svg">${ICONS.cart}</div><p>Your cart is empty.</p></div>`;
         document.getElementById('cart-footer').style.display = 'none';
         return;
       }
       el.innerHTML = cartItems.map(item => `
         <div class="cart-row">
-          <button class="cart-remove" onclick="removeItem(${item.id})" title="Remove">✕</button>
-          <div class="cart-thumb">${EMOJI[item.category] || '📦'}</div>
+          <button class="cart-remove" onclick="removeItem(${item.id})" title="Remove">${ICONS.close}</button>
+          <div class="cart-thumb">${CAT_ICONS[item.category] || ICONS.package}</div>
           <div class="cart-item-info">
             <p class="cart-item-name">${item.name}</p>
             <p class="cart-item-meta">${item.category}</p>
           </div>
           <p class="cart-item-price">₱${item.price}</p>
-          <button class="btn-msg" title="Message seller">💬</button>
+          <button class="btn-msg" title="Message seller">${ICONS.message}</button>
         </div>
       `).join('');
 

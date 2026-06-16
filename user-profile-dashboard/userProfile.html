@@ -1,1 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusCart – Profile</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
 
+  <div id="top-nav"></div>
+
+  <div class="page-wrapper">
+    <div id="side-nav"></div>
+
+    <main class="main-content">
+      <h1 class="page-title">Profile</h1>
+
+      <div class="profile-card">
+
+        <!-- Avatar -->
+        <div class="profile-avatar-section">
+          <div class="profile-avatar"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <button class="btn-edit-img" onclick="handleEditImage()">Edit Image</button>
+        </div>
+
+        <!-- Form fields -->
+        <div class="profile-form-grid">
+
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="prof-name" value="Sky Hannah G Parado">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="prof-email"
+              value="sky_parado@dlsu.edu.ph" readonly
+              style="opacity:0.7;cursor:not-allowed;">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Change Password</label>
+            <input type="password" class="form-input" id="prof-pw" placeholder="New password…">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-input" id="prof-pw2" placeholder="Confirm new password…">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">School / University</label>
+            <select class="form-select" id="prof-school">
+              <option>De La Salle University</option>
+              <option>University of Santo Tomas</option>
+              <option>Ateneo de Manila University</option>
+              <option>University of the Philippines</option>
+              <option>Mapua University</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Course Code</label>
+            <input type="text" class="form-input" id="prof-course" placeholder="e.g. BSECE">
+          </div>
+
+          <div class="form-group full">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-input" id="prof-phone" placeholder="0000 000 0000">
+          </div>
+
+        </div>
+
+        <!-- Action buttons -->
+        <div class="profile-actions">
+          <button class="btn-danger-outline" onclick="handleDeleteAccount()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Delete Account
+          </button>
+          <button class="btn-outline" onclick="handleHelp()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Help
+          </button>
+          <button class="btn-primary" onclick="handleSaveProfile()">
+            Save Changes
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/toggleTheme.js"></script>
+  <script src="../js/toastNotification.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    function handleEditImage() {
+      showToast('Edit Image', 'Image upload coming soon!', 'info');
+    }
+
+    function handleSaveProfile() {
+      const name  = document.getElementById('prof-name').value.trim();
+      const pw    = document.getElementById('prof-pw').value;
+      const pw2   = document.getElementById('prof-pw2').value;
+
+      if (!name) {
+        showToast('Missing Field', 'Full name cannot be empty.', 'warning');
+        return;
+      }
+
+      if (pw && pw !== pw2) {
+        showToast('Password Mismatch', 'Passwords do not match.', 'error');
+        return;
+      }
+
+      showToast('Profile Saved', 'Your profile has been updated.', 'success');
+    }
+
+    function handleDeleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+        showToast('Account Deleted', 'Your account has been removed.', 'error', 0);
+        setTimeout(() => window.location.href = '../login-path/login.html', 1200);
+      }
+    }
+
+    function handleHelp() {
+      showToast('Help', 'For support, contact campuscart@support.edu.ph', 'info', 6000);
+    }
+  </script>
+</body>
+</html>
