@@ -1,89 +1,17 @@
-/*
-put <div id="top-nav-container"></div>
-*/
+/* HTML context reminder from your comment */
+/* put <div id="top-nav-container"></div> */
 
-.top-nav {
-  background-color: var(--card-bg);
-  height: var(--nav-height);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  border-bottom: 2px solid var(--accent);
-}
-
-.logo-section {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-icon {
-  background-color: var(--dark-bg);
-  color: var(--dark-text);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-}
-
-.logo-icon img {
-  max-width: 100%;
-}
-
-.logo-text {
-  color: var(--dark-bg);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-}
-
-.nav-icons {
-  display: flex;
-  gap: 12px;
-}
-
-.icon-btn {
-  width: 36px;
-  height: 36px;
-  background-color: rgba(92, 61, 30, 0.15);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.icon-btn i {
-  font-size: 16px;
-  color: var(--dark-bg);
-}
-
-.icon-btn:hover {
-  background-color: var(--dark-bg);
-}
-
-.icon-btn:hover i {
-  color: var(--dark-text);
-}
-
-/* 3. TOP NAVBAR */
 .top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: var(--nav-height);
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 100%),
-    var(--nav-bg);
+  background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 100%), var(--nav-bg);
   border-bottom: 1px solid rgba(255,255,255,0.20);
   position: fixed;
-  top: 0; left: 0;
+  top: 0; 
+  left: 0;
   z-index: 100;
   padding: 0 22px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), var(--shadow);
@@ -124,26 +52,30 @@ put <div id="top-nav-container"></div>
   justify-content: center;
 }
 
-.nav-icons button:hover { background-color: var(--accent-light); }
+.nav-icons button:hover { 
+  background-color: var(--accent-light); 
+}
+
+.nav-icons button svg { 
+  pointer-events: none; 
+}
 
 .nav-badge {
   position: absolute;
-  top: 3px; right: 3px;
+  top: 3px; 
+  right: 3px;
   background: #c84141;
   color: #fff;
   font-size: 9px;
   font-weight: 700;
-  width: 14px; height: 14px;
+  width: 14px; 
+  height: 14px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 3a. NAV SVG ICONS */
-.nav-icons button svg { pointer-events: none; }
-
-/* 3b. USER CHIP */
 .nav-user-chip {
   display: flex;
   align-items: center;
@@ -161,20 +93,29 @@ put <div id="top-nav-container"></div>
   transition: all var(--transition);
 }
 
-.nav-user-chip:hover { background: var(--accent); color: #fff; }
+.nav-user-chip:hover { 
+  background: var(--accent); 
+  color: #fff; 
+}
 
 .nav-avatar {
-  width: 26px; height: 26px;
+  width: 26px; 
+  height: 26px;
   background: var(--accent);
   color: #fff;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  font-size: 12px; 
+  font-weight: 700;
   flex-shrink: 0;
   transition: background-color var(--transition);
 }
 
-.nav-user-chip:hover .nav-avatar { background: rgba(255,255,255,0.25); }
+.nav-user-chip:hover .nav-avatar { 
+  background: rgba(255,255,255,0.25); 
+}
 
 .nav-username {
   white-space: nowrap;
