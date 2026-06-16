@@ -463,42 +463,6 @@ body.darkMode .big-number {
   transform: scale(1.1);
 }
 
-/* 15. TOAST NOTIFICATIONS */
-#toast-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.toast {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px 16px;
-  min-width: 240px;
-  max-width: 320px;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  animation: toastIn 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.toast-icon { font-size: 18px; flex-shrink: 0; }
-.toast-body { flex: 1; }
-.toast-title { font-weight: 700; font-size: 13px; color: var(--text); }
-.toast-message { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-
-@keyframes toastIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
 /* 16. EMPTY STATE */
 .empty-state {
   text-align: center;
@@ -531,38 +495,6 @@ body.darkMode .big-number {
   .stat-box     { padding: 16px 10px; }
   .stat-number  { font-size: 24px; }
   .chart-container { height: 160px; }
-}
-
-/* 18. TOAST VARIANTS */
-.toast-success { border-left: 3px solid var(--success-text); }
-.toast-warning { border-left: 3px solid var(--warning-text); }
-.toast-error   { border-left: 3px solid var(--danger-text); }
-.toast-info    { border-left: 3px solid var(--accent); }
-
-.toast-success .toast-icon { color: var(--success-text); }
-.toast-warning .toast-icon { color: var(--warning-text); }
-.toast-error   .toast-icon { color: var(--danger-text); }
-.toast-info    .toast-icon { color: var(--accent); }
-
-.toast-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 11px;
-  padding: 2px 5px;
-  border-radius: var(--radius-xs);
-  transition: all var(--transition);
-  flex-shrink: 0;
-  align-self: flex-start;
-  margin-top: 1px;
-  line-height: 1;
-}
-.toast-close:hover { background: var(--accent-light); color: var(--accent); }
-
-@keyframes toastOut {
-  from { opacity: 1; transform: translateX(0); }
-  to   { opacity: 0; transform: translateX(24px); }
 }
 
 /* 19. PAGE-TOP-ONLY (homepage, cart — no sidebar) */
