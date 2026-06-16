@@ -1,3 +1,13 @@
+.page-top-only {
+  margin-top: var(--nav-height);
+  padding: 28px;
+  min-height: calc(100vh - var(--nav-height));
+}
+
+@media (max-width: 768px) {
+  .page-top-only { padding: 20px 16px 80px; }
+}
+
 .hp-hero {
   font-size: 15px;
   font-weight: 700;
@@ -104,10 +114,7 @@
 .hp-item-name { font-weight: 600; font-size: 13px; color: var(--text); }
 .hp-item-price { font-size: 13px; color: var(--accent); font-weight: 700; margin-top: 3px; }
 
-@media (max-width: 900px) {
-  .hp-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
 @media (max-width: 600px) {
   .hp-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
