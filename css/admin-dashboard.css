@@ -37,6 +37,15 @@
   overflow: hidden;
 }
 
+.analytics-card {
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 100%),
+    var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(14px) saturate(1.5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+}
+
 @media (max-width: 950px) {
   .dashboard-grid-2x2 {
     grid-template-columns: 1fr;
