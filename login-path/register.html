@@ -113,9 +113,9 @@
         return;
       }
 
-      showToast('Verifying…', 'Sending verification code to your email.', 'info', 1500);
+      showToast('Account Created!', 'Registration complete. Redirecting to login...', 'success', 1500);
       setTimeout(() => {
-        window.location.href = '../login-path/emailVerification.html';
+        window.location.href = '../login-path/login.html'; // Fixed target path
       }, 1200);
     }
   </script>
