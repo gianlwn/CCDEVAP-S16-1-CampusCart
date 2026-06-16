@@ -1,23 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js"
-      integrity="sha512-n/G+dROKbKL3GVngGWmWfwK0yPctjZQM752diVYnXZtD/48agpUKLIn0xDQL9ydZ91x6BiOmTIFwWjjFi2kEFg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <title>CampusCart | Admin Dashboard</title>
-  </head>
-  <body>
-    <header>
-      <nav>
-        <h1>CampusCart</h1>
-        <a href=""></a><a href=""></a><a href=""></a><a href=""></a
-        ><a href=""></a>
-      </nav>
-    </header>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/admin-style.css" />
+  <link rel="stylesheet" href="../css/top-nav.css">
+  <link rel="stylesheet" href="../css/admin-sidebar.css">
+  <link rel="stylesheet" href="../css/admin-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js"
+    integrity="sha512-n/G+dROKbKL3GVngGWmWfwK0yPctjZQM752diVYnXZtD/48agpUKLIn0xDQL9ydZ91x6BiOmTIFwWjjFi2kEFg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <title>CampusCart | Admin Dashboard</title>
+</head>
+
+<body>
+  <div id="top-nav-container"></div>
+  <div class="app-body">
+    <aside id="admin-side-nav"></aside>
+    <div class="main-container">
+      <div class="sub-header">
+        <h2>Admin Panel</h2>
+        <div class="login-status">
+          Logged in as <strong>Administrator</strong>
+        </div>
+      </div>
+      <main class="main-content">
+        <div class="dashboard-grid-2x2">
+          <div class="analytics-card">
+            <h3>User Accounts Status</h3>
+            <div class="chart-container">
+              <canvas id="userStatusChart"></canvas>
+            </div>
+          </div>
+          <div class="analytics-card">
+            <h3>Submitted Reports Per Month</h3>
+            <div class="chart-container">
+              <canvas id="reportsMonthlyChart"></canvas>
+            </div>
+          </div>
+          <div class="analytics-card">
+            <h3>Popular Categories</h3>
+            <div class="chart-container">
+              <canvas id="popularCategoriesChart"></canvas>
+            </div>
+          </div>
+          <div class="analytics-card">
+            <h3>Listings Status Report</h3>
+            <div class="chart-container">
+              <canvas id="listingsStatusChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <script src="../js/components.js"></script>
+  <script src="../js/adminComponents.js"></script>
+  <script>
+    loadTopNav();
+    loadAdminSideNav('adminDashboard.html');
+  </script>
+
+</body>
+
 </html>

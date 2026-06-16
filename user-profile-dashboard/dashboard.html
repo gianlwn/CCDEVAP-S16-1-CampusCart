@@ -3,232 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – Overview</title>
+  <title>CampusCart | Overview</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/top-nav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
-  <div id="top-nav"></div>
+  <div id="top-nav-container"></div>
 
   <div class="page-wrapper">
     <div id="side-nav"></div>
 
     <main class="main-content">
-      <h1 class="page-title">Overview</h1>
+      <h1>Overview</h1>
 
-      <!-- Stat Boxes -->
       <div class="stat-boxes">
         <div class="stat-box">
-          <p class="stat-number" id="stat-active">–</p>
+          <p class="stat-number">4</p>
           <p class="stat-label">Active Listings</p>
         </div>
         <div class="stat-box">
-          <p class="stat-number" id="stat-claimed">–</p>
+          <p class="stat-number">7</p>
           <p class="stat-label">Claimed Items</p>
         </div>
         <div class="stat-box">
-          <p class="stat-number" id="stat-rating">–</p>
-          <p class="stat-label">Rating</p>
+          <p class="stat-number">4.2 ★</p>
+          <p class="stat-label">Ratings</p>
         </div>
         <div class="stat-box">
-          <p class="stat-number" id="stat-liked">–</p>
+          <p class="stat-number">234</p>
           <p class="stat-label">Liked</p>
         </div>
       </div>
 
-      <!-- Charts -->
-      <div class="charts-grid">
+      <h2>Overall Seller Rating</h2>
+      <div class="chart-container" id="seller-rating-chart"></div>
 
-        <div class="chart-card">
-          <h3>Overall Seller Rating</h3>
-          <div class="chart-container">
-            <canvas id="chart-seller-rating"></canvas>
-          </div>
-        </div>
+      <h2>Items Bought per Category</h2>
+      <div class="chart-container" id="category-chart"></div>
 
-        <div class="chart-card">
-          <h3>Items Bought per Category</h3>
-          <div class="chart-container">
-            <canvas id="chart-categories"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card full-width">
-          <h3>Reports on Listing</h3>
-          <div class="donut-wrap">
-            <div class="chart-container-pie">
-              <canvas id="chart-reports"></canvas>
-            </div>
-            <div class="legend-items" id="reports-legend"></div>
-          </div>
-        </div>
-
-      </div>
+      <h2>Reports on Listing</h2>
+      <div class="chart-container" id="reports-chart"></div>
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/main.js"></script>
-
-  <script>
-    const charts = {};
-
-    const REPORT_COLORS = [
-      'rgba(74,124,89,0.82)',
-      'rgba(92,61,30,0.58)',
-      'rgba(200,121,65,0.80)',
-    ];
-
-    function buildCharts(data) {
-      const t = getChartTheme();
-
-      /* ── Chart 1: Seller Rating Bar ── */
-      charts.rating = new Chart(document.getElementById('chart-seller-rating'), {
-        type: 'bar',
-        data: {
-          labels: data.sellerRatingHistory.map(d => d.month),
-          datasets: [{
-            label: 'Rating',
-            data:  data.sellerRatingHistory.map(d => d.rating),
-            backgroundColor: t.barBg,
-            borderColor:     t.accent,
-            borderWidth: 1.5,
-            borderRadius: 6,
-            borderSkipped: false,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              min: 0, max: 5,
-              ticks: { color: t.text, stepSize: 1 },
-              grid:  { color: t.grid }
-            },
-            x: {
-              ticks: { color: t.text },
-              grid:  { color: t.grid }
-            }
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: { label: ctx => ` ${ctx.raw} ★` }
-            }
-          }
-        }
-      });
-
-      /* ── Chart 2: Items per Category (horizontal bar) ── */
-      const catColors = data.itemsByCategory.map((_, i) => {
-        const a = Math.max(0.80 - i * 0.12, 0.20);
-        return `rgba(${t.barRgb}, ${a})`;
-      });
-
-      charts.categories = new Chart(document.getElementById('chart-categories'), {
-        type: 'bar',
-        data: {
-          labels: data.itemsByCategory.map(d => d.category),
-          datasets: [{
-            label: 'Items',
-            data:  data.itemsByCategory.map(d => d.count),
-            backgroundColor: catColors,
-            borderColor:     t.accent,
-            borderWidth: 1,
-            borderRadius: 5,
-            borderSkipped: false,
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              ticks: { color: t.text, stepSize: 1 },
-              grid:  { color: t.grid }
-            },
-            y: {
-              ticks: { color: t.text },
-              grid:  { color: t.grid }
-            }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
-
-      /* ── Chart 3: Reports Doughnut ── */
-      charts.reports = new Chart(document.getElementById('chart-reports'), {
-        type: 'doughnut',
-        data: {
-          labels: data.reportsOnListing.map(d => d.label),
-          datasets: [{
-            data:            data.reportsOnListing.map(d => d.value),
-            backgroundColor: REPORT_COLORS,
-            borderColor:     t.cardBg,
-            borderWidth: 3,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '62%',
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}%` }
-            }
-          }
-        }
-      });
-
-      /* Legend for donut */
-      const legend = document.getElementById('reports-legend');
-      legend.innerHTML = data.reportsOnListing.map((d, i) => `
-        <div class="legend-item">
-          <span class="legend-dot" style="background:${REPORT_COLORS[i]}"></span>
-          <span class="legend-label">${d.label}</span>
-          <strong class="legend-val">${d.value}%</strong>
-        </div>
-      `).join('');
-    }
-
-    function refreshChartTheme() {
-      const t = getChartTheme();
-      ['rating', 'categories'].forEach(key => {
-        const ch = charts[key];
-        if (!ch) return;
-        ch.options.scales.x.ticks.color = t.text;
-        ch.options.scales.y.ticks.color = t.text;
-        ch.options.scales.x.grid.color  = t.grid;
-        ch.options.scales.y.grid.color  = t.grid;
-        ch.data.datasets[0].borderColor = t.accent;
-        ch.update('none');
-      });
-      if (charts.reports) {
-        charts.reports.data.datasets[0].borderColor = t.cardBg;
-        charts.reports.update('none');
-      }
-    }
-
-    document.addEventListener('themeChanged', refreshChartTheme);
-
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch('../data/mock-dashboard.json')
-        .then(r => r.json())
-        .then(data => {
-          document.getElementById('stat-active').textContent  = data.stats.activeListings;
-          document.getElementById('stat-claimed').textContent = data.stats.claimedItems;
-          document.getElementById('stat-rating').textContent  = data.stats.rating + ' ★';
-          document.getElementById('stat-liked').textContent   = data.stats.liked;
-          buildCharts(data);
-        })
-        .catch(() => showToast('Error', 'Could not load dashboard data.', 'error'));
-    });
-  </script>
 </body>
 </html>
