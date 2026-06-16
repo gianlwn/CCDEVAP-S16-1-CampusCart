@@ -3,271 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – Ratings</title>
+  <title>CampusCart | Ratings</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/top-nav.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
-  <div id="top-nav"></div>
+  <div id="top-nav-container"></div>
 
   <div class="page-wrapper">
     <div id="side-nav"></div>
 
     <main class="main-content">
-      <h1 class="page-title">Ratings</h1>
+      <h1>Ratings</h1>
 
-      <div class="content-grid">
-
-        <!-- Left: Ratings list -->
-        <div>
-          <p class="section-title">Reviews You've Given</p>
-          <div class="item-list" id="ratings-list">
-            <p style="color:var(--text-muted);padding:16px 0;">Loading…</p>
-          </div>
-        </div>
-
-        <!-- Right: Side panels -->
-        <div style="display:flex;flex-direction:column;gap:16px;">
-
-          <div class="side-panel-card">
-            <h3>Average Rating Given</h3>
-            <div class="avg-rating" id="avg-rating-display">
-              <div class="big-number">–</div>
-            </div>
-          </div>
-
-          <div class="side-panel-card">
-            <h3>Rating Distribution</h3>
-            <div class="chart-container-sm">
-              <canvas id="chart-dist"></canvas>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <div id="ratings-list"></div>
     </main>
   </div>
 
-  <!-- Edit Rating Modal -->
-  <div id="edit-modal" style="
-    display:none; position:fixed; inset:0; z-index:500;
-    background:rgba(0,0,0,0.45); align-items:center; justify-content:center;
-  ">
-    <div style="
-      background:var(--card-bg); border:1px solid var(--border);
-      border-radius:var(--radius); padding:28px 24px; width:360px;
-      box-shadow:var(--shadow-card); transition: background-color var(--transition);
-    ">
-      <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--text);">Edit Rating</h2>
-
-      <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
-        Your Rating
-      </p>
-      <div id="modal-star-picker" style="display:flex;gap:6px;margin-bottom:14px;font-size:28px;cursor:pointer;">
-        <span class="modal-star" data-val="1">★</span>
-        <span class="modal-star" data-val="2">★</span>
-        <span class="modal-star" data-val="3">★</span>
-        <span class="modal-star" data-val="4">★</span>
-        <span class="modal-star" data-val="5">★</span>
-      </div>
-
-      <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
-        Review
-      </p>
-      <textarea id="modal-review" rows="3" style="
-        width:100%; padding:9px 11px; border:1px solid var(--border);
-        border-radius:var(--radius-xs); background:var(--bg); color:var(--text);
-        font-size:13px; resize:none; outline:none; transition:all var(--transition);
-        font-family:inherit;
-      "></textarea>
-
-      <div style="display:flex;gap:10px;margin-top:16px;">
-        <button onclick="saveEdit()" style="
-          flex:1; padding:9px; background:var(--accent); color:#fff;
-          border:none; border-radius:var(--radius-xs); cursor:pointer;
-          font-weight:600; font-size:13px; transition:all var(--transition);
-        ">Save</button>
-        <button onclick="closeEdit()" style="
-          flex:1; padding:9px; background:var(--accent-light); color:var(--accent);
-          border:none; border-radius:var(--radius-xs); cursor:pointer;
-          font-weight:600; font-size:13px; transition:all var(--transition);
-        ">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/main.js"></script>
-
   <script>
-    let allRatings  = [];
-    let distChart   = null;
-    let editingId   = null;
-    let pickedStar  = 0;
-
-    /* ── Render average rating display ── */
-    function renderAvg(items) {
-      if (!items.length) return;
-      const avg     = items.reduce((s, i) => s + i.rating, 0) / items.length;
-      const avgStr  = avg.toFixed(1);
-      const rounded = Math.round(avg);
-      let stars = '';
-      for (let i = 1; i <= 5; i++) {
-        stars += `<span class="star${i <= rounded ? ' filled' : ''}">★</span>`;
-      }
-      document.getElementById('avg-rating-display').innerHTML = `
-        <div class="big-number">${avgStr}</div>
-        <div class="stars-row">${stars}</div>
-        <div class="count">${items.length} review${items.length !== 1 ? 's' : ''}</div>
-      `;
-    }
-
-    /* ── Build distribution chart ── */
-    function buildDistChart(items) {
-      const t    = getChartTheme();
-      const dist = [0, 0, 0, 0, 0];
-      items.forEach(i => dist[i.rating - 1]++);
-
-      const DIST_COLORS = [
-        'rgba(200,65,65,0.75)',
-        'rgba(200,121,65,0.75)',
-        'rgba(200,180,65,0.75)',
-        'rgba(100,160,90,0.75)',
-        'rgba(74,124,89,0.85)',
-      ];
-
-      if (distChart) distChart.destroy();
-
-      distChart = new Chart(document.getElementById('chart-dist'), {
-        type: 'bar',
-        data: {
-          labels: ['1 ★', '2 ★', '3 ★', '4 ★', '5 ★'],
-          datasets: [{
-            data: dist,
-            backgroundColor: DIST_COLORS,
-            borderRadius: 5,
-            borderWidth: 0,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid }, border: { color: t.axisBorder } },
-            y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, border: { color: t.axisBorder }, min: 0 }
-          },
-          plugins: { legend: { display: false } }
-        }
-      });
-    }
-
-    /* ── Re-render the list ── */
-    function renderList() {
-      const el = document.getElementById('ratings-list');
-      if (!allRatings.length) {
-        el.innerHTML = `<div class="empty-state"><div class="empty-icon">⭐</div><p>No ratings yet.</p></div>`;
-        return;
-      }
-      el.innerHTML = allRatings.map(createRatingsRow).join('');
-    }
-
-    /* ── Edit modal ── */
-    function editRating(id) {
-      editingId = id;
-      const item = allRatings.find(r => r.id === id);
-      if (!item) return;
-      document.getElementById('modal-review').value = item.review || '';
-      pickedStar = item.rating;
-      _highlightStars(pickedStar);
-      document.getElementById('edit-modal').style.display = 'flex';
-    }
-
-    function closeEdit() {
-      document.getElementById('edit-modal').style.display = 'none';
-      editingId = null;
-    }
-
-    function saveEdit() {
-      if (!editingId) return;
-      const item = allRatings.find(r => r.id === editingId);
-      if (!item) return;
-      item.rating = pickedStar || item.rating;
-      item.review = document.getElementById('modal-review').value.trim() || item.review;
-      closeEdit();
-      renderList();
-      renderAvg(allRatings);
-      buildDistChart(allRatings);
-      showToast('Updated', 'Your rating has been updated.', 'success');
-    }
-
-    function deleteRating(id) {
-      if (!confirm('Remove this rating?')) return;
-      allRatings = allRatings.filter(r => r.id !== id);
-      renderList();
-      renderAvg(allRatings);
-      buildDistChart(allRatings);
-      showToast('Removed', 'Rating has been removed.', 'success');
-    }
-
-    /* ── Star picker in modal ── */
-    function _highlightStars(val) {
-      document.querySelectorAll('.modal-star').forEach(s => {
-        const v = parseInt(s.dataset.val);
-        s.style.color = v <= val ? 'var(--star-fill)' : 'var(--star-empty)';
-      });
-    }
-
     document.addEventListener('DOMContentLoaded', function () {
-      /* Star picker events */
-      document.querySelectorAll('.modal-star').forEach(star => {
-        star.addEventListener('mouseover', () => _highlightStars(parseInt(star.dataset.val)));
-        star.addEventListener('mouseleave', () => _highlightStars(pickedStar));
-        star.addEventListener('click', () => {
-          pickedStar = parseInt(star.dataset.val);
-          _highlightStars(pickedStar);
-        });
-      });
-
-      /* Close modal on backdrop click */
-      document.getElementById('edit-modal').addEventListener('click', function (e) {
-        if (e.target === this) closeEdit();
-      });
-
-      /* Load data */
-      fetch('../data/mock-ratings.json')
-        .then(r => r.json())
-        .then(items => {
-          allRatings = items;
-          renderList();
-          renderAvg(items);
-          buildDistChart(items);
-        })
-        .catch(() => {
-          document.getElementById('ratings-list').innerHTML =
-            '<p style="color:var(--text-muted);">Could not load ratings.</p>';
-          showToast('Error', 'Failed to load ratings.', 'error');
-        });
+      loadRatingsRows('ratings-list');
     });
-
-    /* ── Theme change: update chart ── */
-    document.addEventListener('themeChanged', () => {
-      if (!distChart) return;
-      const t = getChartTheme();
-      distChart.options.scales.x.ticks.color  = t.text;
-      distChart.options.scales.y.ticks.color  = t.text;
-      distChart.options.scales.x.grid.color   = t.grid;
-      distChart.options.scales.y.grid.color   = t.grid;
-      distChart.options.scales.x.border.color = t.axisBorder;
-      distChart.options.scales.y.border.color = t.axisBorder;
-      distChart.update('none');
-    });
-
-    /* Expose to component row buttons */
-    window.editRating   = editRating;
-    window.deleteRating = deleteRating;
   </script>
 </body>
 </html>
