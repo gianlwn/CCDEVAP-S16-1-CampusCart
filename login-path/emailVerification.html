@@ -73,7 +73,12 @@
       btn.textContent = 'Code Sent!';
       codeSent = true;
 
-      showToast('Code Sent', 'Check your email for the 6-digit verification code.', 'success', 4000);
+      showToast('Code Sent', 'Check your inbox! The code is: 123456', 'success', 5000);
+
+      const codeInput = document.getElementById('vfy-code');
+      if (codeInput) {
+        codeInput.focus();
+      }
 
       setTimeout(() => {
         btn.disabled = false;
@@ -83,16 +88,19 @@
 
     function handleConfirm() {
       const code = document.getElementById('vfy-code').value.trim();
+      const email = document.getElementById('vfy-email').value.trim();
 
       if (!codeSent) {
         showToast('Send Code First', 'Please send a verification code before confirming.', 'warning');
         return;
       }
 
-      if (!code || code.length < 4) {
-        showToast('Invalid Code', 'Please enter the verification code from your email.', 'error');
+      if (code !== '123456') {
+        showToast('Incorrect Code', 'The verification token you entered is incorrect. Please try again.', 'error');
         return;
       }
+
+      localStorage.setItem('verified-signup-email', email);
 
       showToast('Verified!', 'Email confirmed. Redirecting…', 'success', 1500);
       setTimeout(() => {
