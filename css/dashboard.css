@@ -1,0 +1,136 @@
+/* 7. STAT BOXES */
+.stat-boxes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  transition: background-color var(--transition), border-color var(--transition),
+              transform var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(10px) saturate(1.12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.12);
+}
+
+.stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+  opacity: 0.7;
+}
+
+.stat-box:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card), 0 8px 28px rgba(92, 61, 30, 0.14);
+}
+
+body.darkMode .stat-box:hover {
+  box-shadow: var(--shadow-card), 0 8px 28px rgba(220, 186, 114, 0.10);
+}
+
+.stat-number {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+}
+
+body.darkMode .stat-number {
+  background: linear-gradient(135deg, #f5f0eb 0%, #d4b896 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* 8. CHARTS */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.chart-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  transition: background-color var(--transition), border-color var(--transition);
+  backdrop-filter: blur(10px) saturate(1.12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.12);
+}
+
+.chart-card h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.chart-card.full-width { grid-column: 1 / -1; }
+
+.chart-container {
+  position: relative;
+  height: 220px;
+}
+
+.chart-container-sm {
+  position: relative;
+  height: 160px;
+}
+
+.chart-container-pie {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-label { color: var(--text-muted); flex: 1; }
+.legend-val   { font-weight: 700; color: var(--text); }
