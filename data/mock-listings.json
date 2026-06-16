@@ -1,25 +1,25 @@
 [
   {
     "id": 1,
-    "name": "Scientific Calculator",
+    "name": "Used Scientific Calculator",
     "price": 600,
     "category": "Electronics",
     "status": "active",
-    "description": "Casio FX-991EX, barely used. Great for engineering courses.",
+    "description": "Casio FX-991EX, bought last year.",
     "image": null,
     "reports": 0,
-    "created": "2025-04-01"
+    "created": "2026-6-7"
   },
   {
     "id": 2,
-    "name": "Purple Polo Shirt",
+    "name": "Purple T-Shirt",
     "price": 100,
     "category": "Clothing",
     "status": "pending_review",
-    "description": "Size M, worn twice. Good condition.",
+    "description": "Large, oversized fit. Accepted for PE2FTEX",
     "image": null,
     "reports": 0,
-    "created": "2025-05-15"
+    "created": "2026-6-12"
   },
   {
     "id": 3,
@@ -27,10 +27,10 @@
     "price": 450,
     "category": "Lab Tools",
     "status": "claimed",
-    "description": "Standard white lab gown, clean, no stains.",
+    "description": "RFS: Too big for me",
     "image": null,
     "reports": 0,
-    "created": "2025-03-20"
+    "created": "2026-03-20"
   },
   {
     "id": 4,
@@ -38,9 +38,9 @@
     "price": 150,
     "category": "Electronics",
     "status": "active",
-    "description": "Arduino Uno with breadboard, jumper wires, and components.",
+    "description": "Bought in shopee, not used or opened yet.",
     "image": null,
     "reports": 0,
-    "created": "2025-04-10"
+    "created": "2025-09-15"
   }
 ]
