@@ -146,3 +146,44 @@ function loadRatingsRows(containerId) {
         .join("");
     });
 }
+
+// Append this to the bottom of your components.js file
+
+function createUserListingRow(item) {
+  // Checks status to display custom tags or colors if needed
+  const statusClass = item.status.toLowerCase().replace(" ", "-"); 
+  
+  return `
+    <div class="claimed-row listing-row">
+      <div class="spacing"></div>
+      
+      <div class="item-info">
+        <p class="item-name">${item.name}</p>
+        <p class="item-meta">${item.price} · ${item.category}</p>
+      </div>
+      
+      <div class="item-status ${statusClass}">
+        <span>${item.status}</span>
+      </div>
+      
+      <div class="row-actions">
+        <button title="Edit Listing">✏️</button>
+        <button title="Delete Listing">🗑️</button>
+      </div>
+    </div>
+  `;
+}
+
+function loadUserListingsRows(containerId) {
+  fetch("../data/mock-listings.json")
+    .then((res) => res.json())
+    .then((items) => {
+      const container = document.getElementById(containerId);
+      if (container) {
+        container.innerHTML = items
+          .map((item) => createUserListingRow(item))
+          .join("");
+      }
+    })
+    .catch((err) => console.error("Error loading listings data:", err));
+}
