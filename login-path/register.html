@@ -27,8 +27,7 @@
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">School Email</label>
           <input type="email" class="form-input" id="reg-email"
-            placeholder="account@university.edu.ph" autocomplete="email">
-          <p class="form-warning"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Only valid .edu.ph addresses are accepted</p>
+            placeholder="account@university.edu.ph" autocomplete="email" readonly style="opacity: 0.7; cursor: not-allowed;">
         </div>
 
         <div class="form-group">
@@ -86,6 +85,10 @@
     (function () {
       const saved = localStorage.getItem('campuscart-theme');
       if (saved === 'darkMode') document.body.classList.add('darkMode');
+      const verifiedEmail = localStorage.getItem('verified-signup-email');
+      if (verifiedEmail) {
+        document.getElementById('reg-email').value = verifiedEmail;
+      }
     })();
 
     function handleRegister() {
@@ -110,9 +113,9 @@
         return;
       }
 
-      showToast('Verifying…', 'Sending verification code to your email.', 'info', 1500);
+      showToast('Account Created!', 'Registration complete. Redirecting to login...', 'success', 1500);
       setTimeout(() => {
-        window.location.href = '../login-path/emailVerification.html';
+        window.location.href = '../login-path/login.html'; // Fixed target path
       }, 1200);
     }
   </script>
