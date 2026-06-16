@@ -1,64 +1,50 @@
-/* 1. CSS VARIABLES */
 :root {
   --bg:            #F3F8F7;
-  --card-bg:       rgba(255, 252, 248, 0.90);
-  --nav-bg:        rgba(220, 205, 188, 0.82);
-  --accent:        #8b6344;
-  --accent-light:  rgba(139, 99, 68, 0.10);
-  --accent-hover:  #6b4a2e;
-  --text:          #1c1412;
-  --text-muted:    #9e9084;
-  --border:        rgba(139, 99, 68, 0.15);
-  --shadow:        0 2px 10px rgba(0, 0, 0, 0.08);
-  --shadow-card:   0 4px 22px rgba(0, 0, 0, 0.10);
-  --star-fill:     #d4883a;
-  --star-empty:    #d1c8be;
-  --success-bg:    rgba(122, 171, 138, 0.15);
-  --success-text:  #3d6b50;
-  --warning-bg:    rgba(210, 160, 60, 0.15);
-  --warning-text:  #7a5a1e;
-  --danger-bg:     rgba(200, 60, 50, 0.10);
-  --danger-text:   #8b2020;
-  --pending-bg:    rgba(158, 144, 132, 0.20);
-  --pending-text:  #5a4a3e;
-  --chart-grid:    rgba(0, 0, 0, 0.06);
-  --chart-axis:    rgba(0, 0, 0, 0.15);
-  --chart-bar:     rgba(122, 171, 138, 0.75);
-  --chart-bar-rgb: 122, 171, 138;
+  --card-bg:       rgba(255, 255, 255, 0.90);
+  --nav-bg:        rgba(255, 255, 255, 0.82);
+  --text:          #16302E;
+  --text-muted:    #7A908D;
+  --border:        #DBE8E5;
+  --accent:        #127C70;  /* Deep Teal */
+  --accent-light:  rgba(18, 124, 112, 0.10);
+  --accent-hover:  #0E665D;
+  --star-fill:     #C98A2E;
+  --star-empty:    #D9D9D9;
+  --success-bg:    rgba(18, 124, 112, 0.12);
+  --success-text:  #127C70;
+  --warning-bg:    rgba(201, 138, 46, 0.15);
+  --warning-text:  #A36B12;
+  --danger-bg:     rgba(192, 57, 43, 0.12);
+  --danger-text:   #C0392B;
+  --pending-bg:    rgba(122, 144, 141, 0.15);
+  --pending-text:  #5F706D;
+  --chart-grid:    rgba(0,0,0,0.06);
+  --chart-axis:    rgba(0,0,0,0.15);
+  --chart-bar:     rgba(18,124,112,0.75);
+  --chart-bar-rgb: 18,124,112;
   --sidebar-width: 210px;
   --nav-height:    64px;
   --radius:        12px;
   --radius-sm:     8px;
   --radius-xs:     5px;
   --transition:    0.25s ease;
+  --coral:         #E2643B;
+  --gold:          #C98A2E;
 }
-
 body.darkMode {
-  --bg:            #1a1210;
-  --card-bg:       rgba(40, 30, 22, 0.92);
-  --nav-bg:        rgba(22, 16, 10, 0.88);
-  --accent:        #d4b896;
-  --accent-light:  rgba(212, 184, 150, 0.12);
-  --accent-hover:  #ede0cf;
-  --text:          #f5f0eb;
-  --text-muted:    #b0a090;
-  --border:        rgba(212, 184, 150, 0.15);
-  --shadow:        0 2px 12px rgba(0, 0, 0, 0.50);
-  --shadow-card:   0 4px 28px rgba(0, 0, 0, 0.60);
-  --star-fill:     #e0a040;
-  --star-empty:    #5a4a3e;
-  --success-bg:    rgba(122, 171, 138, 0.18);
-  --success-text:  #a8d4b8;
-  --warning-bg:    rgba(210, 160, 60, 0.18);
-  --warning-text:  #e0c070;
-  --danger-bg:     rgba(200, 70, 60, 0.18);
-  --danger-text:   #f0a0a0;
-  --pending-bg:    rgba(158, 144, 132, 0.18);
-  --pending-text:  #d4c4b4;
-  --chart-grid:    rgba(255, 255, 255, 0.08);
-  --chart-axis:    rgba(255, 255, 255, 0.20);
-  --chart-bar:     rgba(150, 200, 170, 0.75);
-  --chart-bar-rgb: 150, 200, 170;
+  --bg:            #0C1F1D;
+  --card-bg:       rgba(18, 35, 33, 0.92);
+  --nav-bg:        rgba(10, 25, 23, 0.90);
+  --text:          #F3F8F7;
+  --text-muted:    #A9C1BE;
+  --accent:        #3AB5A6;
+  --accent-hover:  #57C8BB;
+  --accent-light:  rgba(58,181,166,0.12);
+  --border:        rgba(169,193,190,0.15);
+  --star-fill:     #E0A847;
+  --star-empty:    #4A5A58;
+  --chart-bar:     rgba(58,181,166,0.75);
+  --chart-bar-rgb: 58,181,166;
 }
 
 /* 2. RESET & BASE */
@@ -67,17 +53,27 @@ html { scroll-behavior: smooth; }
 
 body {
   background:
-    radial-gradient(ellipse 55% 45% at 8% 12%,  rgba(122, 171, 138, 0.09) 0%, transparent 65%),
-    radial-gradient(ellipse 50% 60% at 92% 84%, rgba(122, 171, 215, 0.07) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 36% at 73% 6%,  rgba(212, 184, 150, 0.22) 0%, transparent 56%),
-    radial-gradient(ellipse 36% 52% at 24% 94%, rgba(139, 99, 68, 0.07) 0%, transparent 56%),
-    linear-gradient(145deg, #ede8e2 0%, #f5f0ea 50%, #f0ebe4 100%);
+    radial-gradient(
+      ellipse 55% 45% at 8% 12%,
+      rgba(18,124,112,0.08) 0%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 60% at 92% 84%,
+      rgba(226,100,59,0.06) 0%,
+      transparent 65%
+    ),
+    linear-gradient(
+      145deg,
+      #F3F8F7 0%,
+      #F8FBFA 50%,
+      #EDF5F4 100%
+    );
   background-attachment: fixed;
   color: var(--text);
   font-family: 'Segoe UI', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.55;
-  transition: color var(--transition);
   min-height: 100vh;
 }
 
