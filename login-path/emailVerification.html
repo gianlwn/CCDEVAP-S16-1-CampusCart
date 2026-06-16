@@ -23,10 +23,7 @@
           placeholder="account@university.edu.ph" autocomplete="email">
       </div>
 
-      <button class="auth-btn" id="btn-send" onclick="handleSendCode()"
-        style="background:var(--accent);margin-bottom:16px;">
-        SEND VERIFICATION CODE
-      </button>
+      <button type="button" class="auth-btn" id="btn-send" onclick="handleSendCode()" style="background:var(--accent);margin-bottom:16px;">SEND VERIFICATION CODE</button>
 
       <div class="form-group">
         <label class="form-label">Verification Code</label>
@@ -37,9 +34,7 @@
       <button class="auth-btn" onclick="handleConfirm()">CONFIRM</button>
 
       <div class="auth-footer">
-        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">
-          back to login
-        </button>
+        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">back to login</button>
       </div>
 
     </div>
@@ -47,67 +42,7 @@
 
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
-
-  <script>
-    (function () {
-      const saved = localStorage.getItem('campuscart-theme');
-      if (saved === 'darkMode') document.body.classList.add('darkMode');
-    })();
-
-    let codeSent = false;
-
-    function handleSendCode() {
-      const email = document.getElementById('vfy-email').value.trim();
-
-      if (!email) {
-        showToast('Missing Email', 'Please enter your school email.', 'warning');
-        return;
-      }
-
-      if (!email.toLowerCase().endsWith('.edu.ph')) {
-        showToast('Invalid Email', 'Only valid .edu.ph addresses are accepted.', 'error');
-        return;
-      }
-
-      const btn = document.getElementById('btn-send');
-      btn.disabled = true;
-      btn.textContent = 'Code Sent!';
-      codeSent = true;
-
-      showToast('Code Sent', 'Check your inbox! The code is: 123456', 'success', 5000);
-
-      const codeInput = document.getElementById('vfy-code');
-      if (codeInput) {
-        codeInput.focus();
-      }
-
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.textContent = 'RESEND CODE';
-      }, 30000);
-    }
-
-    function handleConfirm() {
-      const code = document.getElementById('vfy-code').value.trim();
-      const email = document.getElementById('vfy-email').value.trim();
-
-      if (!codeSent) {
-        showToast('Send Code First', 'Please send a verification code before confirming.', 'warning');
-        return;
-      }
-
-      if (code !== '123456') {
-        showToast('Incorrect Code', 'The verification token you entered is incorrect. Please try again.', 'error');
-        return;
-      }
-
-      localStorage.setItem('verified-signup-email', email);
-
-      showToast('Verified!', 'Email confirmed. Redirecting…', 'success', 1500);
-      setTimeout(() => {
-        window.location.href = '../login-path/register.html';
-      }, 1200);
-    }
-  </script>
+  <script src="../js/login.js"></script>
+  
 </body>
 </html>
