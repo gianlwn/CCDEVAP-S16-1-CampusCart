@@ -71,9 +71,7 @@
       <button class="auth-btn" onclick="handleRegister()">CREATE ACCOUNT</button>
 
       <div class="auth-footer">
-        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">
-          already have an account? login here!
-        </button>
+        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">already have an account? login here!</button>
       </div>
 
     </div>
@@ -81,44 +79,7 @@
 
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
-
-  <script>
-    (function () {
-      const saved = localStorage.getItem('campuscart-theme');
-      if (saved === 'darkMode') document.body.classList.add('darkMode');
-      const verifiedEmail = localStorage.getItem('verified-signup-email');
-      if (verifiedEmail) {
-        document.getElementById('reg-email').value = verifiedEmail;
-      }
-    })();
-
-    function handleRegister() {
-      const name   = document.getElementById('reg-name').value.trim();
-      const email  = document.getElementById('reg-email').value.trim();
-      const pw     = document.getElementById('reg-pw').value;
-      const pw2    = document.getElementById('reg-pw2').value;
-      const school = document.getElementById('reg-school').value;
-
-      if (!name || !email || !pw || !school) {
-        showToast('Missing Fields', 'Please fill in all required fields.', 'warning');
-        return;
-      }
-
-      if (!email.toLowerCase().endsWith('.edu.ph')) {
-        showToast('Invalid Email', 'Only valid .edu.ph addresses are accepted.', 'error');
-        return;
-      }
-
-      if (pw !== pw2) {
-        showToast('Password Mismatch', 'Passwords do not match.', 'error');
-        return;
-      }
-
-      showToast('Account Created!', 'Registration complete. Redirecting to login...', 'success', 1500);
-      setTimeout(() => {
-        window.location.href = '../login-path/login.html'; // Fixed target path
-      }, 1200);
-    }
-  </script>
+  <script src="../js/login.js"></script>
+  
 </body>
 </html>
