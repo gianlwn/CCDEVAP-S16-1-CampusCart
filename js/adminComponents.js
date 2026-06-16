@@ -228,10 +228,9 @@ function displayReports() {
         return;
     } else {
         const reportsArray = [
-            // temporary only (for frontend purposes only)
-            { reportType: "User Report", reportId: "RPT-3012", reporter: "Andie Kirsten Woo",status: "Pending Review", reason: "Spam account repeatedly posting misleading listings." },
-            { reportType: "Listing Report", reportId: "RPT-3013", reporter: "Alexa Nicole Pleyto", status: "Pending Review", reason: "Possible scam listing requesting payment outside website." },
-            { reportType: "User Report", reportId: "RPT-3014", reporter: "Christine Cote", status: "Pending Review", reason: "Hate speech directed toward another user." },
+            { reportType: "User Report",    reportId: "RPT-3012", reporter: "Andie Kirsten Woo",   status: "Pending Review", reason: "Spam account repeatedly posting misleading listings.",         subject: "User: @marie_santos",   date: "Jun 14, 2026" },
+            { reportType: "Listing Report", reportId: "RPT-3013", reporter: "Alexa Nicole Pleyto", status: "Pending Review", reason: "Possible scam listing requesting payment outside the website.", subject: "Listing: Casio FX-991EX",  date: "Jun 15, 2026" },
+            { reportType: "User Report",    reportId: "RPT-3014", reporter: "Christine Cote",       status: "Pending Review", reason: "Hate speech directed toward another user in listing comments.", subject: "User: @jay_ramos",      date: "Jun 15, 2026" },
         ];
 
         if (reportsArray.length === 0) {
@@ -256,10 +255,14 @@ function displayReports() {
                             </span>
                         </div>
                         <div class="report-reason-section">
-                            <span class="reason-title">Reason:</span>
-                            <span class="reason-content">
-                                ${report.reason}
-                            </span>
+                            <span class="info-label">Reported</span>
+                            <span class="info-value" style="margin-bottom:8px;">${report.subject}</span>
+                            <span class="reason-title">Reason</span>
+                            <span class="reason-content">${report.reason}</span>
+                        </div>
+                        <div class="report-meta-col">
+                            <span class="info-label">Date Filed</span>
+                            <span class="info-value">${report.date}</span>
                         </div>
                         <div class="report-action-group">
                             <button class="warning-btn" onclick="handleReportAction('warning','${report.reportId}',this)">

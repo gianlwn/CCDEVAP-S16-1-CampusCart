@@ -1,18 +1,18 @@
 /* 1. VARIABLES */
 :root {
-  --bg-color: #e8d5a3;
-  --card-bg: #f0e0b8;
-  --accent: #5c3d1e;
-  --dark-bg: #3b2410;
-  --dark-text: #ffffff;
-  --text-color: #333333;
+  --bg-color:      #f0ebe5;
+  --card-bg:       #fffcf8;
+  --accent:        #8b6344;
+  --dark-bg:       #1c1412;
+  --dark-text:     #f5f0eb;
+  --text-color:    #3d3530;
   --sidebar-width: 200px;
-  --nav-height: 60px;
-  --row-card-bg: #cbb993;
-  --search-box-bg: #c4b187;
-  --btn-group-bg: #e5d6b4;
-  --success-pill: #a3ca56;
-  --warning-pill: #d19241;
+  --nav-height:    60px;
+  --row-card-bg:   #f5f0ea;
+  --search-box-bg: #ede4d8;
+  --btn-group-bg:  #f0e8de;
+  --success-pill:  #7aab8a;
+  --warning-pill:  #d4a030;
 }
 
 /* 2. UNIVERSAL */
@@ -51,7 +51,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px 10px 24px;
-  border-bottom: 1px groove #9d9167;
+  border-bottom: 1px groove rgba(139, 99, 68, 0.35);
 }
 
 .sub-header h2 {
@@ -182,7 +182,7 @@ body {
 }
 
 .action-trigger:hover {
-  background-color: rgba(92, 61, 30, 0.08);
+  background-color: rgba(55, 65, 81, 0.08);
 }
 
 .button-inner-divider {

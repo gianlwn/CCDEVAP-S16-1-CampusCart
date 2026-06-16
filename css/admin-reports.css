@@ -5,7 +5,7 @@
 }
 
 .status-filter-dropdown {
-  background-color: #c4b187;
+  background-color: var(--search-box-bg);
   border: 1.5px solid var(--accent);
   padding: 8px 16px;
   border-radius: 14px;
@@ -79,7 +79,7 @@
   padding: 8px 16px;
   border-radius: 999px;
 
-  background-color: #e9d9b5;
+  background-color: var(--pending-bg, #e5e7eb);
   color: var(--dark-bg);
 
   font-size: 14px;
@@ -137,11 +137,23 @@
 }
 
 .warning-btn {
-  background: #df9943;
+  background: #f59e0b;
+  color: #1f2937;
 }
 
 .dismiss-btn {
-  background: #d8d8d8;
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Report meta date column */
+.report-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 110px;
+  flex-shrink: 0;
+  padding: 0 12px;
 }
 
 @media (max-width: 900px) {

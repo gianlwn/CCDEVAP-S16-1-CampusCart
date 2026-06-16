@@ -67,7 +67,7 @@ function loadSideNav() {
   const html = `
     <aside class="side-nav">
       <ul>
-        <li class="${a('dashboard')}">
+        <li class="${a('dashboard.html')}">
           <a href="../user-profile-dashboard/dashboard.html">
             <span class="nav-item-icon">${ICONS.overview}</span>Overview
           </a>
@@ -172,7 +172,7 @@ function loadBottomNav(type) {
     `;
   } else {
     links = `
-      <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard')}">
+      <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard.html')}">
         <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
       </a>
       <a href="../user-profile-dashboard/userListings.html" class="${a('userListings')}">
