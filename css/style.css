@@ -852,11 +852,23 @@ body.darkMode .big-number {
   transform: translateY(-1px);
 }
 
-@media (max-width: 400px) {
+@media (max-width: 600px) {
+  .confirm-overlay {
+    padding: 12px;
+    align-items: flex-end;
+    padding-bottom: 24px;
+  }
   .confirm-dialog {
-    padding: 22px 16px 18px;
+    max-width: 100%;
+    border-radius: var(--radius);
+    padding: 24px 20px 20px;
   }
   .confirm-actions {
-    flex-direction: column;
+    gap: 8px;
+  }
+  .confirm-cancel,
+  .confirm-ok {
+    padding: 12px;
+    font-size: 15px;
   }
 }

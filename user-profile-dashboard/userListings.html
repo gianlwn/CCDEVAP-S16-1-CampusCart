@@ -168,6 +168,115 @@
     </main>
   </div>
 
+  <!-- Edit Listing Modal -->
+  <div id="edit-listing-modal" class="edit-listing-overlay" style="
+    display:none; position:fixed; inset:0; z-index:500;
+    background:rgba(0,0,0,0.45); backdrop-filter:blur(3px);
+    align-items:center; justify-content:center; padding:16px;
+  ">
+    <div class="edit-listing-card" style="
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:var(--radius); padding:28px 24px 22px;
+      width:min(420px, calc(100vw - 32px));
+      box-shadow:0 8px 40px rgba(0,0,0,0.18);
+      transition:background-color var(--transition);
+      max-height:calc(100vh - 40px); overflow-y:auto;
+    ">
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:20px;color:var(--text);">Edit Listing</h2>
+
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Item Name</p>
+      <input id="edit-inp-name" type="text" style="
+        width:100%;padding:9px 11px;border:1px solid var(--border);
+        border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+        font-size:13px;outline:none;font-family:inherit;
+        transition:all var(--transition);box-sizing:border-box;margin-bottom:14px;
+      " placeholder="Item name">
+
+      <div class="edit-listing-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Price (₱)</p>
+          <input id="edit-inp-price" type="number" min="0" style="
+            width:100%;padding:9px 11px;border:1px solid var(--border);
+            border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+            font-size:13px;outline:none;font-family:inherit;
+            transition:all var(--transition);box-sizing:border-box;
+          " placeholder="0">
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Quantity</p>
+          <input id="edit-inp-qty" type="number" min="1" style="
+            width:100%;padding:9px 11px;border:1px solid var(--border);
+            border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+            font-size:13px;outline:none;font-family:inherit;
+            transition:all var(--transition);box-sizing:border-box;
+          " placeholder="1">
+        </div>
+      </div>
+
+      <div class="edit-listing-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Category</p>
+          <select id="edit-inp-category" style="
+            width:100%;padding:9px 11px;border:1px solid var(--border);
+            border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+            font-size:13px;outline:none;font-family:inherit;
+            transition:all var(--transition);box-sizing:border-box;
+          ">
+            <option value="">Select…</option>
+            <option>Electronics</option>
+            <option>Books</option>
+            <option>Lab Tools</option>
+            <option>Clothing</option>
+            <option>Others</option>
+          </select>
+        </div>
+        <div>
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Condition</p>
+          <select id="edit-inp-condition" style="
+            width:100%;padding:9px 11px;border:1px solid var(--border);
+            border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+            font-size:13px;outline:none;font-family:inherit;
+            transition:all var(--transition);box-sizing:border-box;
+          ">
+            <option value="">Select…</option>
+            <option>New</option>
+            <option>Good</option>
+            <option>Used</option>
+          </select>
+        </div>
+      </div>
+
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Pickup Location</p>
+      <input id="edit-inp-location" type="text" style="
+        width:100%;padding:9px 11px;border:1px solid var(--border);
+        border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+        font-size:13px;outline:none;font-family:inherit;
+        transition:all var(--transition);box-sizing:border-box;margin-bottom:14px;
+      " placeholder="e.g. Henry Sy Hall Lobby, Gate 1">
+
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Description</p>
+      <textarea id="edit-inp-desc" rows="3" style="
+        width:100%;padding:9px 11px;border:1px solid var(--border);
+        border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+        font-size:13px;resize:none;outline:none;font-family:inherit;
+        transition:all var(--transition);box-sizing:border-box;margin-bottom:20px;
+      " maxlength="500" placeholder="Describe your item…"></textarea>
+
+      <div style="display:flex;gap:10px;">
+        <button onclick="saveEditListing()" style="
+          flex:1;padding:10px;background:var(--accent);color:#fff;
+          border:none;border-radius:var(--radius-sm);cursor:pointer;
+          font-weight:700;font-size:14px;transition:all var(--transition);
+        ">Save</button>
+        <button onclick="closeEditListing()" style="
+          flex:1;padding:10px;background:var(--accent-light);color:var(--accent);
+          border:none;border-radius:var(--radius-sm);cursor:pointer;
+          font-weight:600;font-size:14px;transition:all var(--transition);
+        ">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
@@ -286,9 +395,52 @@
       updatePreview();
     }
 
+    let editingListingId = null;
+
     function editListing(id) {
-      showToast('Edit', 'Edit mode coming soon!', 'info');
+      const item = allListings.find(l => l.id === id);
+      if (!item) return;
+      editingListingId = id;
+      document.getElementById('edit-inp-name').value = item.name || '';
+      document.getElementById('edit-inp-price').value = item.price || '';
+      document.getElementById('edit-inp-qty').value = item.quantity || 1;
+      document.getElementById('edit-inp-category').value = item.category || '';
+      document.getElementById('edit-inp-condition').value = item.condition || '';
+      document.getElementById('edit-inp-location').value = item.location || '';
+      document.getElementById('edit-inp-desc').value = item.description || '';
+      document.getElementById('edit-listing-modal').style.display = 'flex';
     }
+
+    function closeEditListing() {
+      document.getElementById('edit-listing-modal').style.display = 'none';
+      editingListingId = null;
+    }
+
+    function saveEditListing() {
+      const item = allListings.find(l => l.id === editingListingId);
+      if (!item) return;
+      const name = document.getElementById('edit-inp-name').value.trim();
+      const price = document.getElementById('edit-inp-price').value.trim();
+      if (!name || !price) {
+        showToast('Missing Fields', 'Name and Price are required.', 'warning');
+        return;
+      }
+      item.name = name;
+      item.price = parseFloat(price);
+      item.quantity = parseInt(document.getElementById('edit-inp-qty').value) || 1;
+      item.category = document.getElementById('edit-inp-category').value;
+      item.condition = document.getElementById('edit-inp-condition').value;
+      item.location = document.getElementById('edit-inp-location').value.trim();
+      item.description = document.getElementById('edit-inp-desc').value.trim();
+      renderListings();
+      buildReportsChart(allListings);
+      closeEditListing();
+      showToast('Updated', 'Listing has been updated.', 'success');
+    }
+
+    document.getElementById('edit-listing-modal').addEventListener('click', function (e) {
+      if (e.target === this) closeEditListing();
+    });
 
     function deleteListing(id) {
       showConfirm(
