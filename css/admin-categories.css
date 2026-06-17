@@ -31,12 +31,13 @@
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 7px;
   font-family: inherit;
   box-shadow: var(--shadow);
   transition: background var(--transition);
+  white-space: nowrap;
 }
 
 .add-category-btn:hover {
