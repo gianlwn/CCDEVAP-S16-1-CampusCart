@@ -24,6 +24,10 @@ const CONDITION_COLOR = {
 let allItems = [];
 let activeFilter = 'all';
 
+let _advConditions = [];
+let _advMinPrice   = 0;
+let _advMaxPrice   = Infinity;
+
 function renderGrid(items) {
   const grid = document.getElementById('item-grid');
   if (!grid) return;
@@ -85,7 +89,68 @@ function applyFilters() {
     i.name.toLowerCase().includes(q) ||
     (i.description?.toLowerCase() || '').includes(q)
   );
+  if (_advConditions.length) results = results.filter(i => _advConditions.includes(i.condition));
+  if (_advMinPrice > 0)      results = results.filter(i => i.price >= _advMinPrice);
+  if (_advMaxPrice < Infinity) results = results.filter(i => i.price <= _advMaxPrice);
   renderGrid(results);
+}
+
+function openFiltersPanel() {
+  const existing = document.getElementById('hp-adv-filters');
+  if (existing) { existing.remove(); return; }
+
+  const panel = document.createElement('div');
+  panel.id = 'hp-adv-filters';
+  panel.className = 'hp-adv-filters';
+
+  const condOpts = ['New', 'Like new', 'Good', 'Used'];
+  const checks = condOpts.map(c =>
+    `<label class="hp-afp-check"><input type="checkbox" value="${c}" ${_advConditions.includes(c) ? 'checked' : ''}> ${c}</label>`
+  ).join('');
+
+  panel.innerHTML = `
+    <div class="hp-afp-header">
+      <span class="hp-afp-title">Advanced Filters</span>
+      <button class="hp-afp-close" onclick="document.getElementById('hp-adv-filters').remove()">✕</button>
+    </div>
+    <div class="hp-afp-section">
+      <p class="hp-afp-label">Condition</p>
+      <div class="hp-afp-checks">${checks}</div>
+    </div>
+    <div class="hp-afp-section">
+      <p class="hp-afp-label">Price Range (₱)</p>
+      <div class="hp-afp-price-row">
+        <input type="number" id="afp-min" placeholder="Min" min="0" value="${_advMinPrice || ''}">
+        <span>–</span>
+        <input type="number" id="afp-max" placeholder="Max" min="0" value="${_advMaxPrice === Infinity ? '' : _advMaxPrice}">
+      </div>
+    </div>
+    <div class="hp-afp-footer">
+      <button class="hp-afp-reset" onclick="resetAdvFilters()">Reset</button>
+      <button class="hp-afp-apply" onclick="applyAdvFilters()">Apply</button>
+    </div>
+  `;
+
+  document.querySelector('.hp-filters').insertAdjacentElement('afterend', panel);
+}
+
+function applyAdvFilters() {
+  _advConditions = [...document.querySelectorAll('#hp-adv-filters input[type=checkbox]:checked')].map(c => c.value);
+  _advMinPrice   = parseFloat(document.getElementById('afp-min')?.value) || 0;
+  _advMaxPrice   = parseFloat(document.getElementById('afp-max')?.value) || Infinity;
+  applyFilters();
+  document.getElementById('hp-adv-filters')?.remove();
+}
+
+function resetAdvFilters() {
+  _advConditions = [];
+  _advMinPrice   = 0;
+  _advMaxPrice   = Infinity;
+  document.querySelectorAll('#hp-adv-filters input[type=checkbox]').forEach(c => c.checked = false);
+  const minEl = document.getElementById('afp-min');
+  const maxEl = document.getElementById('afp-max');
+  if (minEl) minEl.value = '';
+  if (maxEl) maxEl.value = '';
 }
 
 function viewItem(id) {

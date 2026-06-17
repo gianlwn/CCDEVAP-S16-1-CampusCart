@@ -35,6 +35,20 @@ const ICONS = {
 };
 
 function loadTopNav() {
+  const notifItems = [
+    { icon: ICONS.check, text: 'Listing <b>Casio FX-991EX</b> was approved.',   time: 'Just now',   unread: true },
+    { icon: ICONS.alert, text: 'New report filed by <b>Andie Kirsten Woo</b>.', time: '5 min ago',  unread: true },
+    { icon: ICONS.users, text: 'New user <b>Christine Cote</b> registered.',    time: '1 hour ago', unread: true },
+  ].map(n => `
+    <div class="notif-item${n.unread ? ' unread' : ''}">
+      <span class="notif-icon">${n.icon}</span>
+      <div class="notif-content">
+        <p class="notif-text">${n.text}</p>
+        <span class="notif-time">${n.time}</span>
+      </div>
+    </div>
+  `).join('');
+
   const html = `
     <nav class="top-nav">
       <div class="nav-brand">
@@ -43,9 +57,18 @@ function loadTopNav() {
       </div>
       <div class="nav-icons">
         <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">${ICONS.moon}</button>
-        <button id="btn-notifications" title="Notifications" style="position:relative;">
-          ${ICONS.bell}<span class="nav-badge">3</span>
-        </button>
+        <div class="notif-wrapper">
+          <button id="btn-notifications" title="Notifications" onclick="toggleNotifs(event)">
+            ${ICONS.bell}<span class="nav-badge" id="notif-badge">3</span>
+          </button>
+          <div id="notif-panel" class="notif-panel">
+            <div class="notif-panel-header">
+              <span>Notifications</span>
+              <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark all read</button>
+            </div>
+            <div class="notif-list">${notifItems}</div>
+          </div>
+        </div>
         <button onclick="window.location.href='../homepage/cart.html'" title="Cart">${ICONS.cart}</button>
         <button onclick="window.location.href='../homepage/homepage.html'" title="Home">${ICONS.home}</button>
         <button onclick="window.location.href='../user-profile-dashboard/dashboard.html'" title="Profile">${ICONS.user}</button>
@@ -53,6 +76,24 @@ function loadTopNav() {
     </nav>
   `;
   document.getElementById('top-nav').innerHTML = html;
+}
+
+function toggleNotifs(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    const close = () => { panel.classList.remove('open'); document.removeEventListener('click', close); };
+    setTimeout(() => document.addEventListener('click', close), 0);
+  }
+}
+
+function markAllNotifsRead() {
+  document.querySelectorAll('.notif-item.unread').forEach(el => el.classList.remove('unread'));
+  const badge = document.getElementById('notif-badge');
+  if (badge) badge.style.display = 'none';
 }
 
 function loadSideNav() {
