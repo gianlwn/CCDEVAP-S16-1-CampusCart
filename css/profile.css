@@ -280,9 +280,32 @@
 }
 
 
+.mobile-account-actions {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .profile-page-layout {
     grid-template-columns: 1fr;
+  }
+
+  .mobile-account-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mobile-account-actions .admin-dash-btn,
+  .mobile-account-actions .signout-btn {
+    flex: 1;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 10px 12px;
   }
   .profile-summary-card {
     flex-direction: row;

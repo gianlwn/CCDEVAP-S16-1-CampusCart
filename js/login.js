@@ -1,5 +1,3 @@
-
-
 let codeSent    = false;  
 let recCodeSent = false;  
 

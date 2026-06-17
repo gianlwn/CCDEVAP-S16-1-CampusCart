@@ -1,5 +1,3 @@
-
-
 function storeTheme() {
   const saved = localStorage.getItem('campuscart-theme');
   if (saved === 'darkMode') {
