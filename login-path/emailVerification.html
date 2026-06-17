@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
@@ -13,12 +13,10 @@
 
 <body>
 
-  
   <div class="auth-page">
-    
+
     <div class="auth-card">
 
-      
       <div class="auth-logo">
         <div class="auth-logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -29,7 +27,6 @@
         <p class="auth-title">Verify Your Email</p>
       </div>
 
-      
       <div class="form-group">
         <label class="form-label">School Email</label>
         <input type="email" class="form-input" id="vfy-email" placeholder="account@university.edu.ph"
@@ -39,16 +36,14 @@
       <button type="button" class="auth-btn" id="btn-send" onclick="handleSendCode()"
         style="background:var(--accent);margin-bottom:16px;">SEND VERIFICATION CODE</button>
 
-      
       <div class="form-group">
         <label class="form-label">Verification Code</label>
-        <input type="text" class="form-input" id="vfy-code" placeholder="••••••" maxlength="6"
+        <input type="text" class="form-input" id="vfy-code" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢" maxlength="6"
           autocomplete="one-time-code">
       </div>
 
       <button class="auth-btn" onclick="handleConfirm()">CONFIRM</button>
 
-      
       <div class="auth-footer">
         <button class="auth-link" onclick="window.location.href='../login-path/login.html'">back to login</button>
       </div>
@@ -56,7 +51,6 @@
     </div>
   </div>
 
-  
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/login.js"></script>

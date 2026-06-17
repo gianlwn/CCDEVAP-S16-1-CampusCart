@@ -1,7 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
-
 
 <head>
   <meta charset="UTF-8">
@@ -16,33 +15,30 @@
 
 <body>
 
-  
   <div id="top-nav"></div>
 
   <div class="page-wrapper">
-    
+
     <div id="side-nav"></div>
 
     <main class="main-content">
       <h1 class="page-title">Ratings</h1>
 
-      
       <div class="content-grid">
 
         <div>
           <p class="section-title">Reviews You've Given</p>
           <div class="item-list" id="ratings-list">
-            <p style="color:var(--text-muted);padding:16px 0;">Loading…</p>
+            <p style="color:var(--text-muted);padding:16px 0;">Loadingâ€¦</p>
           </div>
         </div>
 
-        
         <div style="display:flex;flex-direction:column;gap:16px;">
 
           <div class="side-panel-card">
             <h3>Average Rating Given</h3>
             <div class="avg-rating" id="avg-rating-display">
-              <div class="big-number">–</div>
+              <div class="big-number">â€“</div>
             </div>
           </div>
 
@@ -58,7 +54,6 @@
     </main>
   </div>
 
-  
   <div id="edit-modal" style="
     display:none; position:fixed; inset:0; z-index:500;
     background:rgba(0,0,0,0.45); align-items:center; justify-content:center;
@@ -76,11 +71,11 @@
         Your Rating
       </p>
       <div id="modal-star-picker" style="display:flex;gap:6px;margin-bottom:14px;font-size:28px;cursor:pointer;">
-        <span class="modal-star" data-val="1">★</span>
-        <span class="modal-star" data-val="2">★</span>
-        <span class="modal-star" data-val="3">★</span>
-        <span class="modal-star" data-val="4">★</span>
-        <span class="modal-star" data-val="5">★</span>
+        <span class="modal-star" data-val="1">â˜…</span>
+        <span class="modal-star" data-val="2">â˜…</span>
+        <span class="modal-star" data-val="3">â˜…</span>
+        <span class="modal-star" data-val="4">â˜…</span>
+        <span class="modal-star" data-val="5">â˜…</span>
       </div>
 
       <p
@@ -109,7 +104,6 @@
     </div>
   </div>
 
-  
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>

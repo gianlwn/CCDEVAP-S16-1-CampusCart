@@ -1,6 +1,4 @@
-
-
-.add-listing-card {
+﻿.add-listing-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);

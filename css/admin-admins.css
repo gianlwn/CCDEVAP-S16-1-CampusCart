@@ -1,5 +1,4 @@
 
-
 .admins-counter-text {
   font-size: 13px;
   color: var(--text-muted);
@@ -111,3 +110,8 @@
   align-items: center;
 }
 
+@media (max-width: 850px) {
+  .admin-status-badge-zone {
+    flex: none;
+  }
+}

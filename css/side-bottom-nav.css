@@ -1,7 +1,4 @@
-
-
-
-.side-nav {
+﻿.side-nav {
   display: flex;
   flex-direction: column;
   justify-content: space-between;

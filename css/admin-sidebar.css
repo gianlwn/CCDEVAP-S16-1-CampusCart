@@ -1,6 +1,4 @@
-
-
-#admin-side-nav {
+﻿#admin-side-nav {
   width: 200px;
   flex-shrink: 0;
   background: var(--card-bg);

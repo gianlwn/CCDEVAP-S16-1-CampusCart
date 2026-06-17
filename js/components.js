@@ -145,96 +145,27 @@ function loadSideNav() {
   document.getElementById('side-nav').innerHTML = html;
 }
 
-function loadAdminSideNav() {
+function loadBottomNav() {
   const cur = window.location.pathname;
   const a = (p) => cur.includes(p) ? 'active' : '';
 
-  const html = `
-    <aside class="side-nav">
-      <ul>
-        <li class="${a('adminDashboard')}">
-          <a href="../admin-dashboard/adminDashboard.html">
-            <span class="nav-item-icon">${ICONS.chart}</span>Admin Panel
-          </a>
-        </li>
-        <li class="${a('listingApproval')}">
-          <a href="../admin-dashboard/listingApproval.html">
-            <span class="nav-item-icon">${ICONS.check}</span>Listings Approval
-          </a>
-        </li>
-        <li class="${a('reports')}">
-          <a href="../admin-dashboard/reports.html">
-            <span class="nav-item-icon">${ICONS.alert}</span>Reports
-          </a>
-        </li>
-        <li class="${a('users')}">
-          <a href="../admin-dashboard/users.html">
-            <span class="nav-item-icon">${ICONS.users}</span>Users
-          </a>
-        </li>
-        <li class="${a('categories')}">
-          <a href="../admin-dashboard/categories.html">
-            <span class="nav-item-icon">${ICONS.categories}</span>Categories
-          </a>
-        </li>
-        <li class="${a('admins')}">
-          <a href="../admin-dashboard/admins.html">
-            <span class="nav-item-icon">${ICONS.user}</span>Admins
-          </a>
-        </li>
-      </ul>
-      <button class="signout-btn" onclick="window.location.href='../login-path/login.html'">
-        ${ICONS.logout} Sign Out
-      </button>
-    </aside>
+  const links = `
+    <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard.html')}">
+      <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
+    </a>
+    <a href="../user-profile-dashboard/userListings.html" class="${a('userListings')}">
+      <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
+    </a>
+    <a href="../user-profile-dashboard/claimed.html" class="${a('claimed')}">
+      <span class="nav-icon">${ICONS.bag}</span><span>Claimed</span>
+    </a>
+    <a href="../user-profile-dashboard/ratings.html" class="${a('ratings')}">
+      <span class="nav-icon">${ICONS.star}</span><span>Ratings</span>
+    </a>
+    <a href="../user-profile-dashboard/userProfile.html" class="${a('userProfile')}">
+      <span class="nav-icon">${ICONS.user}</span><span>Profile</span>
+    </a>
   `;
-  document.getElementById('side-nav').innerHTML = html;
-}
-
-function loadBottomNav(type) {
-  const cur = window.location.pathname;
-  const a = (p) => cur.includes(p) ? 'active' : '';
-  let links = '';
-
-  if (type === 'admin') {
-    
-    links = `
-      <a href="../admin-dashboard/adminDashboard.html" class="${a('adminDashboard')}">
-        <span class="nav-icon">${ICONS.chart}</span><span>Panel</span>
-      </a>
-      <a href="../admin-dashboard/listingApproval.html" class="${a('listingApproval')}">
-        <span class="nav-icon">${ICONS.check}</span><span>Approval</span>
-      </a>
-      <a href="../admin-dashboard/reports.html" class="${a('reports')}">
-        <span class="nav-icon">${ICONS.alert}</span><span>Reports</span>
-      </a>
-      <a href="../admin-dashboard/users.html" class="${a('users')}">
-        <span class="nav-icon">${ICONS.users}</span><span>Users</span>
-      </a>
-      <a href="../admin-dashboard/categories.html" class="${a('categories')}">
-        <span class="nav-icon">${ICONS.categories}</span><span>Categories</span>
-      </a>
-    `;
-  } else {
-    
-    links = `
-      <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard.html')}">
-        <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
-      </a>
-      <a href="../user-profile-dashboard/userListings.html" class="${a('userListings')}">
-        <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
-      </a>
-      <a href="../user-profile-dashboard/claimed.html" class="${a('claimed')}">
-        <span class="nav-icon">${ICONS.bag}</span><span>Claimed</span>
-      </a>
-      <a href="../user-profile-dashboard/ratings.html" class="${a('ratings')}">
-        <span class="nav-icon">${ICONS.star}</span><span>Ratings</span>
-      </a>
-      <a href="../user-profile-dashboard/userProfile.html" class="${a('userProfile')}">
-        <span class="nav-icon">${ICONS.user}</span><span>Profile</span>
-      </a>
-    `;
-  }
 
   const nav = document.createElement('nav');
   nav.className = 'bottom-nav';

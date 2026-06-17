@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
@@ -13,12 +13,10 @@
 
 <body>
 
-  
   <div class="auth-page">
-    
+
     <div class="auth-card" style="width:min(520px,100%);">
 
-      
       <div class="auth-logo">
         <div class="auth-logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"
             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -29,39 +27,33 @@
         <p class="auth-title">Create Your Account</p>
       </div>
 
-      
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
 
-        
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">Full Name</label>
           <input type="text" class="form-input" id="reg-name" placeholder="Juan Dela Cruz" autocomplete="name">
         </div>
 
-        
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">School Email</label>
           <input type="email" class="form-input" id="reg-email" placeholder="account@university.edu.ph"
             autocomplete="email" readonly style="opacity: 0.7; cursor: not-allowed;">
         </div>
 
-        
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="reg-pw" placeholder="••••••••" autocomplete="new-password">
+          <input type="password" class="form-input" id="reg-pw" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="new-password">
         </div>
 
-        
         <div class="form-group">
           <label class="form-label">Confirm Password</label>
-          <input type="password" class="form-input" id="reg-pw2" placeholder="••••••••" autocomplete="new-password">
+          <input type="password" class="form-input" id="reg-pw2" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="new-password">
         </div>
 
-        
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">School / University</label>
           <select class="form-select" id="reg-school">
-            <option value="">Select…</option>
+            <option value="">Selectâ€¦</option>
             <option>De La Salle University</option>
             <option>University of Santo Tomas</option>
             <option>Ateneo de Manila University</option>
@@ -71,13 +63,11 @@
           </select>
         </div>
 
-        
         <div class="form-group">
           <label class="form-label">Course Code</label>
           <input type="text" class="form-input" id="reg-course" placeholder="e.g. BSECE">
         </div>
 
-        
         <div class="form-group">
           <label class="form-label">Phone</label>
           <input type="tel" class="form-input" id="reg-phone" placeholder="0000 000 0000">
@@ -85,10 +75,8 @@
 
       </div>
 
-      
       <button class="auth-btn" onclick="handleRegister()">CREATE ACCOUNT</button>
 
-      
       <div class="auth-footer">
         <button class="auth-link" onclick="window.location.href='../login-path/login.html'">already have an account?
           login here!</button>
@@ -97,7 +85,6 @@
     </div>
   </div>
 
-  
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/login.js"></script>

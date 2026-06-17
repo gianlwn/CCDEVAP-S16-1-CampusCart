@@ -1,5 +1,3 @@
-
-
 .dashboard-grid-2x2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -44,15 +42,8 @@
   height: 240px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 950px) {
   .dashboard-grid-2x2 {
     grid-template-columns: 1fr;
   }
-  .chart-container {
-    height: 180px;
-  }
-  .analytics-card {
-    padding: 16px;
-  }
 }
-
