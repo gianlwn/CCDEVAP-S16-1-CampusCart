@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (regEmailInput) {
     const verifiedEmail = localStorage.getItem('verified-signup-email');
     if (verifiedEmail) {
-       regEmailInput.value = verifiedEmail;
+      regEmailInput.value = verifiedEmail;
     }
   }
 });
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //login
 function handleLogin() {
   const email = document.getElementById('login-email').value.trim();
-  const pw    = document.getElementById('login-pw').value;
+  const pw = document.getElementById('login-pw').value;
 
   if (!email || !pw) {
     showToast('Missing Fields', 'Please enter your email and password.', 'warning');
@@ -35,7 +35,7 @@ function handleLogin() {
 
   setTimeout(() => {
     localStorage.setItem("session_email", email);
-    
+
     //admin check
     const lowerEmail = email.toLowerCase();
     if (
@@ -101,7 +101,7 @@ function handleConfirm(event) {
 
   localStorage.setItem('verified-signup-email', email);
   showToast('Verified!', 'Email confirmed. Redirecting to registration…', 'success', 1500);
-  
+
   setTimeout(() => {
     window.location.href = '../login-path/register.html';
   }, 1200);
@@ -111,13 +111,13 @@ function handleConfirm(event) {
 function handleRegister(event) {
   if (event) event.preventDefault();
 
-  const name   = document.getElementById('reg-name').value.trim();
-  const email  = document.getElementById('reg-email').value.trim();
-  const pw     = document.getElementById('reg-pw').value;
-  const pw2    = document.getElementById('reg-pw2').value;
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw = document.getElementById('reg-pw').value;
+  const pw2 = document.getElementById('reg-pw2').value;
   const school = document.getElementById('reg-school').value;
   const course = document.getElementById('reg-course').value.trim();
-  const phone  = document.getElementById('reg-phone').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
 
   if (!name || !email || !pw || !school || !course || !phone) {
     showToast('Missing Fields', 'Please fill in all required fields.', 'warning');

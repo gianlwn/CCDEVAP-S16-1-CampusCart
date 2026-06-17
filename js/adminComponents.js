@@ -18,23 +18,20 @@ function closeModal() {
 }
 
 const MS = {
-    label:    'display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:4px;',
-    input:    'display:block;width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;',
-    select:   'display:block;width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;cursor:pointer;',
-    primary:  'padding:8px 18px;border:none;background:var(--accent);border-radius:999px;cursor:pointer;color:#fff;font-size:13px;font-weight:700;font-family:inherit;',
-    cancel:   'padding:8px 18px;border:1px solid var(--border);background:transparent;border-radius:999px;cursor:pointer;color:var(--text);font-size:13px;font-family:inherit;',
-    footer:   'display:flex;justify-content:flex-end;gap:8px;margin-top:20px;',
-    title:    'margin:0 0 16px;font-size:15px;font-weight:700;color:var(--text);',
-    body:     'display:flex;flex-direction:column;gap:14px;',
-    row:      'display:flex;flex-direction:column;gap:4px;',
+    label: 'display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.5px;margin-bottom:4px;',
+    input: 'display:block;width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;',
+    select: 'display:block;width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;cursor:pointer;',
+    primary: 'padding:8px 18px;border:none;background:var(--accent);border-radius:999px;cursor:pointer;color:#fff;font-size:13px;font-weight:700;font-family:inherit;',
+    cancel: 'padding:8px 18px;border:1px solid var(--border);background:transparent;border-radius:999px;cursor:pointer;color:var(--text);font-size:13px;font-family:inherit;',
+    footer: 'display:flex;justify-content:flex-end;gap:8px;margin-top:20px;',
+    title: 'margin:0 0 16px;font-size:15px;font-weight:700;color:var(--text);',
+    body: 'display:flex;flex-direction:column;gap:14px;',
+    row: 'display:flex;flex-direction:column;gap:4px;',
 };
 
-/* ─────────────────────────────────────────────
-   SEARCH HELPERS
-───────────────────────────────────────────── */
 function initSearch(cardSelector) {
     const input = document.querySelector('.search-input-field');
-    const btn   = document.querySelector('.search-glass-btn');
+    const btn = document.querySelector('.search-glass-btn');
     if (!input) return;
 
     const doFilter = () => {
@@ -50,33 +47,30 @@ function initSearch(cardSelector) {
 }
 
 function applyUserFilters() {
-    const q         = (document.querySelector('.search-input-field')?.value || '').toLowerCase().trim();
+    const q = (document.querySelector('.search-input-field')?.value || '').toLowerCase().trim();
     const statusVal = (document.querySelector('.status-filter-dropdown')?.value || 'all').toLowerCase();
 
     document.querySelectorAll('.user-identity-row-card').forEach(card => {
-        const textMatch   = !q || card.textContent.toLowerCase().includes(q);
-        const badge       = card.querySelector('.badge-pill');
-        const status      = badge?.textContent.trim().toLowerCase() || '';
+        const textMatch = !q || card.textContent.toLowerCase().includes(q);
+        const badge = card.querySelector('.badge-pill');
+        const status = badge?.textContent.trim().toLowerCase() || '';
         const statusMatch = statusVal === 'all' || status === statusVal;
         card.style.display = (textMatch && statusMatch) ? '' : 'none';
     });
 }
 
 function initUserSearch() {
-    const input  = document.querySelector('.search-input-field');
-    const btn    = document.querySelector('.search-glass-btn');
+    const input = document.querySelector('.search-input-field');
+    const btn = document.querySelector('.search-glass-btn');
     const select = document.querySelector('.status-filter-dropdown');
     if (input) {
         input.addEventListener('input', applyUserFilters);
         input.addEventListener('keydown', e => { if (e.key === 'Enter') applyUserFilters(); });
     }
-    if (btn)    btn.addEventListener('click', applyUserFilters);
+    if (btn) btn.addEventListener('click', applyUserFilters);
     if (select) select.addEventListener('change', applyUserFilters);
 }
 
-/* ─────────────────────────────────────────────
-   SIDEBAR
-───────────────────────────────────────────── */
 function loadAdminSideNav(page) {
     const html = `
     <div class="nav-links">
@@ -99,26 +93,23 @@ function loadAdminSideNav(page) {
     if (activeLink) activeLink.classList.add("active");
 }
 
-/* ─────────────────────────────────────────────
-   ADMINS
-───────────────────────────────────────────── */
 function displayAdmins() {
     const container = document.getElementById("admins-stack-list");
     if (!container) return;
 
     const adminsArray = [
         { username: "Mikyla Kirsten Aguirre", email: "mikyla_kirsten_aguirre@dlsu.edu.ph", status: "active" },
-        { username: "Giancarlo Lawan",         email: "giancarlo_lawan@dlsu.edu.ph",         status: "active" },
-        { username: "Bernard Florian Llagas",  email: "bernard_florian_llagas@dlsu.edu.ph",  status: "inactive" },
-        { username: "Sky Hannah Parado",        email: "sky_parado@dlsu.edu.ph",               status: "active" },
-        { username: "Camille Erika Sarabia",    email: "camille_erika_sarabia@dlsu.edu.ph",   status: "active" },
+        { username: "Giancarlo Lawan", email: "giancarlo_lawan@dlsu.edu.ph", status: "active" },
+        { username: "Bernard Florian Llagas", email: "bernard_florian_llagas@dlsu.edu.ph", status: "inactive" },
+        { username: "Sky Hannah Parado", email: "sky_parado@dlsu.edu.ph", status: "active" },
+        { username: "Camille Erika Sarabia", email: "camille_erika_sarabia@dlsu.edu.ph", status: "active" },
     ];
 
     if (!adminsArray.length) {
         container.innerHTML = `<div class="empty-msg">No administrators found. Click "Add Administrator" to create one.</div>`;
     } else {
         container.innerHTML = adminsArray.map(admin => {
-            const isActive   = admin.status?.toLowerCase() === 'active';
+            const isActive = admin.status?.toLowerCase() === 'active';
             const badgeClass = isActive ? 'pill-status-active' : 'pill-status-inactive';
             const statusText = isActive ? 'Active' : 'Inactive';
             return `
@@ -150,7 +141,7 @@ function displayAdmins() {
 }
 
 function handleAdmin(action, username, email, status, btn) {
-    const card  = btn.closest('.admin-identity-row-card');
+    const card = btn.closest('.admin-identity-row-card');
     const badge = card?.querySelector('.badge-pill');
 
     if (action === 'edit') {
@@ -187,7 +178,7 @@ function handleAdmin(action, username, email, status, btn) {
 }
 
 function saveAdminEdit() {
-    const name  = document.getElementById('modal-admin-name')?.value.trim();
+    const name = document.getElementById('modal-admin-name')?.value.trim();
     const email = document.getElementById('modal-admin-email')?.value.trim();
     if (!name || !email) { showToast('Error', 'Name and email cannot be empty.', 'error'); return; }
     if (_editTargetCard) {
@@ -198,27 +189,24 @@ function saveAdminEdit() {
     showToast('Saved', 'Administrator updated successfully.', 'success');
 }
 
-/* ─────────────────────────────────────────────
-   USERS
-───────────────────────────────────────────── */
 function displayUsers() {
     const container = document.getElementById("users-stack-list");
     if (!container) return;
 
     const usersArray = [
-        { username: "Andie Kirsten Woo",   email: "andie_woo@dlsu.edu.ph",    dateJoined: "Jun 12, 2026", status: "active" },
+        { username: "Andie Kirsten Woo", email: "andie_woo@dlsu.edu.ph", dateJoined: "Jun 12, 2026", status: "active" },
         { username: "Alexa Nicole Pleyto", email: "alexa_pleyto@dlsu.edu.ph", dateJoined: "May 28, 2026", status: "suspended" },
-        { username: "Christine Cote",      email: "tintin_cote@dlsu.edu.ph",  dateJoined: "Apr 04, 2026", status: "banned" },
+        { username: "Christine Cote", email: "tintin_cote@dlsu.edu.ph", dateJoined: "Apr 04, 2026", status: "banned" },
     ];
 
     if (!usersArray.length) {
         container.innerHTML = `<div class="empty-msg">No users found.</div>`;
     } else {
         container.innerHTML = usersArray.map(user => {
-            const isActive    = user.status?.toLowerCase() === 'active';
+            const isActive = user.status?.toLowerCase() === 'active';
             const isSuspended = user.status?.toLowerCase() === 'suspended';
-            const pillClass   = isActive ? 'pill-status-active' : (isSuspended ? 'pill-status-suspended' : 'pill-status-banned');
-            const statusText  = isActive ? 'Active' : (isSuspended ? 'Suspended' : 'Banned');
+            const pillClass = isActive ? 'pill-status-active' : (isSuspended ? 'pill-status-suspended' : 'pill-status-banned');
+            const statusText = isActive ? 'Active' : (isSuspended ? 'Suspended' : 'Banned');
             return `
                 <div class="user-identity-row-card responsive-row-card">
                     <div class="avatar-wireframe-box"></div>
@@ -257,7 +245,7 @@ function displayUsers() {
 }
 
 function handleUser(action, username, email, dateJoined, status, btn) {
-    const card  = btn.closest('.user-identity-row-card');
+    const card = btn.closest('.user-identity-row-card');
     const badge = card?.querySelector('.badge-pill');
 
     if (action === 'view') {
@@ -296,9 +284,9 @@ function handleUser(action, username, email, dateJoined, status, btn) {
                 <div style="${MS.row}">
                     <label style="${MS.label}">Account Status</label>
                     <select id="modal-user-status" style="${MS.select}">
-                        <option value="active"    ${currentStatus === 'active'    ? 'selected' : ''}>Active</option>
+                        <option value="active"    ${currentStatus === 'active' ? 'selected' : ''}>Active</option>
                         <option value="suspended" ${currentStatus === 'suspended' ? 'selected' : ''}>Suspended</option>
-                        <option value="banned"    ${currentStatus === 'banned'    ? 'selected' : ''}>Banned</option>
+                        <option value="banned"    ${currentStatus === 'banned' ? 'selected' : ''}>Banned</option>
                     </select>
                 </div>
             </div>
@@ -326,29 +314,26 @@ function saveUserEdit(username) {
     const select = document.getElementById('modal-user-status');
     if (!select || !_editTargetCard) return;
     const newStatus = select.value;
-    const badge     = _editTargetCard.querySelector('.badge-pill');
+    const badge = _editTargetCard.querySelector('.badge-pill');
     if (badge) {
         const pillMap = { active: 'pill-status-active', suspended: 'pill-status-suspended', banned: 'pill-status-banned' };
         const labelMap = { active: 'Active', suspended: 'Suspended', banned: 'Banned' };
-        badge.className   = `badge-pill ${pillMap[newStatus]}`;
+        badge.className = `badge-pill ${pillMap[newStatus]}`;
         badge.textContent = labelMap[newStatus];
     }
     closeModal();
     showToast('Updated', `${username}'s status has been updated.`, 'success');
 }
 
-/* ─────────────────────────────────────────────
-   LISTING APPROVALS
-───────────────────────────────────────────── */
 function displayListingApprovals() {
     const container = document.getElementById("approval-grid");
     if (!container) return;
 
     const listingApprovalsArray = [
-        { productName: "Test Product", listingId: "LST-1001", price: 250,    seller: "Kathryn Bernardo" },
-        { productName: "Test Product", listingId: "LST-1002", price: 950,    seller: "Kimi Antonelli" },
+        { productName: "Test Product", listingId: "LST-1001", price: 250, seller: "Kathryn Bernardo" },
+        { productName: "Test Product", listingId: "LST-1002", price: 950, seller: "Kimi Antonelli" },
         { productName: "Test Product", listingId: "LST-1003", price: 500.50, seller: "Garrett Graham" },
-        { productName: "Test Product", listingId: "LST-1004", price: 310,    seller: "Jeron Teng" },
+        { productName: "Test Product", listingId: "LST-1004", price: 310, seller: "Jeron Teng" },
     ];
 
     if (!listingApprovalsArray.length) {
@@ -375,18 +360,15 @@ function displayListingApprovals() {
     }
 }
 
-/* ─────────────────────────────────────────────
-   CATEGORIES
-───────────────────────────────────────────── */
 function displayCategories() {
     const container = document.getElementById("category-grid");
     if (!container) return;
 
     const categoriesArray = [
-        { categoryName: "Electronics",     categoryId: "CTG-1001" },
-        { categoryName: "Clothing",        categoryId: "CTG-1002" },
+        { categoryName: "Electronics", categoryId: "CTG-1001" },
+        { categoryName: "Clothing", categoryId: "CTG-1002" },
         { categoryName: "School Supplies", categoryId: "CTG-1003" },
-        { categoryName: "Books",           categoryId: "CTG-1004" },
+        { categoryName: "Books", categoryId: "CTG-1004" },
     ];
 
     if (!categoriesArray.length) {
@@ -412,17 +394,14 @@ function displayCategories() {
     initSearch('.category-card');
 }
 
-/* ─────────────────────────────────────────────
-   REPORTS
-───────────────────────────────────────────── */
 function displayReports() {
     const container = document.getElementById("reports-stack-list");
     if (!container) return;
 
     const reportsArray = [
-        { reportType: "User Report",    reportId: "RPT-3012", reporter: "Andie Kirsten Woo",   status: "Pending Review", reason: "Spam account repeatedly posting misleading listings.",         subject: "User: @marie_santos",  date: "Jun 14, 2026" },
+        { reportType: "User Report", reportId: "RPT-3012", reporter: "Andie Kirsten Woo", status: "Pending Review", reason: "Spam account repeatedly posting misleading listings.", subject: "User: @marie_santos", date: "Jun 14, 2026" },
         { reportType: "Listing Report", reportId: "RPT-3013", reporter: "Alexa Nicole Pleyto", status: "Pending Review", reason: "Possible scam listing requesting payment outside the website.", subject: "Listing: Casio FX-991EX", date: "Jun 15, 2026" },
-        { reportType: "User Report",    reportId: "RPT-3014", reporter: "Christine Cote",       status: "Pending Review", reason: "Hate speech directed toward another user in listing comments.", subject: "User: @jay_ramos",      date: "Jun 15, 2026" },
+        { reportType: "User Report", reportId: "RPT-3014", reporter: "Christine Cote", status: "Pending Review", reason: "Hate speech directed toward another user in listing comments.", subject: "User: @jay_ramos", date: "Jun 15, 2026" },
     ];
 
     if (!reportsArray.length) {
@@ -462,9 +441,6 @@ function displayReports() {
     }
 }
 
-/* ─────────────────────────────────────────────
-   ACTION HANDLERS
-───────────────────────────────────────────── */
 function handleApproval(action, listingId, btn) {
     const card = btn.closest('.listing-card');
     if (action === 'approve') {
@@ -488,7 +464,7 @@ function handleReportAction(action, reportId, btn) {
 }
 
 function handleCategory(action, categoryId, btn) {
-    const card   = btn.closest('.category-card');
+    const card = btn.closest('.category-card');
     const nameEl = card?.querySelector('h2');
 
     if (action === 'edit') {
