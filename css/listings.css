@@ -260,9 +260,6 @@
 }
 
 /* LIVE PREVIEW CARD */
-.preview-section {
-}
-
 .preview-card {
   background: var(--card-bg);
   border: 1px solid var(--border);

@@ -314,25 +314,6 @@ img {
   color: var(--danger-text);
 }
 
-.btn-msg {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px 7px;
-  border-radius: var(--radius-xs);
-  color: var(--text-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition);
-  flex-shrink: 0;
-}
-.btn-msg:hover {
-  background: var(--accent-light);
-  color: var(--accent);
-  transform: scale(1.1);
-}
-
 .empty-state {
   text-align: center;
   padding: 48px 20px;
@@ -583,39 +564,6 @@ img {
     width: 16px;
     height: 16px;
   }
-}
-
-.stat-boxes .stat-box:nth-child(1)::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(122, 171, 138, 0.92),
-    transparent
-  );
-}
-.stat-boxes .stat-box:nth-child(2)::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(139, 99, 68, 0.88),
-    transparent
-  );
-}
-.stat-boxes .stat-box:nth-child(3)::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(158, 144, 132, 0.85),
-    transparent
-  );
-}
-.stat-boxes .stat-box:nth-child(4)::before {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(122, 171, 215, 0.88),
-    transparent
-  );
 }
 
 .side-panel-card {

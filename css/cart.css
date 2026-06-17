@@ -101,30 +101,6 @@
   color: var(--danger-text);
 }
 
-.btn-msg {
-  background: none;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  color: var(--text-muted);
-  border-radius: var(--radius-xs);
-  padding: 6px 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition);
-  flex-shrink: 0;
-}
-.btn-msg svg {
-  width: 14px;
-  height: 14px;
-  pointer-events: none;
-}
-.btn-msg:hover {
-  background: var(--accent-light);
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
 .cart-summary-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
