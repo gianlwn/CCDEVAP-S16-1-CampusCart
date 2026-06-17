@@ -188,43 +188,52 @@
 @media (max-width: 768px) {
   .report-row-card {
     flex-wrap: wrap;
-    padding: 14px 16px;
-    gap: 10px;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+  .avatar-wireframe-box {
+    display: none;
   }
   .report-text-details {
-    width: auto;
-    flex: 1;
+    flex: 0 0 100%;
     min-width: 0;
   }
   .report-reporter {
     display: none;
   }
   .report-status-zone {
+    flex-shrink: 0;
     min-width: 0;
     justify-content: flex-start;
   }
   .report-meta-col {
+    flex: 1;
     min-width: 0;
     padding: 0;
     flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px 16px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+  .report-meta-col .info-label {
+    display: none;
   }
   .report-reason-section {
-    width: 100%;
+    flex: 0 0 100%;
     min-width: 0;
     padding: 0;
     order: 4;
   }
   .report-action-group {
     flex-direction: row;
-    width: 100%;
+    flex: 0 0 100%;
     order: 5;
   }
   .warning-btn,
   .dismiss-btn {
     flex: 1;
     width: auto;
+    padding: 9px 12px;
   }
 }
 
