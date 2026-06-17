@@ -72,6 +72,7 @@ html {
 }
 
 body {
+  overflow-x: hidden;
   background:
     radial-gradient(
       ellipse 55% 45% at 8% 12%,
@@ -349,6 +350,9 @@ img {
   }
   .chart-container {
     height: 160px;
+  }
+  .content-grid {
+    grid-template-columns: 1fr;
   }
   .item-row {
     flex-wrap: wrap;
