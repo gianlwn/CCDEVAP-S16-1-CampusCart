@@ -26,47 +26,75 @@
   backdrop-filter: blur(10px);
 }
 
-.toast-icon { 
-  font-size: 18px; 
-  flex-shrink: 0; 
+.toast-icon {
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
-.toast-body { 
-  flex: 1; 
+.toast-body {
+  flex: 1;
 }
 
-.toast-title { 
-  font-weight: 700; 
-  font-size: 13px; 
-  color: var(--text); 
+.toast-title {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text);
 }
 
-.toast-message { 
-  font-size: 12px; 
-  color: var(--text-muted); 
-  margin-top: 2px; 
+.toast-message {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
 @keyframes toastIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes toastOut {
-  from { opacity: 1; transform: translateX(0); }
-  to   { opacity: 0; transform: translateX(24px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
 }
 
 /* Toast Variants */
-.toast-success { border-left: 4px solid var(--success-text); }
-.toast-warning { border-left: 4px solid var(--warning-text); }
-.toast-error   { border-left: 4px solid var(--danger-text); }
-.toast-info    { border-left: 4px solid var(--accent); }
+.toast-success {
+  border-left: 4px solid var(--success-text);
+}
+.toast-warning {
+  border-left: 4px solid var(--warning-text);
+}
+.toast-error {
+  border-left: 4px solid var(--danger-text);
+}
+.toast-info {
+  border-left: 4px solid var(--accent);
+}
 
-.toast-success .toast-icon { color: var(--success-text); }
-.toast-warning .toast-icon { color: var(--warning-text); }
-.toast-error   .toast-icon { color: var(--danger-text); }
-.toast-info    .toast-icon { color: var(--accent); }
+.toast-success .toast-icon {
+  color: var(--success-text);
+}
+.toast-warning .toast-icon {
+  color: var(--warning-text);
+}
+.toast-error .toast-icon {
+  color: var(--danger-text);
+}
+.toast-info .toast-icon {
+  color: var(--accent);
+}
 
 .toast-close {
   background: none;
@@ -82,7 +110,7 @@
   line-height: 1;
 }
 
-.toast-close:hover { 
-  background: var(--accent-light); 
-  color: var(--accent); 
+.toast-close:hover {
+  background: var(--accent-light);
+  color: var(--accent);
 }

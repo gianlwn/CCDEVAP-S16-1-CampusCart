@@ -14,8 +14,11 @@
   align-items: center;
   gap: 14px;
   box-shadow: var(--shadow);
-  transition: transform var(--transition), box-shadow var(--transition),
-              background-color var(--transition), border-color var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background-color var(--transition),
+    border-color var(--transition);
   backdrop-filter: blur(10px) saturate(1.12);
   -webkit-backdrop-filter: blur(10px) saturate(1.12);
 }
@@ -35,13 +38,31 @@
   flex-shrink: 0;
 }
 
-.kpi-card.kpi-teal  .kpi-icon-wrap { background: #E1F2F0; color: #127C70; }
-.kpi-card.kpi-coral .kpi-icon-wrap { background: #FAE7DF; color: #E2643B; }
-.kpi-card.kpi-gold  .kpi-icon-wrap { background: #FBF0D8; color: #C98A2E; }
+.kpi-card.kpi-teal .kpi-icon-wrap {
+  background: #e1f2f0;
+  color: #127c70;
+}
+.kpi-card.kpi-coral .kpi-icon-wrap {
+  background: #fae7df;
+  color: #e2643b;
+}
+.kpi-card.kpi-gold .kpi-icon-wrap {
+  background: #fbf0d8;
+  color: #c98a2e;
+}
 
-body.darkMode .kpi-card.kpi-teal  .kpi-icon-wrap { background: rgba(18,124,112,0.20); color: #3AB5A6; }
-body.darkMode .kpi-card.kpi-coral .kpi-icon-wrap { background: rgba(226,100,59,0.20); color: #e8845f; }
-body.darkMode .kpi-card.kpi-gold  .kpi-icon-wrap { background: rgba(201,138,46,0.20); color: #E0A847; }
+body.darkMode .kpi-card.kpi-teal .kpi-icon-wrap {
+  background: rgba(18, 124, 112, 0.2);
+  color: #3ab5a6;
+}
+body.darkMode .kpi-card.kpi-coral .kpi-icon-wrap {
+  background: rgba(226, 100, 59, 0.2);
+  color: #e8845f;
+}
+body.darkMode .kpi-card.kpi-gold .kpi-icon-wrap {
+  background: rgba(201, 138, 46, 0.2);
+  color: #e0a847;
+}
 
 .kpi-value {
   font-size: 22px;
@@ -72,18 +93,27 @@ body.darkMode .kpi-card.kpi-gold  .kpi-icon-wrap { background: rgba(201,138,46,0
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow-card);
-  transition: background-color var(--transition), border-color var(--transition);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition);
   backdrop-filter: blur(10px) saturate(1.12);
   -webkit-backdrop-filter: blur(10px) saturate(1.12);
   position: relative;
 }
 
 .chart-card::after {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--accent) 40%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 40%,
+    transparent 100%
+  );
   border-radius: var(--radius) var(--radius) 0 0;
   opacity: 0.5;
 }
@@ -97,7 +127,9 @@ body.darkMode .kpi-card.kpi-gold  .kpi-icon-wrap { background: rgba(201,138,46,0
   margin-bottom: 14px;
 }
 
-.chart-card.full-width { grid-column: 1 / -1; }
+.chart-card.full-width {
+  grid-column: 1 / -1;
+}
 
 .chart-container {
   position: relative;
@@ -137,27 +169,52 @@ body.darkMode .kpi-card.kpi-gold  .kpi-icon-wrap { background: rgba(201,138,46,0
 }
 
 .legend-dot {
-  width: 12px; height: 12px;
+  width: 12px;
+  height: 12px;
   border-radius: 3px;
   flex-shrink: 0;
 }
 
-.legend-label { color: var(--text-muted); flex: 1; }
-.legend-val   { font-weight: 700; color: var(--text); }
+.legend-label {
+  color: var(--text-muted);
+  flex: 1;
+}
+.legend-val {
+  font-weight: 700;
+  color: var(--text);
+}
 
 @media (max-width: 1100px) {
-  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+  .kpi-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 900px) {
-  .charts-grid { grid-template-columns: 1fr; }
-  .donut-wrap  { flex-direction: column; align-items: flex-start; }
-  .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+  .donut-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 480px) {
-  .kpi-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .kpi-value  { font-size: 18px; }
-  .kpi-label  { font-size: 10px; }
-  .chart-container { height: 160px; }
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .kpi-value {
+    font-size: 18px;
+  }
+  .kpi-label {
+    font-size: 10px;
+  }
+  .chart-container {
+    height: 160px;
+  }
 }

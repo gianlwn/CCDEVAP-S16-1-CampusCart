@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – Ratings</title>
+  <title>CampusCart | Ratings</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/top-nav.css">
   <link rel="stylesheet" href="../css/side-bottom-nav.css">
   <link rel="stylesheet" href="../css/toast.css">
 
 </head>
+
 <body>
 
   <div id="top-nav"></div>
@@ -64,7 +66,8 @@
     ">
       <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--text);">Edit Rating</h2>
 
-      <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+      <p
+        style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
         Your Rating
       </p>
       <div id="modal-star-picker" style="display:flex;gap:6px;margin-bottom:14px;font-size:28px;cursor:pointer;">
@@ -75,7 +78,8 @@
         <span class="modal-star" data-val="5">★</span>
       </div>
 
-      <p style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+      <p
+        style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
         Review
       </p>
       <textarea id="modal-review" rows="3" style="
@@ -107,15 +111,15 @@
   <script src="../js/main.js"></script>
 
   <script>
-    let allRatings  = [];
-    let distChart   = null;
-    let editingId   = null;
-    let pickedStar  = 0;
+    let allRatings = [];
+    let distChart = null;
+    let editingId = null;
+    let pickedStar = 0;
 
     function renderAvg(items) {
       if (!items.length) return;
-      const avg     = items.reduce((s, i) => s + i.rating, 0) / items.length;
-      const avgStr  = avg.toFixed(1);
+      const avg = items.reduce((s, i) => s + i.rating, 0) / items.length;
+      const avgStr = avg.toFixed(1);
       const rounded = Math.round(avg);
       let stars = '';
       for (let i = 1; i <= 5; i++) {
@@ -129,7 +133,7 @@
     }
 
     function buildDistChart(items) {
-      const t    = getChartTheme();
+      const t = getChartTheme();
       const dist = [0, 0, 0, 0, 0];
       items.forEach(i => dist[i.rating - 1]++);
 
@@ -251,17 +255,18 @@
     document.addEventListener('themeChanged', () => {
       if (!distChart) return;
       const t = getChartTheme();
-      distChart.options.scales.x.ticks.color  = t.text;
-      distChart.options.scales.y.ticks.color  = t.text;
-      distChart.options.scales.x.grid.color   = t.grid;
-      distChart.options.scales.y.grid.color   = t.grid;
+      distChart.options.scales.x.ticks.color = t.text;
+      distChart.options.scales.y.ticks.color = t.text;
+      distChart.options.scales.x.grid.color = t.grid;
+      distChart.options.scales.y.grid.color = t.grid;
       distChart.options.scales.x.border.color = t.axisBorder;
       distChart.options.scales.y.border.color = t.axisBorder;
       distChart.update('none');
     });
 
-    window.editRating   = editRating;
+    window.editRating = editRating;
     window.deleteRating = deleteRating;
   </script>
 </body>
+
 </html>

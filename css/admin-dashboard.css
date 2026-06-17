@@ -13,8 +13,11 @@
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition), box-shadow var(--transition),
-              background-color var(--transition), border-color var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background-color var(--transition),
+    border-color var(--transition);
   backdrop-filter: blur(10px) saturate(1.12);
   -webkit-backdrop-filter: blur(10px) saturate(1.12);
 }

@@ -39,8 +39,11 @@
   gap: 16px;
   align-items: center;
   box-shadow: var(--shadow);
-  transition: background-color var(--transition), border-color var(--transition),
-              transform var(--transition), box-shadow var(--transition);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -107,5 +110,7 @@
 }
 
 @media (max-width: 850px) {
-  .admin-status-badge-zone { flex: none; }
+  .admin-status-badge-zone {
+    flex: none;
+  }
 }

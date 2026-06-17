@@ -45,8 +45,11 @@
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  transition: transform var(--transition), box-shadow var(--transition),
-              background-color var(--transition), border-color var(--transition);
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    background-color var(--transition),
+    border-color var(--transition);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -85,8 +88,12 @@
   left: 15%;
 }
 
-.listing-image::before { transform: rotate(45deg); }
-.listing-image::after  { transform: rotate(-45deg); }
+.listing-image::before {
+  transform: rotate(45deg);
+}
+.listing-image::after {
+  transform: rotate(-45deg);
+}
 
 .listing-info {
   flex: 1;
@@ -155,4 +162,6 @@
 }
 
 .approve-btn:hover,
-.reject-btn:hover { opacity: 0.8; }
+.reject-btn:hover {
+  opacity: 0.8;
+}

@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – Register</title>
+  <title>CampusCart | Register</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/toast.css">
   <link rel="stylesheet" href="../css/auth.css">
 </head>
+
 <body>
 
   <div class="auth-page">
     <div class="auth-card" style="width:min(520px,100%);">
 
       <div class="auth-logo">
-        <div class="auth-logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+        <div class="auth-logo-icon"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg></div>
         <p class="auth-title">Create Your Account</p>
       </div>
 
@@ -22,26 +29,23 @@
 
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" id="reg-name"
-            placeholder="Sky Hannah G. Parado" autocomplete="name">
+          <input type="text" class="form-input" id="reg-name" placeholder="Sky Hannah G. Parado" autocomplete="name">
         </div>
 
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">School Email</label>
-          <input type="email" class="form-input" id="reg-email"
-            placeholder="account@university.edu.ph" autocomplete="email" readonly style="opacity: 0.7; cursor: not-allowed;">
+          <input type="email" class="form-input" id="reg-email" placeholder="account@university.edu.ph"
+            autocomplete="email" readonly style="opacity: 0.7; cursor: not-allowed;">
         </div>
 
         <div class="form-group">
           <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="reg-pw"
-            placeholder="••••••••" autocomplete="new-password">
+          <input type="password" class="form-input" id="reg-pw" placeholder="••••••••" autocomplete="new-password">
         </div>
 
         <div class="form-group">
           <label class="form-label">Confirm Password</label>
-          <input type="password" class="form-input" id="reg-pw2"
-            placeholder="••••••••" autocomplete="new-password">
+          <input type="password" class="form-input" id="reg-pw2" placeholder="••••••••" autocomplete="new-password">
         </div>
 
         <div class="form-group" style="grid-column:1/-1;">
@@ -72,7 +76,8 @@
       <button class="auth-btn" onclick="handleRegister()">CREATE ACCOUNT</button>
 
       <div class="auth-footer">
-        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">already have an account? login here!</button>
+        <button class="auth-link" onclick="window.location.href='../login-path/login.html'">already have an account?
+          login here!</button>
       </div>
 
     </div>
@@ -81,6 +86,7 @@
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/login.js"></script>
-  
+
 </body>
+
 </html>

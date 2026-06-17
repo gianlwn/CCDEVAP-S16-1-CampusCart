@@ -16,7 +16,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 body {
@@ -171,7 +171,9 @@ body {
   display: flex;
   align-items: center;
   gap: 7px;
-  transition: background var(--transition), color var(--transition);
+  transition:
+    background var(--transition),
+    color var(--transition);
   font-family: inherit;
 }
 
@@ -224,8 +226,10 @@ body {
   align-items: center;
   gap: 14px;
   box-shadow: var(--shadow);
-  transition: background-color var(--transition), border-color var(--transition),
-              transform var(--transition);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -262,5 +266,8 @@ body {
 }
 
 @media (max-width: 850px) {
-  .responsive-row-card { flex-wrap: wrap; gap: 12px; }
+  .responsive-row-card {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 }

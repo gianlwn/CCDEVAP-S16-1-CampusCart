@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – Claimed</title>
+  <title>CampusCart | Claimed</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/top-nav.css">
   <link rel="stylesheet" href="../css/side-bottom-nav.css">
   <link rel="stylesheet" href="../css/toast.css">
 
 </head>
+
 <body>
 
   <div id="top-nav"></div>
@@ -76,7 +78,7 @@
           datasets: [{
             data: values,
             backgroundColor: bgs,
-            borderColor:     t.accent,
+            borderColor: t.accent,
             borderWidth: 1,
             borderRadius: 5,
             borderSkipped: false,
@@ -95,9 +97,9 @@
     }
 
     function buildSummary(items) {
-      const total     = items.length;
+      const total = items.length;
       const completed = items.filter(i => i.status === 'completed').length;
-      const pending   = total - completed;
+      const pending = total - completed;
       const avgRating = items.length
         ? (items.reduce((s, i) => s + i.rating, 0) / items.length).toFixed(1)
         : '–';
@@ -128,13 +130,13 @@
     document.addEventListener('themeChanged', () => {
       if (!catChart) return;
       const t = getChartTheme();
-      catChart.options.scales.x.ticks.color  = t.text;
-      catChart.options.scales.y.ticks.color  = t.text;
-      catChart.options.scales.x.grid.color   = t.grid;
-      catChart.options.scales.y.grid.color   = t.grid;
+      catChart.options.scales.x.ticks.color = t.text;
+      catChart.options.scales.y.ticks.color = t.text;
+      catChart.options.scales.x.grid.color = t.grid;
+      catChart.options.scales.y.grid.color = t.grid;
       catChart.options.scales.x.border.color = t.axisBorder;
       catChart.options.scales.y.border.color = t.axisBorder;
-      catChart.data.datasets[0].borderColor  = t.accent;
+      catChart.data.datasets[0].borderColor = t.accent;
       catChart.update('none');
     });
 
@@ -160,4 +162,5 @@
     });
   </script>
 </body>
+
 </html>

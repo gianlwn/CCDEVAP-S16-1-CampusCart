@@ -88,7 +88,7 @@ function loadAdminSideNav(page) {
       <a href="admins.html" class="nav-item">Admins</a>
     </div>
     <div class="sign-out-box">
-      <a href="#" class="sign-out-btn">Sign Out</a>
+      <a href="../login-path/login.html" class="sign-out-btn">Sign Out</a>
     </div>
   `;
 

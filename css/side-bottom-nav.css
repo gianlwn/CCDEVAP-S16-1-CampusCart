@@ -6,16 +6,22 @@
   width: var(--sidebar-width);
   height: 100vh;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0.04) 100%),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      rgba(255, 255, 255, 0.04) 100%
+    ),
     var(--nav-bg);
-  border-right: 1px solid rgba(255,255,255,0.18);
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
   position: fixed;
-  top: 0; 
+  top: 0;
   left: 0;
   padding: calc(var(--nav-height) + 8px) 10px 16px;
   z-index: 99;
   overflow-y: auto;
-  transition: background var(--transition), border-color var(--transition);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
   backdrop-filter: blur(30px) saturate(1.9);
   -webkit-backdrop-filter: blur(30px) saturate(1.9);
 }
@@ -35,9 +41,9 @@
   opacity: 0.75;
   transition: opacity var(--transition);
 }
-.nav-icon svg { 
-  width: 100%; 
-  height: 100%; 
+.nav-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .side-nav ul li a {
@@ -60,18 +66,18 @@
   background-color: var(--accent-light);
   color: var(--accent);
 }
-.side-nav ul li a:hover .nav-icon { 
-  opacity: 1; 
+.side-nav ul li a:hover .nav-icon {
+  opacity: 1;
 }
 
 .side-nav ul li.active a {
   background: linear-gradient(90deg, var(--accent-light) 0%, transparent 100%);
   color: var(--accent);
   font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--accent); 
+  box-shadow: inset 3px 0 0 var(--accent);
 }
-.side-nav ul li.active a .nav-icon { 
-  opacity: 1; 
+.side-nav ul li.active a .nav-icon {
+  opacity: 1;
 }
 
 .signout-btn {
@@ -97,17 +103,23 @@
 
 /* MOBILE SECTION (BOTTOM NAV) */
 .bottom-nav {
-  display: none; 
+  display: none;
   position: fixed;
-  bottom: 0; 
-  left: 0; 
+  bottom: 0;
+  left: 0;
   right: 0;
   background:
-    linear-gradient(0deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 100%),
+    linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.06) 100%
+    ),
     var(--nav-bg);
-  border-top: 1px solid rgba(255,255,255,0.20);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   z-index: 100;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 -2px 8px rgba(0,0,0,0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 -2px 8px rgba(0, 0, 0, 0.08);
   height: 58px;
   transition: background var(--transition);
   backdrop-filter: blur(30px) saturate(1.9);
@@ -130,12 +142,12 @@
 .bottom-nav a .nav-icon {
   width: 22px;
   height: 22px;
-  opacity: 1; 
+  opacity: 1;
 }
 
 .bottom-nav a.active,
-.bottom-nav a:hover { 
-  color: var(--accent); 
+.bottom-nav a:hover {
+  color: var(--accent);
 }
 
 @media (max-width: 768px) {
@@ -147,7 +159,6 @@
   }
   .main-content {
     margin-left: 0;
-    padding-bottom: 60px; 
+    padding-bottom: 60px;
   }
-
 }

@@ -37,8 +37,11 @@
   align-items: center;
   gap: 16px;
   box-shadow: var(--shadow);
-  transition: background-color var(--transition), border-color var(--transition),
-              transform var(--transition), box-shadow var(--transition);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -182,7 +185,9 @@
 }
 
 @media (max-width: 850px) {
-  .report-reporter { display: none; }
+  .report-reporter {
+    display: none;
+  }
 }
 
 @media (max-width: 900px) {

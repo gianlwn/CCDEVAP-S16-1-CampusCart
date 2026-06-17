@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – My Listings</title>
+  <title>CampusCart | My Listings</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/top-nav.css">
   <link rel="stylesheet" href="../css/side-bottom-nav.css">
   <link rel="stylesheet" href="../css/toast.css">
   <link rel="stylesheet" href="../css/listings.css">
 </head>
+
 <body>
 
   <div id="top-nav"></div>
@@ -36,8 +38,8 @@
                 <span class="char-counter" id="desc-counter">0 / 150</span>
               </label>
               <textarea class="form-textarea" id="inp-desc" maxlength="150"
-                        placeholder="Describe your item — condition, reason for selling, accessories included…"
-                        rows="6"></textarea>
+                placeholder="Describe your item — condition, reason for selling, accessories included…"
+                rows="6"></textarea>
             </div>
           </div>
 
@@ -48,8 +50,8 @@
                 <label class="form-label">Price</label>
                 <div class="input-prefix-wrap">
                   <span class="input-prefix">₱</span>
-                  <input type="number" class="form-input with-prefix" id="inp-price"
-                         placeholder="0.00" min="0" step="0.01">
+                  <input type="number" class="form-input with-prefix" id="inp-price" placeholder="0.00" min="0"
+                    step="0.01">
                 </div>
               </div>
               <div class="form-group">
@@ -83,16 +85,21 @@
 
             <div class="form-group">
               <label class="form-label">Pickup Location</label>
-              <input type="text" class="form-input" id="inp-location"
-                     placeholder="e.g. Henry Sy Hall Lobby, Gate 1">
+              <input type="text" class="form-input" id="inp-location" placeholder="e.g. Henry Sy Hall Lobby, Gate 1">
             </div>
 
             <div class="form-group">
-              <label class="form-label">Images <span style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.75;">(max 5)</span></label>
+              <label class="form-label">Images <span
+                  style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.75;">(max 5)</span></label>
               <div class="img-upload-area" id="img-upload-area"
-                   onclick="document.getElementById('img-file-input').click()">
+                onclick="document.getElementById('img-file-input').click()">
                 <div class="img-upload-inner">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
                   <span>Click to upload photos</span>
                 </div>
               </div>
@@ -124,7 +131,14 @@
             <div class="preview-card" id="preview-card">
               <div class="preview-img-zone" id="preview-img">
                 <div class="preview-img-placeholder">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="16.5" y1="9.4" x2="7.5" y2="4.21" />
+                    <path
+                      d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                  </svg>
                 </div>
               </div>
               <div class="preview-body">
@@ -161,11 +175,11 @@
   <script>
     const CAT_ICONS = {
       Electronics: ICONS.laptop, Books: ICONS.book,
-      'Lab Tools': ICONS.flask,  Clothing: ICONS.shirt, Others: ICONS.package,
+      'Lab Tools': ICONS.flask, Clothing: ICONS.shirt, Others: ICONS.package,
     };
 
-    let allListings    = [];
-    let reportsChart   = null;
+    let allListings = [];
+    let reportsChart = null;
     let uploadedImages = [];
 
     const STATUS_LABEL = {
@@ -233,10 +247,10 @@
     }
 
     function updatePreview() {
-      const name  = document.getElementById('inp-name').value.trim();
+      const name = document.getElementById('inp-name').value.trim();
       const price = document.getElementById('inp-price').value;
-      const cat   = document.getElementById('inp-category').value;
-      const cond  = document.getElementById('inp-condition').value;
+      const cat = document.getElementById('inp-category').value;
+      const cond = document.getElementById('inp-condition').value;
 
       document.getElementById('preview-name').textContent = name || 'Item Name';
       document.getElementById('preview-price').textContent =
@@ -258,7 +272,7 @@
       const el = document.getElementById('img-thumbs');
       el.innerHTML = uploadedImages.map((src, i) => `
         <div class="img-thumb-item">
-          <img src="${src}" alt="img ${i+1}">
+          <img src="${src}" alt="img ${i + 1}">
           <button class="img-thumb-remove" title="Remove" onclick="removeImage(${i})">×</button>
         </div>
       `).join('');
@@ -283,13 +297,13 @@
     }
 
     function handleAddListing() {
-      const name      = document.getElementById('inp-name').value.trim();
-      const price     = document.getElementById('inp-price').value.trim();
-      const cat       = document.getElementById('inp-category').value;
+      const name = document.getElementById('inp-name').value.trim();
+      const price = document.getElementById('inp-price').value.trim();
+      const cat = document.getElementById('inp-category').value;
       const condition = document.getElementById('inp-condition').value;
-      const desc      = document.getElementById('inp-desc').value.trim();
-      const qty       = parseInt(document.getElementById('inp-qty').value) || 1;
-      const location  = document.getElementById('inp-location').value.trim();
+      const desc = document.getElementById('inp-desc').value.trim();
+      const qty = parseInt(document.getElementById('inp-qty').value) || 1;
+      const location = document.getElementById('inp-location').value.trim();
 
       if (!name || !price || !cat) {
         showToast('Missing Fields', 'Please fill in Name, Price, and Category.', 'warning');
@@ -311,12 +325,12 @@
       renderListings();
       buildReportsChart(allListings);
 
-      ['inp-name','inp-price','inp-desc','inp-location'].forEach(id => {
+      ['inp-name', 'inp-price', 'inp-desc', 'inp-location'].forEach(id => {
         document.getElementById(id).value = '';
       });
-      document.getElementById('inp-category').value  = '';
+      document.getElementById('inp-category').value = '';
       document.getElementById('inp-condition').value = '';
-      document.getElementById('inp-qty').value       = '1';
+      document.getElementById('inp-qty').value = '1';
       document.getElementById('desc-counter').textContent = '0 / 150';
       uploadedImages = [];
       renderThumbs();
@@ -334,7 +348,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      const descEl    = document.getElementById('inp-desc');
+      const descEl = document.getElementById('inp-desc');
       const counterEl = document.getElementById('desc-counter');
       descEl.addEventListener('input', function () {
         const n = this.value.length;
@@ -342,7 +356,7 @@
         counterEl.className = 'char-counter' + (n >= 150 ? ' at-limit' : n >= 120 ? ' near-limit' : '');
       });
 
-      ['inp-name','inp-price','inp-category','inp-condition'].forEach(id => {
+      ['inp-name', 'inp-price', 'inp-category', 'inp-condition'].forEach(id => {
         document.getElementById(id).addEventListener('input', updatePreview);
         document.getElementById(id).addEventListener('change', updatePreview);
       });
@@ -376,4 +390,5 @@
     });
   </script>
 </body>
+
 </html>

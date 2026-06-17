@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart – Profile</title>
+  <title>CampusCart | Profile</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/top-nav.css">
   <link rel="stylesheet" href="../css/side-bottom-nav.css">
   <link rel="stylesheet" href="../css/toast.css">
   <link rel="stylesheet" href="../css/profile.css">
 </head>
+
 <body>
 
   <div id="top-nav"></div>
@@ -26,10 +28,19 @@
 
           <div class="profile-avatar-wrap">
             <div class="profile-avatar">
-              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
             </div>
             <button class="btn-edit-img" onclick="handleEditImage()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
               Edit Photo
             </button>
           </div>
@@ -39,7 +50,11 @@
           <span class="verified-badge" id="verified-badge">✓ Verified</span>
 
           <div class="profile-rating-row">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
+              stroke="none">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
             4.2 / 5.0
           </div>
 
@@ -67,9 +82,8 @@
             <div class="profile-form-grid">
               <div class="form-group">
                 <label class="form-label">Full Name</label>
-                <input type="text" class="form-input" id="prof-name"
-                       value="Sky Hannah G Parado"
-                       oninput="syncSummaryName(this.value)">
+                <input type="text" class="form-input" id="prof-name" value="Sky Hannah G Parado"
+                  oninput="syncSummaryName(this.value)">
               </div>
               <div class="form-group">
                 <label class="form-label">Phone Number</label>
@@ -83,8 +97,7 @@
             <div class="profile-form-grid">
               <div class="form-group full">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="prof-email"
-                       value="sky_parado@dlsu.edu.ph" readonly>
+                <input type="email" class="form-input" id="prof-email" value="sky_parado@dlsu.edu.ph" readonly>
               </div>
               <div class="form-group">
                 <label class="form-label">School / University</label>
@@ -120,7 +133,12 @@
 
           <div class="form-save-row">
             <button class="btn-outline" onclick="handleHelp()">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
               Help
             </button>
             <button class="btn-primary" onclick="handleSaveProfile()">Save Changes</button>
@@ -132,10 +150,15 @@
       <div class="danger-zone-card">
         <div class="danger-zone-text">
           <div class="danger-zone-title">Danger Zone</div>
-          <div class="danger-zone-desc">Permanently delete your account and all associated data. This action cannot be undone.</div>
+          <div class="danger-zone-desc">Permanently delete your account and all associated data. This action cannot be
+            undone.</div>
         </div>
         <button class="btn-danger-outline" onclick="handleDeleteAccount()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>
           Delete Account
         </button>
       </div>
@@ -169,8 +192,8 @@
 
     function handleSaveProfile() {
       const name = document.getElementById('prof-name').value.trim();
-      const pw   = document.getElementById('prof-pw').value;
-      const pw2  = document.getElementById('prof-pw2').value;
+      const pw = document.getElementById('prof-pw').value;
+      const pw2 = document.getElementById('prof-pw2').value;
 
       if (!name) {
         showToast('Missing Field', 'Full name cannot be empty.', 'warning');
@@ -197,4 +220,5 @@
     document.addEventListener('DOMContentLoaded', checkVerified);
   </script>
 </body>
+
 </html>
