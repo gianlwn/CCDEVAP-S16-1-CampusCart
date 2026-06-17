@@ -46,6 +46,10 @@
   font-weight: 700;
 }
 
+.nav-item-label {
+  font-size: inherit;
+}
+
 .sign-out-box {
   padding: 14px 10px;
   border-top: 1px solid var(--border);
@@ -70,4 +74,79 @@
 .sign-out-btn:hover {
   background: var(--danger-bg);
   color: var(--danger-text);
+}
+
+@media (max-width: 768px) {
+  #admin-side-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: stretch;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    z-index: 150;
+  }
+
+  .nav-links {
+    flex-direction: row;
+    flex: 1;
+    padding: 4px 6px;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    align-items: center;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 10px;
+    font-size: 10px;
+    gap: 3px;
+    white-space: nowrap;
+  }
+
+  .nav-item svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .nav-item-label {
+    font-size: 10px;
+    line-height: 1;
+  }
+
+  .sign-out-box {
+    border-top: none;
+    border-left: 1px solid var(--border);
+    padding: 4px 6px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .sign-out-btn {
+    flex-direction: column;
+    align-items: center;
+    width: auto;
+    padding: 6px 10px;
+    font-size: 10px;
+    gap: 3px;
+    white-space: nowrap;
+  }
+
+  .sign-out-btn svg {
+    width: 18px;
+    height: 18px;
+  }
 }
