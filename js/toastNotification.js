@@ -1,6 +1,5 @@
 (function () {
 
-  
   function getContainer() {
     var c = document.getElementById('toast-container');
     if (!c) {
@@ -11,7 +10,6 @@
     return c;
   }
 
-  
   var META = {
     success: { icon: '✓' },
     warning: { icon: '⚠' },
@@ -19,8 +17,6 @@
     info:    { icon: 'ℹ' },
   };
 
-  
-  
   function dismiss(toast) {
     if (!toast.parentNode || toast.classList.contains('is-dismissing')) return;
     toast.classList.add('is-dismissing');
@@ -31,11 +27,6 @@
     });
   }
 
-  
-  
-  
-  
-  
   window.showToast = function (title, message, type, duration) {
     type     = type     || 'info';
     duration = (duration !== undefined && duration !== null) ? duration : 5000;
