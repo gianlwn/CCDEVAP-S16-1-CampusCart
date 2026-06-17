@@ -202,9 +202,9 @@ function refreshChartTheme() {
   const t = getChartTheme();
 
   const gridConfig = {
-    rating:     { x: 'transparent', y: t.grid },
-    categories: { x: t.grid,        y: 'transparent' },
-    sold:       { x: 'transparent', y: t.grid },
+    rating: { x: 'transparent', y: t.grid },
+    categories: { x: t.grid, y: 'transparent' },
+    sold: { x: 'transparent', y: t.grid },
   };
 
   ['rating', 'categories', 'sold'].forEach(key => {
