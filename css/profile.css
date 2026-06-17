@@ -144,8 +144,10 @@
 .form-section {
   margin-bottom: 22px;
   padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
 }
 .form-section:last-of-type {
+  border-bottom: none;
   margin-bottom: 0;
   padding-bottom: 0;
 }
