@@ -54,7 +54,7 @@
       </main>
     </div>
   </div>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
@@ -71,55 +71,77 @@
       new Chart(document.getElementById('userStatusChart'), {
         type: 'doughnut',
         data: {
-          labels: ['Active','Suspended','Banned'],
-          datasets: [{ data: [678, 24, 8],
-            backgroundColor: ['rgba(14,136,120,0.85)','rgba(72,130,210,0.82)','rgba(192,57,43,0.82)'],
-            borderColor: t.cardBg, borderWidth: 3 }]
+          labels: ['Active', 'Suspended', 'Banned'],
+          datasets: [{
+            data: [678, 24, 8],
+            backgroundColor: ['rgba(14,136,120,0.85)', 'rgba(72,130,210,0.82)', 'rgba(192,57,43,0.82)'],
+            borderColor: t.cardBg, borderWidth: 3
+          }]
         },
-        options: { responsive: true, maintainAspectRatio: false, cutout: '60%',
-          plugins: { legend: { position: 'bottom', labels: { color: t.text, font: { size: 11 }, padding: 12 } } } }
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '60%',
+          plugins: { legend: { position: 'bottom', labels: { color: t.text, font: { size: 11 }, padding: 12 } } }
+        }
       });
 
       new Chart(document.getElementById('reportsMonthlyChart'), {
         type: 'line',
         data: {
-          labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-          datasets: [{ label: 'Reports', data: [12,18,9,24,31,28,19,22,15,30,26,20],
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [{
+            label: 'Reports', data: [12, 18, 9, 24, 31, 28, 19, 22, 15, 30, 26, 20],
             borderColor: t.accent, backgroundColor: t.barBg, borderWidth: 2,
-            tension: 0.4, fill: true, pointRadius: 3 }]
+            tension: 0.4, fill: true, pointRadius: 3
+          }]
         },
-        options: { responsive: true, maintainAspectRatio: false,
-          scales: { x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
-                    y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 } },
-          plugins: { legend: { display: false } } }
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
+            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+          },
+          plugins: { legend: { display: false } }
+        }
       });
 
       new Chart(document.getElementById('popularCategoriesChart'), {
         type: 'bar',
         data: {
-          labels: ['Electronics','Books','Lab Tools','Clothing','Others'],
-          datasets: [{ label: 'Items', data: [80, 60, 55, 30, 20],
-            backgroundColor: t.barBg, borderColor: t.accent, borderWidth: 1, borderRadius: 5 }]
+          labels: ['Electronics', 'Books', 'Lab Tools', 'Clothing', 'Others'],
+          datasets: [{
+            label: 'Items', data: [80, 60, 55, 30, 20],
+            backgroundColor: t.barBg, borderColor: t.accent, borderWidth: 1, borderRadius: 5
+          }]
         },
-        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-          scales: { x: { ticks: { color: t.text }, grid: { color: t.grid } },
-                    y: { ticks: { color: t.text }, grid: { color: t.grid } } },
-          plugins: { legend: { display: false } } }
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: t.text }, grid: { color: t.grid } },
+            y: { ticks: { color: t.text }, grid: { color: t.grid } }
+          },
+          plugins: { legend: { display: false } }
+        }
       });
 
       new Chart(document.getElementById('listingsStatusChart'), {
         type: 'bar',
         data: {
-          labels: ['Approved','Pending','Rejected'],
-          datasets: [{ label: 'Listings',
+          labels: ['Approved', 'Pending', 'Rejected'],
+          datasets: [{
+            label: 'Listings',
             data: [320, 45, 12],
-            backgroundColor: ['rgba(14,136,120,0.82)','rgba(201,138,46,0.82)','rgba(192,57,43,0.82)'],
-            borderRadius: 5 }]
+            backgroundColor: ['rgba(14,136,120,0.82)', 'rgba(201,138,46,0.82)', 'rgba(192,57,43,0.82)'],
+            borderRadius: 5
+          }]
         },
-        options: { responsive: true, maintainAspectRatio: false,
-          scales: { x: { ticks: { color: t.text }, grid: { color: t.grid } },
-                    y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 } },
-          plugins: { legend: { display: false } } }
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: t.text }, grid: { color: t.grid } },
+            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+          },
+          plugins: { legend: { display: false } }
+        }
       });
     });
   </script>
