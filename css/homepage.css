@@ -303,7 +303,7 @@ body.darkMode .hp-condition-badge {
     text-align: center;
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .hp-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -325,8 +325,8 @@ body.darkMode .hp-condition-badge {
     display: none;
   }
   .hp-filter-pills {
+    flex: none;
     flex-wrap: nowrap;
-    flex-shrink: 0;
   }
   .hp-filter-btn {
     white-space: nowrap;

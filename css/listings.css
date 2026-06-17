@@ -401,3 +401,21 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Edit Listing Modal */
+@media (max-width: 600px) {
+  .edit-listing-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  .edit-listing-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+    max-height: 90vh !important;
+    padding: 22px 16px 32px !important;
+  }
+  .edit-listing-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

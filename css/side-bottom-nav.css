@@ -101,6 +101,33 @@
   color: var(--danger-text);
 }
 
+.sidebar-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-dash-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  text-align: left;
+}
+
+.admin-dash-btn:hover {
+  background-color: var(--accent-light);
+  color: var(--accent);
+}
+
 /* MOBILE SECTION (BOTTOM NAV) */
 .bottom-nav {
   display: none;
