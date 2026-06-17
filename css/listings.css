@@ -393,6 +393,12 @@
   .listing-form-two-col {
     grid-template-columns: 1fr;
   }
+  .listing-form-footer {
+    justify-content: center;
+  }
+  .btn-add-listing {
+    width: 100%;
+  }
 }
 
 @media (max-width: 560px) {
