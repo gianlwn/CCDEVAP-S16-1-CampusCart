@@ -350,6 +350,35 @@ img {
   .chart-container {
     height: 160px;
   }
+  .item-row {
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    gap: 6px 10px;
+    align-items: flex-start;
+  }
+  .item-thumb {
+    width: 32px;
+    height: 32px;
+  }
+  .item-info {
+    flex: 1 1 calc(100% - 42px);
+    min-width: 0;
+  }
+  .item-name {
+    font-size: 13px;
+  }
+  .item-meta,
+  .item-review {
+    font-size: 11px;
+  }
+  .stars {
+    margin-left: 42px;
+    flex-shrink: 0;
+  }
+  .badge-status {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
 }
 
 .empty-icon-svg {
