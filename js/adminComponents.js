@@ -74,15 +74,15 @@ function initUserSearch() {
 function loadAdminSideNav(page) {
     const html = `
     <div class="nav-links">
-      <a href="adminDashboard.html" class="nav-item">Admin Dashboard</a>
-      <a href="listingApproval.html" class="nav-item">Listings Approval</a>
-      <a href="reports.html" class="nav-item">Reports</a>
-      <a href="users.html" class="nav-item">Users</a>
-      <a href="categories.html" class="nav-item">Categories</a>
-      <a href="admins.html" class="nav-item">Admins</a>
+      <a href="adminDashboard.html" class="nav-item">${ICONS.chart}<span class="nav-item-label">Admin Dashboard</span></a>
+      <a href="listingApproval.html" class="nav-item">${ICONS.check}<span class="nav-item-label">Listings Approval</span></a>
+      <a href="reports.html" class="nav-item">${ICONS.alert}<span class="nav-item-label">Reports</span></a>
+      <a href="users.html" class="nav-item">${ICONS.users}<span class="nav-item-label">Users</span></a>
+      <a href="categories.html" class="nav-item">${ICONS.categories}<span class="nav-item-label">Categories</span></a>
+      <a href="admins.html" class="nav-item">${ICONS.user}<span class="nav-item-label">Admins</span></a>
     </div>
     <div class="sign-out-box">
-      <a href="../login-path/login.html" class="sign-out-btn">Sign Out</a>
+      <a href="../login-path/login.html" class="sign-out-btn">${ICONS.logout}<span class="nav-item-label">Sign Out</span></a>
     </div>
   `;
 
@@ -218,24 +218,24 @@ function displayUsers() {
                         <span class="info-label">Joined:</span>
                         <span class="info-value">${user.dateJoined}</span>
                     </div>
-                    <div class="user-status-badge-zone">
+                    <div class="user-right-controls">
                         <span class="badge-pill ${pillClass}">${statusText}</span>
-                    </div>
-                    <div class="action-button-group">
-                        <button class="action-trigger edit-trigger-btn"
-                            onclick="handleUser('edit','${user.username}','${user.email}','${user.dateJoined}','${user.status}',this)">
-                            ${ICONS.edit} Edit
-                        </button>
-                        <div class="button-inner-divider"></div>
-                        <button class="action-trigger view-trigger-btn"
-                            onclick="handleUser('view','${user.username}','${user.email}','${user.dateJoined}','${user.status}',this)">
-                            ${ICONS.eye} View
-                        </button>
-                        <div class="button-inner-divider"></div>
-                        <button class="action-trigger ban-trigger-btn"
-                            onclick="handleUser('ban','${user.username}','${user.email}','${user.dateJoined}','${user.status}',this)">
-                            ${ICONS.ban} Ban
-                        </button>
+                        <div class="action-button-group">
+                            <button class="action-trigger edit-trigger-btn"
+                                onclick="handleUser('edit','${user.username}','${user.email}','${user.dateJoined}','${user.status}',this)">
+                                ${ICONS.edit} Edit
+                            </button>
+                            <div class="button-inner-divider"></div>
+                            <button class="action-trigger view-trigger-btn"
+                                onclick="handleUser('view','${user.username}','${user.email}','${user.dateJoined}','${user.status}',this)">
+                                ${ICONS.eye} View
+                            </button>
+                            <div class="button-inner-divider"></div>
+                            <button class="action-trigger ban-trigger-btn"
+                                onclick="handleUser('ban','${user.username}','${user.email}','${user.dateJoined}','${user.status}',this)">
+                                ${ICONS.ban} Ban
+                            </button>
+                        </div>
                     </div>
                 </div>`;
         }).join('');

@@ -93,10 +93,12 @@
   margin-top: 2px;
 }
 
-.user-status-badge-zone {
-  flex: 1;
+.user-right-controls {
+  margin-left: auto;
   display: flex;
   align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
 }
 
 @media (max-width: 850px) {
