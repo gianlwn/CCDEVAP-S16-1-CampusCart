@@ -1,5 +1,6 @@
-/* HTML context reminder from your comment */
-/* put <div id="top-nav-container"></div> */
+
+
+
 
 .top-nav {
   display: flex;
@@ -134,7 +135,7 @@
   max-width: 90px;
 }
 
-/* ── Notification dropdown ── */
+
 .notif-wrapper {
   position: relative;
 }

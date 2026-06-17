@@ -1,4 +1,6 @@
-/* 4. SIDE NAVBAR */
+
+
+
 .side-nav {
   display: flex;
   flex-direction: column;
@@ -128,7 +130,7 @@
   color: var(--accent);
 }
 
-/* MOBILE SECTION (BOTTOM NAV) */
+
 .bottom-nav {
   display: none;
   position: fixed;

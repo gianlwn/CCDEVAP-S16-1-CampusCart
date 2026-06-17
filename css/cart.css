@@ -1,8 +1,10 @@
+
+
 .hidden {
   display: none !important;
 }
 
-/* Cart layout */
+
 .cart-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -10,14 +12,14 @@
   align-items: start;
 }
 
-/* Item list */
+
 .cart-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Cart row */
+
 .cart-row {
   display: flex;
   align-items: center;

@@ -1,3 +1,5 @@
+
+
 .hp-hero-banner {
   background:
     radial-gradient(
@@ -337,7 +339,7 @@ body.darkMode .hp-condition-badge {
   }
 }
 
-/* ── Advanced Filters Panel ── */
+
 .hp-adv-filters {
   background: var(--card-bg);
   border: 1px solid var(--border);

@@ -1,4 +1,6 @@
-/* PROFILE PAGE TWO-COLUMN LAYOUT */
+
+
+
 .profile-page-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
@@ -6,7 +8,7 @@
   align-items: start;
 }
 
-/* ACCOUNT SUMMARY CARD (left column) */
+
 .profile-summary-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -124,7 +126,7 @@
   font-weight: 700;
 }
 
-/* FORM CARD (right column) */
+
 .profile-form-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -138,7 +140,7 @@
     border-color var(--transition);
 }
 
-/* FORM SECTIONS */
+
 .form-section {
   margin-bottom: 22px;
   padding-bottom: 22px;
@@ -166,7 +168,7 @@
   grid-column: 1 / -1;
 }
 
-/* SAVE ROW */
+
 .form-save-row {
   display: flex;
   justify-content: flex-end;
@@ -177,7 +179,7 @@
   border-top: 1px solid var(--border);
 }
 
-/* DANGER ZONE */
+
 .danger-zone-card {
   background: var(--card-bg);
   border: 1px solid var(--danger-text);
@@ -213,7 +215,7 @@
   line-height: 1.4;
 }
 
-/* BUTTONS */
+
 .btn-primary {
   background: linear-gradient(
     135deg,
@@ -277,7 +279,7 @@
   background: var(--danger-bg);
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 900px) {
   .profile-page-layout {
     grid-template-columns: 1fr;
