@@ -350,23 +350,23 @@
     function refreshChartTheme() {
       const t = getChartTheme();
 
+      const gridConfig = {
+        rating:     { x: 'transparent', y: t.grid },
+        categories: { x: t.grid,        y: 'transparent' },
+        sold:       { x: 'transparent', y: t.grid },
+      };
+
       ['rating', 'categories', 'sold'].forEach(key => {
         const ch = charts[key];
         if (!ch) return;
         ch.options.scales.x.ticks.color = t.text;
         ch.options.scales.y.ticks.color = t.text;
-        ch.options.scales.x.grid.color = key === 'categories' ? 'transparent' : t.grid;
-        ch.options.scales.y.grid.color = key === 'rating' || key === 'sold' ? 'transparent' : t.grid;
+        ch.options.scales.x.grid.color = gridConfig[key].x;
+        ch.options.scales.y.grid.color = gridConfig[key].y;
         ch.options.scales.x.border.color = t.axisBorder;
         ch.options.scales.y.border.color = t.axisBorder;
         ch.update('none');
       });
-
-      if (charts.categories) {
-        charts.categories.options.scales.x.grid.color = t.grid;
-        charts.categories.options.scales.y.grid.color = 'transparent';
-        charts.categories.update('none');
-      }
 
       if (charts.reports) {
         charts.reports.data.datasets[0].borderColor = t.cardBg;
