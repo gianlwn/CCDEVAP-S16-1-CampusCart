@@ -287,6 +287,19 @@
 }
 
 @media (max-width: 768px) {
+  .profile-stats-table {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 0;
+    gap: 0;
+  }
+  .profile-stat-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    gap: 2px;
+  }
   .profile-form-grid {
     grid-template-columns: 1fr;
   }
