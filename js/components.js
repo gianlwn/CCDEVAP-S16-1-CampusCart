@@ -1,3 +1,5 @@
+
+
 const ICONS = {
   logo: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
   moon: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
@@ -35,6 +37,7 @@ const ICONS = {
 };
 
 function loadTopNav() {
+  
   const notifItems = [
     { icon: ICONS.check, text: 'Listing <b>Casio FX-991EX</b> was approved.', time: 'Just now', unread: true },
     { icon: ICONS.alert, text: 'New report filed by <b>Andie Kirsten Woo</b>.', time: '5 min ago', unread: true },
@@ -98,6 +101,7 @@ function markAllNotifsRead() {
 
 function loadSideNav() {
   const cur = window.location.pathname;
+  
   const a = (p) => cur.includes(p) ? 'active' : '';
 
   const html = `
@@ -195,6 +199,7 @@ function loadBottomNav(type) {
   let links = '';
 
   if (type === 'admin') {
+    
     links = `
       <a href="../admin-dashboard/adminDashboard.html" class="${a('adminDashboard')}">
         <span class="nav-icon">${ICONS.chart}</span><span>Panel</span>
@@ -213,6 +218,7 @@ function loadBottomNav(type) {
       </a>
     `;
   } else {
+    
     links = `
       <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard.html')}">
         <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
@@ -242,13 +248,13 @@ function getChartTheme() {
   const s = getComputedStyle(document.body);
   const get = v => s.getPropertyValue(v).trim();
   return {
-    accent: get('--accent'),
-    text: get('--text'),
-    grid: get('--chart-grid'),
+    accent:     get('--accent'),
+    text:       get('--text'),
+    grid:       get('--chart-grid'),
     axisBorder: get('--chart-axis'),
-    barBg: get('--chart-bar'),
-    cardBg: get('--card-bg'),
-    barRgb: get('--chart-bar-rgb'),
+    barBg:      get('--chart-bar'),
+    cardBg:     get('--card-bg'),
+    barRgb:     get('--chart-bar-rgb'),
   };
 }
 
@@ -301,46 +307,6 @@ function createRatingsRow(item) {
   `;
 }
 
-const _CONFIRM_ICONS = {
-  trash: `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
-  ban:   `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,
-  unban: `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
-  revoke:`<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>`,
-};
-
-function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 'trash') {
-  const iconPath = _CONFIRM_ICONS[iconKey] || _CONFIRM_ICONS.trash;
-  const overlay = document.createElement('div');
-  overlay.className = 'confirm-overlay';
-  overlay.innerHTML = `
-    <div class="confirm-dialog" role="dialog" aria-modal="true">
-      <div class="confirm-icon-wrap">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          ${iconPath}
-        </svg>
-      </div>
-      <div class="confirm-title">${title}</div>
-      <div class="confirm-msg">${message}</div>
-      <div class="confirm-actions">
-        <button class="confirm-cancel">Cancel</button>
-        <button class="confirm-ok">${okLabel}</button>
-      </div>
-    </div>
-  `;
-
-  const close = () => document.body.removeChild(overlay);
-  overlay.querySelector('.confirm-cancel').addEventListener('click', close);
-  overlay.querySelector('.confirm-ok').addEventListener('click', () => {
-    close();
-    onConfirm();
-  });
-  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
-
-  document.body.appendChild(overlay);
-  overlay.querySelector('.confirm-cancel').focus();
-}
-
 function loadClaimedRows(containerId) {
   const el = document.getElementById(containerId);
   el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Loading…</p>';
@@ -377,3 +343,40 @@ function loadRatingsRows(containerId) {
     });
 }
 
+const _CONFIRM_ICONS = {
+  trash:  `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
+  ban:    `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,
+  unban:  `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
+  revoke: `<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>`,
+};
+
+function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 'trash') {
+  const iconPath = _CONFIRM_ICONS[iconKey] || _CONFIRM_ICONS.trash;
+  const overlay = document.createElement('div');
+  overlay.className = 'confirm-overlay';
+  overlay.innerHTML = `
+    <div class="confirm-dialog" role="dialog" aria-modal="true">
+      <div class="confirm-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          ${iconPath}
+        </svg>
+      </div>
+      <div class="confirm-title">${title}</div>
+      <div class="confirm-msg">${message}</div>
+      <div class="confirm-actions">
+        <button class="confirm-cancel">Cancel</button>
+        <button class="confirm-ok">${okLabel}</button>
+      </div>
+    </div>
+  `;
+
+  const close = () => document.body.removeChild(overlay);
+  overlay.querySelector('.confirm-cancel').addEventListener('click', close);
+  overlay.querySelector('.confirm-ok').addEventListener('click', () => { close(); onConfirm(); });
+  
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  document.body.appendChild(overlay);
+  overlay.querySelector('.confirm-cancel').focus();
+}

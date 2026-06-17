@@ -1,4 +1,6 @@
-/* 1. LAYOUT */
+
+
+
 .main-content {
   margin-left: 0 !important;
   margin-top: 0 !important;
@@ -7,7 +9,7 @@
   overflow-y: auto;
 }
 
-/* 2. APP SHELL */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -36,7 +38,7 @@ body {
   min-width: 0;
 }
 
-/* 3. SUB-HEADER */
+
 .sub-header {
   display: flex;
   justify-content: space-between;
@@ -65,7 +67,7 @@ body {
   font-style: normal;
 }
 
-/* 4. PAGE TOOLBAR */
+
 .page-toolbar {
   display: flex;
   justify-content: space-between;
@@ -95,7 +97,7 @@ body {
   gap: 12px;
 }
 
-/* 5. SEARCH */
+
 .search-capsule-box {
   display: flex;
   align-items: center;
@@ -145,7 +147,7 @@ body {
   background: var(--accent-hover);
 }
 
-/* 6. ACTION BUTTON GROUP */
+
 .action-button-group {
   display: flex;
   align-items: center;
@@ -185,7 +187,7 @@ body {
   flex-shrink: 0;
 }
 
-/* 7. BADGES & STATUS PILLS */
+
 .badge-pill {
   display: inline-block;
   padding: 4px 12px;
@@ -212,7 +214,7 @@ body {
   color: var(--danger-text);
 }
 
-/* 8. ROW CARDS (used in users / listings / reports tables) */
+
 .row-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -241,7 +243,7 @@ body {
   gap: 14px;
 }
 
-/* 9. MISC */
+
 .placeholder-card {
   border: 2px dashed var(--border);
   border-radius: var(--radius);

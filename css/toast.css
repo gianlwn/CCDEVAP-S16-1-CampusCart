@@ -1,3 +1,5 @@
+
+
 #toast-container {
   position: fixed;
   bottom: 24px;
@@ -69,7 +71,7 @@
   }
 }
 
-/* Toast Variants */
+
 .toast-success {
   border-left: 4px solid var(--success-text);
 }

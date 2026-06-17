@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,36 +14,44 @@
 </head>
 
 <body>
+  
   <div id="top-nav"></div>
   <div class="app-body" style="margin-top:var(--nav-height);height:calc(100vh - var(--nav-height));">
+    
     <aside id="admin-side-nav"></aside>
     <div class="main-container">
+      
       <div class="sub-header">
         <h2>Admin Panel</h2>
         <div class="login-status">
           Logged in as <strong>Administrator</strong>
         </div>
       </div>
+      
       <main class="main-content">
         <div class="dashboard-grid-2x2">
+          
           <div class="analytics-card">
             <h3>User Accounts Status</h3>
             <div class="chart-container">
               <canvas id="userStatusChart"></canvas>
             </div>
           </div>
+          
           <div class="analytics-card">
             <h3>Submitted Reports Per Month</h3>
             <div class="chart-container">
               <canvas id="reportsMonthlyChart"></canvas>
             </div>
           </div>
+          
           <div class="analytics-card">
             <h3>Popular Categories</h3>
             <div class="chart-container">
               <canvas id="popularCategoriesChart"></canvas>
             </div>
           </div>
+          
           <div class="analytics-card">
             <h3>Listings Status Report</h3>
             <div class="chart-container">
@@ -55,6 +63,7 @@
     </div>
   </div>
 
+  
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>

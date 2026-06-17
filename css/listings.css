@@ -1,3 +1,5 @@
+
+
 .add-listing-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -18,7 +20,7 @@
   letter-spacing: 0.7px;
 }
 
-/* TWO-COLUMN FORM LAYOUT */
+
 .listing-form-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -32,14 +34,14 @@
   gap: 0;
 }
 
-/* Inline two-field row within a column */
+
 .form-row-two {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-/* ₱ prefix input */
+
 .input-prefix-wrap {
   position: relative;
 }
@@ -60,7 +62,7 @@
   padding-left: 26px;
 }
 
-/* Char counter inside label */
+
 .char-counter {
   font-size: 10px;
   color: var(--text-muted);
@@ -76,7 +78,7 @@
   color: var(--danger-text);
 }
 
-/* Image upload area */
+
 .img-upload-area {
   border: 2px dashed var(--border);
   border-radius: var(--radius-sm);
@@ -105,7 +107,7 @@
   pointer-events: none;
 }
 
-/* Image thumbnails */
+
 .img-thumbs {
   display: flex;
   flex-wrap: wrap;
@@ -150,7 +152,7 @@
   font-weight: 700;
 }
 
-/* Form submit row */
+
 .listing-form-footer {
   display: flex;
   justify-content: flex-end;
@@ -181,7 +183,7 @@
   transform: translateY(-1px);
 }
 
-/* PAGE CONTENT LAYOUT */
+
 .listings-content-row {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -201,7 +203,7 @@
   gap: 16px;
 }
 
-/* LISTING ROWS */
+
 .listing-row {
   display: flex;
   align-items: center;
@@ -236,7 +238,7 @@
   flex-shrink: 0;
 }
 
-/* STATUS BADGES */
+
 .badge-status {
   font-size: 11px;
   font-weight: 600;
@@ -259,7 +261,7 @@
   color: var(--pending-text);
 }
 
-/* LIVE PREVIEW CARD */
+
 .preview-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -357,7 +359,7 @@
   display: inline-block;
 }
 
-/* EMPTY STATE */
+
 .empty-state {
   text-align: center;
   padding: 40px 20px;
@@ -380,7 +382,7 @@
   height: 100%;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 1000px) {
   .listings-content-row {
     grid-template-columns: 1fr;
@@ -399,7 +401,7 @@
   }
 }
 
-/* Edit Listing Modal */
+
 @media (max-width: 600px) {
   .edit-listing-overlay {
     align-items: flex-end !important;

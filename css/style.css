@@ -1,3 +1,5 @@
+
+
 :root {
   --bg: #edf5f4;
   --card-bg: rgba(255, 255, 255, 0.97);
@@ -5,7 +7,7 @@
   --text: #0e2826;
   --text-muted: #5e7c79;
   --border: #c4d8d4;
-  --accent: #0e8878; /* Deep Teal — slightly brighter */
+  --accent: #0e8878; 
   --accent-light: rgba(14, 136, 120, 0.1);
   --accent-hover: #0a6e60;
   --star-fill: #c98a2e;
@@ -680,7 +682,7 @@ body.darkMode .big-number {
   cursor: not-allowed;
 }
 
-/* ── Confirm Modal ── */
+
 .confirm-overlay {
   position: fixed;
   inset: 0;

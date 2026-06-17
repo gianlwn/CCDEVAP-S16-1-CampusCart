@@ -1,24 +1,26 @@
+
+
 const CATEGORY_ICONS = {
   Electronics: ICONS.laptop,
-  Books: ICONS.book,
+  Books:       ICONS.book,
   'Lab Tools': ICONS.flask,
-  Clothing: ICONS.shirt,
-  Others: ICONS.package,
+  Clothing:    ICONS.shirt,
+  Others:      ICONS.package,
 };
 
 const CATEGORY_BG = {
   Electronics: 'rgba(122,171,138,0.18)',
-  Books: 'rgba(212,184,150,0.28)',
+  Books:       'rgba(212,184,150,0.28)',
   'Lab Tools': 'rgba(122,171,215,0.18)',
-  Clothing: 'rgba(210,160,60,0.14)',
-  Others: 'rgba(158,144,132,0.18)',
+  Clothing:    'rgba(210,160,60,0.14)',
+  Others:      'rgba(158,144,132,0.18)',
 };
 
 let cartItems = [];
 
 function renderCart() {
-  const cartList = document.getElementById('cart-list');
-  const cartSummary = document.getElementById('cart-summary');
+  const cartList     = document.getElementById('cart-list');
+  const cartSummary  = document.getElementById('cart-summary');
   const summaryItems = document.getElementById('summary-items');
 
   if (!cartItems || !cartItems.length) {
@@ -31,6 +33,7 @@ function renderCart() {
     return;
   }
 
+  
   cartList.innerHTML = cartItems.map(item => `
     <div class="cart-row">
       <button class="cart-remove" onclick="removeItem('${item.id}')" title="Remove">
@@ -49,6 +52,7 @@ function renderCart() {
 
   const total = cartItems.reduce((sum, i) => sum + i.price, 0);
 
+  
   if (cartSummary) {
     cartSummary.classList.remove('hidden');
     document.getElementById('summary-count').textContent =
@@ -82,11 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(r => r.json())
     .then(items => {
       cartItems = items.slice(0, 4).map(item => ({
-        id: item.id,
-        name: item.name,
-        price: parseInt(item.price.replace('₱', '')),
+        id:       item.id,
+        name:     item.name,
+        price:    parseInt(item.price.replace('₱', '')),
         category: item.category,
-        seller: item.seller || null,
+        seller:   item.seller || null,
       }));
       renderCart();
     })
