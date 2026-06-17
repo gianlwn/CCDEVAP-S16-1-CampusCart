@@ -2,7 +2,6 @@
   display: none !important;
 }
 
-
 .cart-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
@@ -10,13 +9,11 @@
   align-items: start;
 }
 
-
 .cart-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 
 .cart-row {
   display: flex;

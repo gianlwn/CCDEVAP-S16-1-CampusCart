@@ -22,14 +22,14 @@
   ],
   "itemsByCategory": [
     { "category": "Electronics", "count": 3 },
-    { "category": "Books",       "count": 2 },
-    { "category": "Lab Tools",   "count": 4 },
-    { "category": "Clothing",    "count": 1 },
-    { "category": "Others",      "count": 1 }
+    { "category": "Books", "count": 2 },
+    { "category": "Lab Tools", "count": 4 },
+    { "category": "Clothing", "count": 1 },
+    { "category": "Others", "count": 1 }
   ],
   "reportsOnListing": [
-    { "label": "Sold",     "value": 23 },
-    { "label": "Unsold",   "value": 11 },
+    { "label": "Sold", "value": 23 },
+    { "label": "Unsold", "value": 11 },
     { "label": "Refunded", "value": 6 }
   ],
   "itemsSoldMonthly": [
