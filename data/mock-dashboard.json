@@ -5,6 +5,13 @@
     "rating": 4.2,
     "liked": 234
   },
+  "kpi": {
+    "totalListings": 11,
+    "itemsSold": 7,
+    "totalEarnings": 4250,
+    "avgRating": 4.2,
+    "openReports": 2
+  },
   "sellerRatingHistory": [
     { "month": "Jan", "rating": 3.5 },
     { "month": "Feb", "rating": 4.0 },
@@ -21,8 +28,16 @@
     { "category": "Others",      "count": 1 }
   ],
   "reportsOnListing": [
-    { "label": "Sold",     "value": 57.5 },
-    { "label": "Unsold",   "value": 28.3 },
-    { "label": "Refunded", "value": 14.2 }
+    { "label": "Sold",     "value": 23 },
+    { "label": "Unsold",   "value": 11 },
+    { "label": "Refunded", "value": 6 }
+  ],
+  "itemsSoldMonthly": [
+    { "month": "Jan", "sold": 1 },
+    { "month": "Feb", "sold": 2 },
+    { "month": "Mar", "sold": 0 },
+    { "month": "Apr", "sold": 1 },
+    { "month": "May", "sold": 2 },
+    { "month": "Jun", "sold": 1 }
   ]
 }

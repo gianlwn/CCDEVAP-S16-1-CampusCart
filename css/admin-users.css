@@ -1,74 +1,93 @@
 .users-counter-text {
-  font-size: 14px;
-  color: var(--text-color);
+  font-size: 13px;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
 .status-filter-dropdown {
-  background-color: #c4b187;
-  border: 1.5px solid var(--accent);
-  padding: 8px 16px;
-  border-radius: 14px;
-  font-weight: 700;
-  color: var(--dark-bg);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--text);
   outline: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color var(--transition);
+}
+
+.status-filter-dropdown:focus {
+  border-color: var(--accent);
 }
 
 #users-stack-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .user-identity-row-card {
-  background-color: var(--row-card-bg);
-  border-radius: 20px;
-  padding: 14px 28px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 10px rgba(59, 36, 16, 0.08);
+  gap: 16px;
+  box-shadow: var(--shadow);
+  transition: background-color var(--transition), border-color var(--transition),
+              transform var(--transition), box-shadow var(--transition);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.user-identity-row-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
 }
 
 .user-text-details {
   display: flex;
   flex-direction: column;
-  margin-left: 24px;
   width: 240px;
+  flex-shrink: 0;
 }
 
 .user-display-name {
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--dark-bg);
-  letter-spacing: -0.3px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: -0.1px;
 }
 
 .user-display-email {
-  font-size: 14px;
-  color: rgba(59, 36, 16, 0.85);
-  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
 .user-info-extra {
   display: flex;
   flex-direction: column;
   width: 160px;
+  flex-shrink: 0;
 }
 
 .info-label {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
-  color: rgba(59, 36, 16, 0.6);
+  color: var(--text-muted);
   font-weight: 700;
   letter-spacing: 0.5px;
 }
 
 .info-value {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--dark-bg);
+  color: var(--text);
+  margin-top: 2px;
 }
 
 .user-status-badge-zone {
@@ -78,7 +97,5 @@
 }
 
 @media (max-width: 850px) {
-  .user-info-extra {
-    display: none;
-  }
+  .user-info-extra { display: none; }
 }

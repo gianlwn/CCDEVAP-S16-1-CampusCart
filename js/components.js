@@ -1,8 +1,3 @@
-/* ============================================================
-   CampusCart — Shared Components
-   ============================================================ */
-
-/* Feather-style SVG icons — stroke="currentColor" inherits nav accent color */
 const ICONS = {
   logo:   `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
   moon:   `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
@@ -196,11 +191,8 @@ function loadBottomNav(type) {
   document.body.appendChild(nav);
 }
 
-/* ---- Helpers ---- */
-
-/* Read chart colors from CSS variables — single source of truth */
 function getChartTheme() {
-  const s = getComputedStyle(document.documentElement);
+  const s = getComputedStyle(document.body);
   const get = v => s.getPropertyValue(v).trim();
   return {
     accent:     get('--accent'),
@@ -299,43 +291,3 @@ function loadRatingsRows(containerId) {
     });
 }
 
-function createListingRow(item) {
-  const CAT_ICON = {
-    Electronics: ICONS.laptop, Books: ICONS.book,
-    'Lab Tools': ICONS.flask, Clothing: ICONS.shirt, Others: ICONS.package,
-  };
-  const STATUS_LABEL = { active: 'Active', pending_review: 'Pending Review', claimed: 'Claimed' };
-  return `
-    <div class="listing-row" id="listing-${item.id}">
-      <div class="listing-thumb">${CAT_ICON[item.category] || ICONS.package}</div>
-      <div class="item-info">
-        <p class="item-name">${item.name}</p>
-        <p class="item-meta">₱${item.price} · ${item.category}</p>
-      </div>
-      <span class="badge-status ${item.status}">${STATUS_LABEL[item.status] || item.status}</span>
-      <div style="display:flex;gap:3px;flex-shrink:0;">
-        <button class="btn-icon" title="Edit">${ICONS.edit}</button>
-        <button class="btn-icon danger" title="Delete">${ICONS.trash}</button>
-      </div>
-    </div>
-  `;
-}
-
-function loadUserListingsRows(containerId) {
-  const el = document.getElementById(containerId);
-  if (!el) return;
-  el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Loading…</p>';
-
-  fetch('../data/mock-listings.json')
-    .then(r => r.json())
-    .then(items => {
-      if (!items.length) {
-        el.innerHTML = `<div class="empty-state"><div class="empty-icon">🏷️</div><p>No listings yet.</p></div>`;
-        return;
-      }
-      el.innerHTML = items.map(createListingRow).join('');
-    })
-    .catch(() => {
-      el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Could not load listings.</p>';
-    });
-}

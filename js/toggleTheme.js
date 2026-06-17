@@ -18,7 +18,6 @@ function _updateThemeBtn() {
   const isDark = document.body.classList.contains('darkMode');
   const btn = document.getElementById('theme-toggle');
   if (btn) {
-    /* Use SVG icons if ICONS is available (components.js loaded), else fall back */
     btn.innerHTML = (typeof ICONS !== 'undefined')
       ? (isDark ? ICONS.sun : ICONS.moon)
       : (isDark ? '☀️' : '🌙');

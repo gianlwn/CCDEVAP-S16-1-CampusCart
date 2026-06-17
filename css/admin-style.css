@@ -1,130 +1,118 @@
-/* 1. VARIABLES */
-:root {
-  --bg-color:      #f0ebe5;
-  --card-bg:       #fffcf8;
-  --accent:        #8b6344;
-  --dark-bg:       #1c1412;
-  --dark-text:     #f5f0eb;
-  --text-color:    #3d3530;
-  --sidebar-width: 200px;
-  --nav-height:    60px;
-  --row-card-bg:   #f5f0ea;
-  --search-box-bg: #ede4d8;
-  --btn-group-bg:  #f0e8de;
-  --success-pill:  #7aab8a;
-  --warning-pill:  #d4a030;
+/* Admin-specific overrides — core palette & sizing comes from style.css */
+
+/* 1. LAYOUT OVERRIDE
+   Admin uses flex-row sidebar (not position:fixed), so .main-content must
+   not carry style.css's margin-left:var(--sidebar-width). */
+.main-content {
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  flex: 1;
+  padding: 24px 28px 32px;
+  overflow-y: auto;
 }
 
-/* 2. UNIVERSAL */
+/* 2. APP SHELL */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 body {
-  background-color: var(--bg-color);
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* 3. MAIN LAYOUT CONTAINER */
 .app-body {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* 4. MAIN CONTENT AREA */
 .main-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
 }
 
+/* 3. SUB-HEADER */
 .sub-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px 10px 24px;
-  border-bottom: 1px groove rgba(139, 99, 68, 0.35);
+  padding: 16px 28px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .sub-header h2 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--dark-bg);
-  margin-bottom: 8px;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  margin-bottom: 2px;
 }
 
 .login-status {
-  font-size: 14px;
-  font-style: italic;
-  color: var(--text-color);
+  font-size: 13px;
+  color: var(--text-muted);
 }
 
 .login-status strong {
-  color: var(--dark-bg);
+  color: var(--text);
+  font-weight: 600;
   font-style: normal;
 }
 
-.main-content {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-  margin-left: 15px;
-}
-
-.placeholder-card {
-  border: 2px dashed var(--accent);
-  border-radius: 8px;
-  height: 90%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent);
-  font-style: italic;
-}
-
+/* 4. PAGE TOOLBAR */
 .page-toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
 }
-.page-toolbar-title {
-  font-size: 26px;
+
+.page-toolbar-title,
+.toolbar-left-panel h3 {
+  font-size: 20px;
   font-weight: 700;
-  color: var(--dark-bg);
+  color: var(--text);
+  letter-spacing: -0.2px;
   margin-bottom: 2px;
 }
 
-.toolbar-left-panel h3 {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--dark-bg);
-  margin-bottom: 2px;
+.toolbar-left-panel p {
+  font-size: 12px;
+  color: var(--text-muted);
 }
 
 .toolbar-right-panel {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
 }
 
+/* 5. SEARCH */
 .search-capsule-box {
   display: flex;
   align-items: center;
-  background-color: var(--search-box-bg);
-  border-radius: 24px;
-  padding: 3px 4px 3px 18px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 4px 4px 16px;
+  box-shadow: var(--shadow);
+  transition: border-color var(--transition);
+}
+
+.search-capsule-box:focus-within {
+  border-color: var(--accent);
 }
 
 .search-input-field {
@@ -132,102 +120,147 @@ body {
   border: none;
   outline: none;
   padding: 6px 0;
-  font-size: 15px;
-  color: var(--dark-bg);
-  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
   width: 180px;
+  font-family: inherit;
 }
 
 .search-input-field::placeholder {
-  color: rgba(59, 36, 16, 0.6);
+  color: var(--text-muted);
 }
 
 .search-glass-btn {
-  background-color: var(--dark-bg);
+  background: var(--accent);
   border: none;
-  color: var(--dark-text);
-  width: 34px;
-  height: 34px;
+  color: #fff;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  flex-shrink: 0;
+  transition: background var(--transition);
 }
 
-/* 5. MAIN CONTENT BUTTONS */
+.search-glass-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* 6. ACTION BUTTON GROUP */
 .action-button-group {
   display: flex;
   align-items: center;
-  background-color: var(--btn-group-bg);
-  border-radius: 14px;
-  border: 1.5px solid rgba(92, 61, 30, 0.25);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow);
 }
 
 .action-trigger {
   background: transparent;
   border: none;
-  padding: 12px 20px;
-  font-weight: 700;
+  padding: 9px 16px;
+  font-weight: 600;
   font-size: 13px;
-  color: var(--dark-bg);
+  color: var(--text);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.2s;
+  gap: 7px;
+  transition: background var(--transition), color var(--transition);
+  font-family: inherit;
 }
 
 .action-trigger:hover {
-  background-color: rgba(55, 65, 81, 0.08);
+  background: var(--accent-light);
+  color: var(--accent);
 }
 
 .button-inner-divider {
-  width: 1.5px;
-  height: 24px;
-  background-color: rgba(92, 61, 30, 0.25);
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
 }
 
-@media (max-width: 850px) {
-  .responsive-row-card {
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-}
-
-/* 6. BADGES & PILLS */
+/* 7. BADGES & STATUS PILLS */
 .badge-pill {
-  padding: 6px 24px;
-  border-radius: 20px;
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: -0.2px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  font-size: 12px;
+  letter-spacing: 0.1px;
 }
 
 .pill-status-active {
-  background-color: var(--success-pill);
-  color: var(--dark-bg);
+  background: var(--success-bg);
+  color: var(--success-text);
 }
 
 .pill-status-warning,
 .pill-status-suspended,
 .pill-status-inactive {
-  background-color: var(--warning-pill);
-  color: var(--dark-text);
+  background: var(--warning-bg);
+  color: var(--warning-text);
 }
 
 .pill-status-banned {
-  background-color: #d62013;
-  color: var(--dark-text);
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+/* 8. ROW CARDS (used in users / listings / reports tables) */
+.row-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  transition: background-color var(--transition), border-color var(--transition),
+              transform var(--transition);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.row-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+.responsive-row-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* 9. MISC */
+.placeholder-card {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-style: italic;
 }
 
 .empty-msg {
   text-align: center;
   padding: 40px;
-  color: var(--dark-bg);
+  color: var(--text-muted);
   font-weight: 600;
+  font-size: 14px;
+}
+
+@media (max-width: 850px) {
+  .responsive-row-card { flex-wrap: wrap; gap: 12px; }
 }

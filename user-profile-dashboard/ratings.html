@@ -22,7 +22,6 @@
 
       <div class="content-grid">
 
-        <!-- Left: Ratings list -->
         <div>
           <p class="section-title">Reviews You've Given</p>
           <div class="item-list" id="ratings-list">
@@ -113,7 +112,6 @@
     let editingId   = null;
     let pickedStar  = 0;
 
-    /* Render average rating display */
     function renderAvg(items) {
       if (!items.length) return;
       const avg     = items.reduce((s, i) => s + i.rating, 0) / items.length;
@@ -130,7 +128,6 @@
       `;
     }
 
-    /* Build distribution chart */
     function buildDistChart(items) {
       const t    = getChartTheme();
       const dist = [0, 0, 0, 0, 0];
@@ -169,7 +166,6 @@
       });
     }
 
-    /* Re-render the list */
     function renderList() {
       const el = document.getElementById('ratings-list');
       if (!allRatings.length) {
@@ -179,7 +175,6 @@
       el.innerHTML = allRatings.map(createRatingsRow).join('');
     }
 
-    /* Edit modal */
     function editRating(id) {
       editingId = id;
       const item = allRatings.find(r => r.id === id);
@@ -217,7 +212,6 @@
       showToast('Removed', 'Rating has been removed.', 'success');
     }
 
-    /* Star picker in modal */
     function _highlightStars(val) {
       document.querySelectorAll('.modal-star').forEach(s => {
         const v = parseInt(s.dataset.val);
@@ -226,7 +220,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-      /* Star picker events */
       document.querySelectorAll('.modal-star').forEach(star => {
         star.addEventListener('mouseover', () => _highlightStars(parseInt(star.dataset.val)));
         star.addEventListener('mouseleave', () => _highlightStars(pickedStar));
@@ -236,12 +229,10 @@
         });
       });
 
-      /* Close modal on backdrop click */
       document.getElementById('edit-modal').addEventListener('click', function (e) {
         if (e.target === this) closeEdit();
       });
 
-      /* Load data */
       fetch('../data/mock-ratings.json')
         .then(r => r.json())
         .then(items => {
@@ -257,7 +248,6 @@
         });
     });
 
-    /* Theme change: update chart */
     document.addEventListener('themeChanged', () => {
       if (!distChart) return;
       const t = getChartTheme();
@@ -270,7 +260,6 @@
       distChart.update('none');
     });
 
-    /* Expose to component row buttons */
     window.editRating   = editRating;
     window.deleteRating = deleteRating;
   </script>

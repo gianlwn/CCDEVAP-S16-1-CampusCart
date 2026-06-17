@@ -1,63 +1,63 @@
-.stat-boxes {
+.kpi-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
   margin-bottom: 24px;
 }
 
-.stat-box {
+.kpi-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px 16px;
-  text-align: center;
-  box-shadow: var(--shadow-card);
-  position: relative;
-  overflow: hidden;
-  transition: background-color var(--transition), border-color var(--transition),
-              transform var(--transition), box-shadow var(--transition);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition),
+              background-color var(--transition), border-color var(--transition);
   backdrop-filter: blur(10px) saturate(1.12);
   -webkit-backdrop-filter: blur(10px) saturate(1.12);
 }
 
-.stat-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
-  opacity: 0.7;
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
 }
 
-.stat-box:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-card), 0 8px 28px rgba(92, 61, 30, 0.14);
+.kpi-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-body.darkMode .stat-box:hover {
-  box-shadow: var(--shadow-card), 0 8px 28px rgba(220, 186, 114, 0.10);
-}
+.kpi-card.kpi-teal  .kpi-icon-wrap { background: #E1F2F0; color: #127C70; }
+.kpi-card.kpi-coral .kpi-icon-wrap { background: #FAE7DF; color: #E2643B; }
+.kpi-card.kpi-gold  .kpi-icon-wrap { background: #FBF0D8; color: #C98A2E; }
 
-.stat-number {
-  font-size: 30px;
+body.darkMode .kpi-card.kpi-teal  .kpi-icon-wrap { background: rgba(18,124,112,0.20); color: #3AB5A6; }
+body.darkMode .kpi-card.kpi-coral .kpi-icon-wrap { background: rgba(226,100,59,0.20); color: #e8845f; }
+body.darkMode .kpi-card.kpi-gold  .kpi-icon-wrap { background: rgba(201,138,46,0.20); color: #E0A847; }
+
+.kpi-value {
+  font-size: 22px;
   font-weight: 700;
-  color: var(--accent);
-  line-height: 1.15;
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.3px;
 }
 
-body.darkMode .stat-number {
-  background: linear-gradient(135deg, #f5f0eb 0%, #d4b896 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.stat-label {
+.kpi-label {
   font-size: 11px;
   color: var(--text-muted);
-  margin-top: 5px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-top: 2px;
+  font-weight: 600;
 }
 
 .charts-grid {
@@ -75,6 +75,17 @@ body.darkMode .stat-number {
   transition: background-color var(--transition), border-color var(--transition);
   backdrop-filter: blur(10px) saturate(1.12);
   -webkit-backdrop-filter: blur(10px) saturate(1.12);
+  position: relative;
+}
+
+.chart-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 40%, transparent 100%);
+  border-radius: var(--radius) var(--radius) 0 0;
+  opacity: 0.5;
 }
 
 .chart-card h3 {
@@ -115,6 +126,7 @@ body.darkMode .stat-number {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex: 1;
 }
 
 .legend-item {
@@ -132,3 +144,20 @@ body.darkMode .stat-number {
 
 .legend-label { color: var(--text-muted); flex: 1; }
 .legend-val   { font-weight: 700; color: var(--text); }
+
+@media (max-width: 1100px) {
+  .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  .donut-wrap  { flex-direction: column; align-items: flex-start; }
+  .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi-value  { font-size: 18px; }
+  .kpi-label  { font-size: 10px; }
+  .chart-container { height: 160px; }
+}

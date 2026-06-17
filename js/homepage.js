@@ -1,35 +1,69 @@
 const CATEGORY_ICONS = {
-  Electronics: ICONS.laptop, 
-  Books: ICONS.book,
-  'Lab Tools': ICONS.flask,  
-  Clothing: ICONS.shirt, 
-  Others: ICONS.package,
+  Electronics: ICONS.laptop,
+  Books:       ICONS.book,
+  'Lab Tools': ICONS.flask,
+  Clothing:    ICONS.shirt,
+  Others:      ICONS.package,
 };
+
+const CATEGORY_BG = {
+  Electronics: 'rgba(122,171,138,0.18)',
+  Books:       'rgba(212,184,150,0.28)',
+  'Lab Tools': 'rgba(122,171,215,0.18)',
+  Clothing:    'rgba(210,160,60,0.14)',
+  Others:      'rgba(158,144,132,0.18)',
+};
+
+const CONDITION_COLOR = {
+  'Like new': '#42a364',
+  'New':      '#7aab8a',
+  'Used':     '#d4883a',
+  'Good':     '#7aaac8',
+};
+
 let allItems = [];
 let activeFilter = 'all';
 
 function renderGrid(items) {
   const grid = document.getElementById('item-grid');
-  if (!grid) return; // Prevent errors if the element isn't in the DOM yet
+  if (!grid) return;
 
   if (!items.length) {
     grid.innerHTML = `
-      <div class="empty-state" style="grid-column: 1 / -1">
+      <div class="empty-state" style="grid-column:1/-1">
         <div class="empty-icon-svg">${ICONS.search}</div>
         <p>No items found.</p>
       </div>`;
     return;
   }
-  
-  grid.innerHTML = items.map(item => `
-    <div class="hp-item-card" onclick="viewItem(${item.id})">
-      <div class="hp-item-thumb">${CATEGORY_ICONS[item.category] || ICONS.package}</div>
-      <div class="hp-item-info">
-        <p class="hp-item-name">${item.name}</p>
-        <p class="hp-item-price">₱${item.price}</p>
-      </div>
-    </div>
-  `).join('');
+
+  grid.innerHTML = items.map(item => {
+    const bg       = CATEGORY_BG[item.category] || CATEGORY_BG.Others;
+    const cond     = item.condition || 'Available';
+    const dotColor = CONDITION_COLOR[cond] || '#9e9084';
+    const seller   = item.seller || 'Campus Seller';
+    const icon     = CATEGORY_ICONS[item.category] || ICONS.package;
+
+    return `
+      <div class="hp-item-card" onclick="viewItem(${item.id})">
+        <div class="hp-item-thumb" style="background:${bg}">
+          <span class="hp-condition-badge">
+            <span class="hp-condition-dot" style="background:${dotColor}"></span>
+            ${cond}
+          </span>
+          ${icon}
+        </div>
+        <div class="hp-item-info">
+          <p class="hp-cat-label">${item.category}</p>
+          <p class="hp-item-name">${item.name}</p>
+          <p class="hp-item-seller">${ICONS.user} ${seller}</p>
+          <div class="hp-item-footer">
+            <p class="hp-item-price">₱${item.price}</p>
+            <button class="hp-view-btn" onclick="event.stopPropagation();viewItem(${item.id})">Add to Cart</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 function filterBy(cat, btn) {
@@ -39,27 +73,18 @@ function filterBy(cat, btn) {
   applyFilters();
 }
 
-function handleSearch() {
-  applyFilters();
-}
+function handleSearch() { applyFilters(); }
 
 function applyFilters() {
   const searchInput = document.getElementById('search-input');
   if (!searchInput) return;
-
   const q = searchInput.value.toLowerCase().trim();
   let results = allItems;
-  
-  if (activeFilter !== 'all') {
-    results = results.filter(i => i.category === activeFilter);
-  }
-  
-  if (q) {
-    results = results.filter(i => 
-      i.name.toLowerCase().includes(q) || 
-      (i.description?.toLowerCase() || '').includes(q) // Safe check to prevent crashes
-    );
-  }
+  if (activeFilter !== 'all') results = results.filter(i => i.category === activeFilter);
+  if (q) results = results.filter(i =>
+    i.name.toLowerCase().includes(q) ||
+    (i.description?.toLowerCase() || '').includes(q)
+  );
   renderGrid(results);
 }
 
@@ -69,26 +94,26 @@ function viewItem(id) {
 
 document.addEventListener('DOMContentLoaded', function () {
   const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') handleSearch();
-    });
-  }
+  if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSearch(); });
 
   fetch('../data/mock-listings.json')
-    .then(r => {
-      if (!r.ok) throw new Error('Network response was not ok');
-      return r.json();
-    })
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
     .then(items => {
-      allItems = items.filter(i => i.status === 'active');
+      allItems = items
+        .filter(i => i.status === 'active')
+        .map(i => ({
+          ...i,
+          seller:    i.seller    || 'Campus Seller',
+          condition: i.condition || 'Used',
+        }));
+
       const extras = [
-        { id: 10, name: 'Graph Paper Notebook', price: 60,  category: 'Books',       status: 'active', description: 'Engineering graph pad', image: null },
-        { id: 11, name: 'Soldering Iron Set',   price: 280, category: 'Electronics', status: 'active', description: 'Adjustable temperature', image: null },
-        { id: 12, name: 'Safety Goggles',       price: 75,  category: 'Lab Tools',   status: 'active', description: 'Clear polycarbonate lens', image: null },
-        { id: 13, name: 'Denim Jacket (M)',      price: 250, category: 'Clothing',    status: 'active', description: 'Barely worn, good condition', image: null },
-        { id: 14, name: 'Thermodynamics Book',   price: 400, category: 'Books',       status: 'active', description: 'Cengel & Boles 9th ed', image: null },
-        { id: 15, name: 'Breadboard + Wires',    price: 120, category: 'Electronics', status: 'active', description: '830 tie-point breadboard', image: null },
+        { id: 10, name: 'Graph Paper Notebook',  price: 60,  category: 'Books',       status: 'active', condition: 'New',      seller: 'Ana D.',      description: 'Engineering graph pad' },
+        { id: 11, name: 'Soldering Iron Set',    price: 280, category: 'Electronics', status: 'active', condition: 'Like new', seller: 'Marco T.',    description: 'Adjustable temperature' },
+        { id: 12, name: 'Safety Goggles',        price: 75,  category: 'Lab Tools',   status: 'active', condition: 'Good',     seller: 'Reina V.',    description: 'Clear polycarbonate lens' },
+        { id: 13, name: 'Denim Jacket (M)',       price: 250, category: 'Clothing',    status: 'active', condition: 'Used',     seller: 'Cleo R.',     description: 'Barely worn, good condition' },
+        { id: 14, name: 'Thermodynamics Book',   price: 400, category: 'Books',       status: 'active', condition: 'Good',     seller: 'Bea L.',      description: 'Cengel & Boles 9th ed' },
+        { id: 15, name: 'Breadboard + Wires',    price: 120, category: 'Electronics', status: 'active', condition: 'Like new', seller: 'Juno P.',     description: '830 tie-point breadboard' },
       ];
       allItems = [...allItems, ...extras];
       renderGrid(allItems);
