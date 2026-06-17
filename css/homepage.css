@@ -339,6 +339,17 @@ body.darkMode .hp-condition-badge {
   }
 }
 
+@media (max-width: 480px) {
+  .hp-item-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .hp-view-btn {
+    text-align: center;
+  }
+}
+
 
 .hp-adv-filters {
   background: var(--card-bg);
