@@ -263,13 +263,6 @@ body {
   font-size: 14px;
 }
 
-@media (max-width: 850px) {
-  .responsive-row-card {
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-}
-
 @media (max-width: 768px) {
   .main-content {
     padding: 16px 14px 72px;

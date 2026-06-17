@@ -185,25 +185,4 @@
   opacity: 0.8;
 }
 
-@media (max-width: 850px) {
-  .report-reporter {
-    display: none;
-  }
-}
 
-@media (max-width: 900px) {
-  .report-row-card {
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-  .report-reason-section {
-    width: 100%;
-    padding: 0;
-    order: 4;
-  }
-  .report-action-group {
-    flex-direction: row;
-    width: auto;
-    order: 5;
-  }
-}

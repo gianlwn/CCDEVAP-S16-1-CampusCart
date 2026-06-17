@@ -111,8 +111,3 @@
   align-items: center;
 }
 
-@media (max-width: 850px) {
-  .admin-status-badge-zone {
-    flex: none;
-  }
-}

@@ -383,32 +383,10 @@
 }
 
 
-@media (max-width: 1000px) {
-  .listings-content-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 780px) {
-  .listing-form-two-col {
-    grid-template-columns: 1fr;
-  }
-  .listing-form-footer {
-    justify-content: center;
-  }
-  .btn-add-listing {
-    width: 100%;
-  }
-}
-
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .form-row-two {
     grid-template-columns: 1fr;
   }
-}
-
-
-@media (max-width: 600px) {
   .edit-listing-overlay {
     align-items: flex-end !important;
     padding: 0 !important;

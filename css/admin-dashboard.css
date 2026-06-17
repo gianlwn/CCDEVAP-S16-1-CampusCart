@@ -44,8 +44,3 @@
   height: 240px;
 }
 
-@media (max-width: 950px) {
-  .dashboard-grid-2x2 {
-    grid-template-columns: 1fr;
-  }
-}

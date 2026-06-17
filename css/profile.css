@@ -287,12 +287,17 @@
 }
 
 @media (max-width: 768px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .profile-form-card {
+    padding: 20px 16px;
+  }
   .mobile-account-actions {
     display: flex;
     gap: 8px;
     margin-top: 16px;
   }
-
   .mobile-account-actions .admin-dash-btn,
   .mobile-account-actions .signout-btn {
     flex: 1;
@@ -305,32 +310,5 @@
     font-family: inherit;
     cursor: pointer;
     padding: 10px 12px;
-  }
-}
-
-@media (max-width: 900px) {
-  .profile-page-layout {
-    grid-template-columns: 1fr;
-  }
-  .profile-summary-card {
-    flex-direction: row;
-    flex-wrap: wrap;
-    text-align: left;
-    justify-content: flex-start;
-    gap: 20px;
-  }
-  .profile-stats-table {
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: 24px;
-  }
-}
-
-@media (max-width: 640px) {
-  .profile-form-grid {
-    grid-template-columns: 1fr;
-  }
-  .profile-form-card {
-    padding: 20px 16px;
   }
 }
