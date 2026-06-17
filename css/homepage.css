@@ -314,6 +314,27 @@ body.darkMode .hp-condition-badge {
   .hp-hero-text h2 {
     font-size: 18px;
   }
+  .hp-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .hp-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .hp-filter-pills {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  .hp-filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .hp-filter-sep {
+    flex-shrink: 0;
+  }
 }
 
 /* ── Advanced Filters Panel ── */

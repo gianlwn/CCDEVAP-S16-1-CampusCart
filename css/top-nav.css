@@ -168,17 +168,20 @@
   color: var(--text);
 }
 
-.notif-mark-all-btn {
+.notif-panel-header .notif-mark-all-btn {
   background: none;
   border: none;
   color: var(--accent);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 500;
   cursor: pointer;
   font-family: inherit;
   padding: 0;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  opacity: 0.75;
 }
-.notif-mark-all-btn:hover {
+.notif-panel-header .notif-mark-all-btn:hover {
   text-decoration: underline;
 }
 
@@ -229,4 +232,16 @@
   font-size: 10px;
   color: var(--text-muted);
   font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .notif-panel {
+    position: fixed;
+    top: calc(var(--nav-height) + 6px);
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: calc(100vw - 32px);
+    max-width: 340px;
+  }
 }

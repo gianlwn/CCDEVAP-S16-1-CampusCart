@@ -15,7 +15,6 @@ const CATEGORY_BG = {
 };
 
 const CONDITION_COLOR = {
-  'Like new': '#42a364',
   'New': '#7aab8a',
   'Used': '#d4883a',
   'Good': '#7aaac8',
@@ -103,7 +102,7 @@ function openFiltersPanel() {
   panel.id = 'hp-adv-filters';
   panel.className = 'hp-adv-filters';
 
-  const condOpts = ['New', 'Like new', 'Good', 'Used'];
+  const condOpts = ['New', 'Good', 'Used'];
   const checks = condOpts.map(c =>
     `<label class="hp-afp-check"><input type="checkbox" value="${c}" ${_advConditions.includes(c) ? 'checked' : ''}> ${c}</label>`
   ).join('');
@@ -174,11 +173,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const extras = [
         { id: 10, name: 'Graph Paper Notebook', price: 60, category: 'Books', status: 'active', condition: 'New', seller: 'Ana D.', description: 'Engineering graph pad' },
-        { id: 11, name: 'Soldering Iron Set', price: 280, category: 'Electronics', status: 'active', condition: 'Like new', seller: 'Marco T.', description: 'Adjustable temperature' },
+        { id: 11, name: 'Soldering Iron Set', price: 280, category: 'Electronics', status: 'active', condition: 'Good', seller: 'Marco T.', description: 'Adjustable temperature' },
         { id: 12, name: 'Safety Goggles', price: 75, category: 'Lab Tools', status: 'active', condition: 'Good', seller: 'Reina V.', description: 'Clear polycarbonate lens' },
         { id: 13, name: 'Denim Jacket (M)', price: 250, category: 'Clothing', status: 'active', condition: 'Used', seller: 'Cleo R.', description: 'Barely worn, good condition' },
         { id: 14, name: 'Thermodynamics Book', price: 400, category: 'Books', status: 'active', condition: 'Good', seller: 'Bea L.', description: 'Cengel & Boles 9th ed' },
-        { id: 15, name: 'Breadboard + Wires', price: 120, category: 'Electronics', status: 'active', condition: 'Like new', seller: 'Juno P.', description: '830 tie-point breadboard' },
+        { id: 15, name: 'Breadboard + Wires', price: 120, category: 'Electronics', status: 'active', condition: 'Good', seller: 'Juno P.', description: '830 tie-point breadboard' },
       ];
       allItems = [...allItems, ...extras];
       renderGrid(allItems);

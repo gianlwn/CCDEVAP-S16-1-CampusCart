@@ -208,12 +208,17 @@
     }
 
     function deleteRating(id) {
-      if (!confirm('Remove this rating?')) return;
-      allRatings = allRatings.filter(r => r.id !== id);
-      renderList();
-      renderAvg(allRatings);
-      buildDistChart(allRatings);
-      showToast('Removed', 'Rating has been removed.', 'success');
+      showConfirm(
+        'Remove this Rating?',
+        'This will permanently remove the rating. This action cannot be undone.',
+        () => {
+          allRatings = allRatings.filter(r => r.id !== id);
+          renderList();
+          renderAvg(allRatings);
+          buildDistChart(allRatings);
+          showToast('Removed', 'Rating has been removed.', 'success');
+        }
+      );
     }
 
     function _highlightStars(val) {

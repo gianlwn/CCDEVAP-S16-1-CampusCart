@@ -125,7 +125,6 @@
   border-color: var(--accent);
 }
 
-/* Order Summary Card */
 .cart-summary-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -239,5 +238,22 @@
   .cart-summary-card {
     position: static;
     order: -1;
+  }
+  .page-top-only {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-top-only {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .cart-item-name {
+    font-size: 13px;
+  }
+  .cart-item-price {
+    font-size: 13px;
   }
 }

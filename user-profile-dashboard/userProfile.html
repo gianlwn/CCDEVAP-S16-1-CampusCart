@@ -149,7 +149,6 @@
 
       <div class="danger-zone-card">
         <div class="danger-zone-text">
-          <div class="danger-zone-title">Danger Zone</div>
           <div class="danger-zone-desc">Permanently delete your account and all associated data. This action cannot be
             undone.</div>
         </div>
@@ -207,10 +206,14 @@
     }
 
     function handleDeleteAccount() {
-      if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
-        showToast('Account Deleted', 'Your account has been removed.', 'error', 0);
-        setTimeout(() => window.location.href = '../login-path/login.html', 1200);
-      }
+      showConfirm(
+        'Delete Account?',
+        'This will permanently delete your account and all associated data. This action cannot be undone.',
+        () => {
+          showToast('Account Deleted', 'Your account has been removed.', 'error', 0);
+          setTimeout(() => window.location.href = '../login-path/login.html', 1200);
+        }
+      );
     }
 
     function handleHelp() {

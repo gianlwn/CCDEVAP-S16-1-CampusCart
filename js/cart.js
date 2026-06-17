@@ -44,9 +44,6 @@ function renderCart() {
         <p class="cart-item-meta">${item.category}${item.seller ? ' · ' + item.seller : ''}</p>
       </div>
       <p class="cart-item-price">₱${item.price.toLocaleString()}</p>
-      <button class="btn-msg" title="Message seller">
-        ${ICONS.message}
-      </button>
     </div>
   `).join('');
 

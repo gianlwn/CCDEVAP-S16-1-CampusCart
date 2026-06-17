@@ -64,7 +64,7 @@ function loadTopNav() {
           <div id="notif-panel" class="notif-panel">
             <div class="notif-panel-header">
               <span>Notifications</span>
-              <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark all read</button>
+              <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark as all read</button>
             </div>
             <div class="notif-list">${notifItems}</div>
           </div>
@@ -269,7 +269,6 @@ function createClaimedRow(item) {
       </div>
       ${renderStars(item.rating)}
       <span class="badge-status ${cls}">${item.status}</span>
-      <button class="btn-msg" title="Message seller">${ICONS.message}</button>
     </div>
   `;
 }
@@ -294,6 +293,46 @@ function createRatingsRow(item) {
       </div>
     </div>
   `;
+}
+
+const _CONFIRM_ICONS = {
+  trash: `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
+  ban:   `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,
+  unban: `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
+  revoke:`<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>`,
+};
+
+function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 'trash') {
+  const iconPath = _CONFIRM_ICONS[iconKey] || _CONFIRM_ICONS.trash;
+  const overlay = document.createElement('div');
+  overlay.className = 'confirm-overlay';
+  overlay.innerHTML = `
+    <div class="confirm-dialog" role="dialog" aria-modal="true">
+      <div class="confirm-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          ${iconPath}
+        </svg>
+      </div>
+      <div class="confirm-title">${title}</div>
+      <div class="confirm-msg">${message}</div>
+      <div class="confirm-actions">
+        <button class="confirm-cancel">Cancel</button>
+        <button class="confirm-ok">${okLabel}</button>
+      </div>
+    </div>
+  `;
+
+  const close = () => document.body.removeChild(overlay);
+  overlay.querySelector('.confirm-cancel').addEventListener('click', close);
+  overlay.querySelector('.confirm-ok').addEventListener('click', () => {
+    close();
+    onConfirm();
+  });
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  document.body.appendChild(overlay);
+  overlay.querySelector('.confirm-cancel').focus();
 }
 
 function loadClaimedRows(containerId) {

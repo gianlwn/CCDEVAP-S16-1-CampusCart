@@ -170,10 +170,17 @@ function handleAdmin(action, username, email, status, btn) {
             showToast('Already Revoked', `${username}'s access is already revoked.`, 'warning');
             return;
         }
-        if (!confirm(`Revoke admin access for ${username}?`)) return;
-        if (badge) { badge.className = 'badge-pill pill-status-inactive'; badge.textContent = 'Inactive'; }
-        btn.disabled = true;
-        showToast('Access Revoked', `${username}'s admin access has been revoked.`, 'warning');
+        showConfirm(
+            `Revoke Admin Access?`,
+            `Revoke admin access for ${username}? They will no longer be able to manage the platform.`,
+            () => {
+                if (badge) { badge.className = 'badge-pill pill-status-inactive'; badge.textContent = 'Inactive'; }
+                btn.disabled = true;
+                showToast('Access Revoked', `${username}'s admin access has been revoked.`, 'warning');
+            },
+            'Revoke', 'revoke'
+        );
+        return;
     }
 }
 
@@ -299,13 +306,25 @@ function handleUser(action, username, email, dateJoined, status, btn) {
     } else if (action === 'ban') {
         const currentStatus = badge?.textContent.trim().toLowerCase() || status;
         if (currentStatus === 'banned') {
-            if (!confirm(`Unban ${username} and restore their account?`)) return;
-            if (badge) { badge.className = 'badge-pill pill-status-active'; badge.textContent = 'Active'; }
-            showToast('Unbanned', `${username} has been unbanned.`, 'success');
+            showConfirm(
+                `Unban ${username}?`,
+                `This will restore their account and allow them to use CampusCart again.`,
+                () => {
+                    if (badge) { badge.className = 'badge-pill pill-status-active'; badge.textContent = 'Active'; }
+                    showToast('Unbanned', `${username} has been unbanned.`, 'success');
+                },
+                'Unban', 'unban'
+            );
         } else {
-            if (!confirm(`Ban ${username}? This will restrict their account.`)) return;
-            if (badge) { badge.className = 'badge-pill pill-status-banned'; badge.textContent = 'Banned'; }
-            showToast('Banned', `${username} has been banned.`, 'error');
+            showConfirm(
+                `Ban ${username}?`,
+                `This will restrict their account and prevent them from using CampusCart.`,
+                () => {
+                    if (badge) { badge.className = 'badge-pill pill-status-banned'; badge.textContent = 'Banned'; }
+                    showToast('Banned', `${username} has been banned.`, 'error');
+                },
+                'Ban', 'ban'
+            );
         }
     }
 }
@@ -476,8 +495,13 @@ function handleCategory(action, categoryId, btn) {
         if (nameEl) nameEl.textContent = trimmed;
         showToast('Updated', `Category renamed to "${trimmed}".`, 'success');
     } else {
-        if (!confirm('Delete this category?')) return;
-        showToast('Deleted', `Category ${categoryId} removed.`, 'success');
-        if (card) card.remove();
+        showConfirm(
+          'Delete this Category?',
+          'This will permanently remove the category. This action cannot be undone.',
+          () => {
+            showToast('Deleted', `Category ${categoryId} removed.`, 'success');
+            if (card) card.remove();
+          }
+        );
     }
 }
