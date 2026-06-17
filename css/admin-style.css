@@ -6,7 +6,6 @@
   overflow-y: auto;
 }
 
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -37,7 +36,6 @@ body {
   min-width: 0;
 }
 
-
 .sub-header {
   display: flex;
   justify-content: space-between;
@@ -65,7 +63,6 @@ body {
   font-weight: 600;
   font-style: normal;
 }
-
 
 .page-toolbar {
   display: flex;
@@ -95,7 +92,6 @@ body {
   align-items: center;
   gap: 12px;
 }
-
 
 .search-capsule-box {
   display: flex;
@@ -146,7 +142,6 @@ body {
   background: var(--accent-hover);
 }
 
-
 .action-button-group {
   display: flex;
   align-items: center;
@@ -186,7 +181,6 @@ body {
   flex-shrink: 0;
 }
 
-
 .badge-pill {
   display: inline-block;
   padding: 4px 12px;
@@ -212,7 +206,6 @@ body {
   background: var(--danger-bg);
   color: var(--danger-text);
 }
-
 
 .row-card {
   background: var(--card-bg);
@@ -241,7 +234,6 @@ body {
   flex-wrap: wrap;
   gap: 14px;
 }
-
 
 .placeholder-card {
   border: 2px dashed var(--border);
