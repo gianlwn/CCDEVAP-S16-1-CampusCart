@@ -1,5 +1,3 @@
-
-
 const CATEGORY_ICONS = {
   Electronics: ICONS.laptop,
   Books:       ICONS.book,

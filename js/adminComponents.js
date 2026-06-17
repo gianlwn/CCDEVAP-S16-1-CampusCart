@@ -1,5 +1,3 @@
-
-
 let _editTargetCard = null;
 
 function openModal(html) {
