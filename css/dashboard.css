@@ -198,7 +198,11 @@ body.darkMode .kpi-card.kpi-gold .kpi-icon-wrap {
   }
   .donut-wrap {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+  }
+  .chart-container-pie {
+    width: 200px;
+    margin: 0 auto;
   }
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
