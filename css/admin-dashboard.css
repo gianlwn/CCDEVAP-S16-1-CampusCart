@@ -44,3 +44,15 @@
   height: 240px;
 }
 
+@media (max-width: 768px) {
+  .dashboard-grid-2x2 {
+    grid-template-columns: 1fr;
+  }
+  .chart-container {
+    height: 180px;
+  }
+  .analytics-card {
+    padding: 16px;
+  }
+}
+

@@ -191,13 +191,37 @@ body.darkMode .kpi-card.kpi-gold .kpi-icon-wrap {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+  .kpi-card {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .kpi-icon-wrap {
+    width: 36px;
+    height: 36px;
+  }
   .kpi-value {
     font-size: 18px;
   }
   .kpi-label {
     font-size: 10px;
   }
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
   .chart-container {
     height: 160px;
+  }
+  .chart-container-sm {
+    height: 140px;
+  }
+  .donut-wrap {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .chart-container-pie {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto;
   }
 }

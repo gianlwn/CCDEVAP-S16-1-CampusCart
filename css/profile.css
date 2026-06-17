@@ -287,6 +287,13 @@
 }
 
 @media (max-width: 768px) {
+  .profile-page-layout {
+    grid-template-columns: 1fr;
+  }
+  .profile-summary-card {
+    width: 100%;
+    box-sizing: border-box;
+  }
   .profile-stats-table {
     flex-direction: row;
     justify-content: space-around;
