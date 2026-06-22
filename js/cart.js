@@ -18,8 +18,6 @@ let cartItems = [];
 
 function renderCart() {
   const cartList = document.getElementById('cart-list');
-  const cartSummary = document.getElementById('cart-summary');
-  const summaryItems = document.getElementById('summary-items');
 
   if (!cartItems || !cartItems.length) {
     cartList.innerHTML = `
@@ -27,16 +25,11 @@ function renderCart() {
         <div class="empty-icon-svg">${ICONS.cart}</div>
         <p>Your cart is empty.</p>
       </div>`;
-    if (cartSummary) cartSummary.classList.add('hidden');
     return;
   }
 
-
   cartList.innerHTML = cartItems.map(item => `
-    <div class="cart-row">
-      <button class="cart-remove" onclick="removeItem('${item.id}')" title="Remove">
-        ${ICONS.close}
-      </button>
+    <div class="cart-row" id="cart-row-${item.id}">
       <div class="cart-thumb" style="background:${CATEGORY_BG[item.category] || CATEGORY_BG.Others}">
         ${CATEGORY_ICONS[item.category] || CATEGORY_ICONS.Others}
       </div>
@@ -45,37 +38,27 @@ function renderCart() {
         <p class="cart-item-meta">${item.category}${item.seller ? ' · ' + item.seller : ''}</p>
       </div>
       <p class="cart-item-price">₱${item.price.toLocaleString()}</p>
+      <div class="cart-item-actions">
+        <button class="btn-claim-item" onclick="claimItem('${item.id}')">Claim</button>
+        <button class="btn-cancel-item" onclick="cancelItem('${item.id}')">Cancel</button>
+      </div>
     </div>
   `).join('');
-
-  const total = cartItems.reduce((sum, i) => sum + i.price, 0);
-
-
-  if (cartSummary) {
-    cartSummary.classList.remove('hidden');
-    document.getElementById('summary-count').textContent =
-      `${cartItems.length} item${cartItems.length !== 1 ? 's' : ''}`;
-
-    summaryItems.innerHTML = cartItems.map(item => `
-      <div class="summary-item-row">
-        <span class="summary-item-name">${item.name}</span>
-        <span class="summary-item-price">₱${item.price.toLocaleString()}</span>
-      </div>
-    `).join('');
-
-    document.getElementById('cart-total').textContent = `₱${total.toLocaleString()}`;
-  }
 }
 
-function removeItem(id) {
-  cartItems = cartItems.filter(item => String(item.id) !== String(id));
+function claimItem(id) {
+  const item = cartItems.find(i => String(i.id) === String(id));
+  if (!item) return;
+  showToast('Claimed!', `"${item.name}" reserved. Coordinate with the seller to arrange pickup.`, 'success', 4000);
+  cartItems = cartItems.filter(i => String(i.id) !== String(id));
   renderCart();
-  showToast('Removed', 'Item removed from cart.', 'warning');
 }
 
-function handleClaim() {
-  showToast('Claimed!', 'Items reserved. Coordinate with sellers to complete exchange.', 'success', 4000);
-  cartItems = [];
+function cancelItem(id) {
+  const item = cartItems.find(i => String(i.id) === String(id));
+  if (!item) return;
+  showToast('Cancelled', `"${item.name}" has been cancelled and removed from your cart.`, 'warning');
+  cartItems = cartItems.filter(i => String(i.id) !== String(id));
   renderCart();
 }
 

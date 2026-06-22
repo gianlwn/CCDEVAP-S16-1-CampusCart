@@ -156,6 +156,39 @@ function buildCharts(data) {
   const ptColors = soldData.map((_, i) => i === lastSoldI ? '#0E4A44' : '#127C70');
   const ptRadius = soldData.map((_, i) => i === lastSoldI ? 7 : 4);
 
+  const STATUS_COLORS = ['#127C70', '#C98A2E', '#E2643B', '#7A908C'];
+
+  charts.listingStatus = new Chart(document.getElementById('chart-listing-status'), {
+    type: 'doughnut',
+    data: {
+      labels: data.listingStatus.map(d => d.label),
+      datasets: [{
+        data: data.listingStatus.map(d => d.value),
+        backgroundColor: STATUS_COLORS,
+        borderColor: t.cardBg,
+        borderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } }
+      }
+    }
+  });
+
+  const statusLegend = document.getElementById('listing-status-legend');
+  statusLegend.innerHTML = data.listingStatus.map((d, i) => `
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${STATUS_COLORS[i]}"></span>
+      <span class="legend-label">${d.label}</span>
+      <strong class="legend-val">${d.value}</strong>
+    </div>
+  `).join('');
+
   charts.sold = new Chart(document.getElementById('chart-sold'), {
     type: 'line',
     data: {
@@ -196,18 +229,94 @@ function buildCharts(data) {
       }
     }
   });
+
+  charts.earnings = new Chart(document.getElementById('chart-earnings'), {
+    type: 'line',
+    data: {
+      labels: data.earningsMonthly.map(d => d.month),
+      datasets: [{
+        label: 'Earnings (₱)',
+        data: data.earningsMonthly.map(d => d.amount),
+        borderColor: '#C98A2E',
+        backgroundColor: 'rgba(201,138,46,0.09)',
+        pointBackgroundColor: '#C98A2E',
+        pointBorderColor: '#C98A2E',
+        pointRadius: 4,
+        pointHoverRadius: 7,
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          ticks: { color: t.text, callback: v => '₱' + v.toLocaleString() },
+          grid: { color: t.grid },
+          border: { color: t.axisBorder }
+        },
+        x: {
+          ticks: { color: t.text },
+          grid: { color: 'transparent' },
+          border: { color: t.axisBorder }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ₱${ctx.raw.toLocaleString()}` } }
+      }
+    }
+  });
+
+  charts.cartAdds = new Chart(document.getElementById('chart-cart-adds'), {
+    type: 'bar',
+    data: {
+      labels: data.cartAddsByDay.map(d => d.day),
+      datasets: [{
+        label: 'Cart Adds',
+        data: data.cartAddsByDay.map(d => d.count),
+        backgroundColor: 'rgba(226,100,59,0.78)',
+        borderColor: 'transparent',
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          ticks: { color: t.text, stepSize: 1 },
+          grid: { color: t.grid },
+          border: { color: t.axisBorder }
+        },
+        x: {
+          ticks: { color: t.text },
+          grid: { color: 'transparent' },
+          border: { color: t.axisBorder }
+        }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
 }
 
 function refreshChartTheme() {
   const t = getChartTheme();
 
   const gridConfig = {
-    rating: { x: 'transparent', y: t.grid },
-    categories: { x: t.grid, y: 'transparent' },
-    sold: { x: 'transparent', y: t.grid },
+    rating:    { x: 'transparent', y: t.grid },
+    categories:{ x: t.grid, y: 'transparent' },
+    sold:      { x: 'transparent', y: t.grid },
+    earnings:  { x: 'transparent', y: t.grid },
+    cartAdds:  { x: 'transparent', y: t.grid },
   };
 
-  ['rating', 'categories', 'sold'].forEach(key => {
+  ['rating', 'categories', 'sold', 'earnings', 'cartAdds'].forEach(key => {
     const ch = charts[key];
     if (!ch) return;
     ch.options.scales.x.ticks.color = t.text;
@@ -219,10 +328,12 @@ function refreshChartTheme() {
     ch.update('none');
   });
 
-  if (charts.reports) {
-    charts.reports.data.datasets[0].borderColor = t.cardBg;
-    charts.reports.update('none');
-  }
+  ['reports', 'listingStatus'].forEach(key => {
+    const ch = charts[key];
+    if (!ch) return;
+    ch.data.datasets[0].borderColor = t.cardBg;
+    ch.update('none');
+  });
 }
 
 document.addEventListener('themeChanged', refreshChartTheme);

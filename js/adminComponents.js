@@ -1,5 +1,32 @@
 let _editTargetCard = null;
 
+function handleAdminSignOut() {
+  showToast('Signed out', "You've successfully signed out.", 'success', 3000);
+  setTimeout(() => { window.location.href = '../login-path/login.html'; }, 1200);
+}
+
+function renderPagination(containerId, total, currentPage, onPageChange) {
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+  if (totalPages <= 1) return;
+  const existing = document.getElementById(`${containerId}-pagination`);
+  if (existing) existing.remove();
+  const pag = document.createElement('div');
+  pag.id = `${containerId}-pagination`;
+  pag.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:6px;margin-top:18px;flex-wrap:wrap;';
+  const btn = (label, page, disabled = false) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    b.disabled = disabled;
+    b.style.cssText = `padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:${page === currentPage ? 'var(--accent)' : 'var(--card-bg)'};color:${page === currentPage ? '#fff' : 'var(--text)'};cursor:${disabled ? 'default' : 'pointer'};font-size:12px;font-family:inherit;opacity:${disabled ? '0.45' : '1'};transition:all var(--transition);`;
+    if (!disabled && page !== currentPage) b.addEventListener('click', () => onPageChange(page));
+    return b;
+  };
+  pag.appendChild(btn('‹ Prev', currentPage - 1, currentPage === 1));
+  for (let i = 1; i <= totalPages; i++) pag.appendChild(btn(String(i), i));
+  pag.appendChild(btn('Next ›', currentPage + 1, currentPage === totalPages));
+  document.getElementById(containerId).after(pag);
+}
+
 function openModal(html) {
   document.getElementById('cc-modal-overlay')?.remove();
   const overlay = document.createElement('div');
@@ -83,7 +110,7 @@ function loadAdminSideNav(page) {
       <a href="admins.html"           class="nav-item">${ICONS.user}<span class="nav-item-label">Admins</span></a>
     </div>
     <div class="sign-out-box">
-      <a href="../login-path/login.html" class="sign-out-btn">${ICONS.logout}<span class="nav-item-label">Sign Out</span></a>
+      <button class="sign-out-btn" onclick="handleAdminSignOut()">${ICONS.logout}<span class="nav-item-label">Sign Out</span></button>
     </div>
   `;
 
@@ -95,52 +122,92 @@ function loadAdminSideNav(page) {
   if (activeLink) activeLink.classList.add('active');
 }
 
-function displayAdmins() {
+let _adminsArray = [
+  { username: 'Mikyla Kirsten Aguirre', email: 'mikyla_kirsten_aguirre@dlsu.edu.ph', status: 'active' },
+  { username: 'Giancarlo Lawan', email: 'giancarlo_lawan@dlsu.edu.ph', status: 'active' },
+  { username: 'Bernard Florian Llagas', email: 'bernard_florian_llagas@dlsu.edu.ph', status: 'inactive' },
+  { username: 'Sky Hannah Parado', email: 'sky_parado@dlsu.edu.ph', status: 'active' },
+  { username: 'Camille Erika Sarabia', email: 'camille_erika_sarabia@dlsu.edu.ph', status: 'active' },
+];
+let _adminPage = 1;
+
+function renderAdminPage() {
   const container = document.getElementById('admins-stack-list');
   if (!container) return;
+  const start = (_adminPage - 1) * ITEMS_PER_PAGE;
+  const slice = _adminsArray.slice(start, start + ITEMS_PER_PAGE);
 
-
-  const adminsArray = [
-    { username: 'Mikyla Kirsten Aguirre', email: 'mikyla_kirsten_aguirre@dlsu.edu.ph', status: 'active' },
-    { username: 'Giancarlo Lawan', email: 'giancarlo_lawan@dlsu.edu.ph', status: 'active' },
-    { username: 'Bernard Florian Llagas', email: 'bernard_florian_llagas@dlsu.edu.ph', status: 'inactive' },
-    { username: 'Sky Hannah Parado', email: 'sky_parado@dlsu.edu.ph', status: 'active' },
-    { username: 'Camille Erika Sarabia', email: 'camille_erika_sarabia@dlsu.edu.ph', status: 'active' },
-  ];
-
-  if (!adminsArray.length) {
+  if (!_adminsArray.length) {
     container.innerHTML = `<div class="empty-msg">No administrators found. Click "Add Administrator" to create one.</div>`;
-  } else {
-    container.innerHTML = adminsArray.map(admin => {
-      const isActive = admin.status?.toLowerCase() === 'active';
-      const badgeClass = isActive ? 'pill-status-active' : 'pill-status-inactive';
-      const statusText = isActive ? 'Active' : 'Inactive';
-      return `
-        <div class="admin-identity-row-card responsive-row-card">
-          <div class="avatar-wireframe-box"></div>
-          <div class="admin-text-details">
-            <span class="admin-display-name">${admin.username}</span>
-            <span class="admin-display-email">${admin.email}</span>
-          </div>
-          <div class="admin-status-badge-zone">
-            <span class="badge-pill ${badgeClass}">${statusText}</span>
-          </div>
-          <div class="action-button-group">
-            <button class="action-trigger edit-trigger-btn"
-              onclick="handleAdmin('edit','${admin.username}','${admin.email}','${admin.status}',this)">
-              ${ICONS.edit} Edit
-            </button>
-            <div class="button-inner-divider"></div>
-            <button class="action-trigger revoke-trigger-btn"
-              onclick="handleAdmin('revoke','${admin.username}','${admin.email}','${admin.status}',this)">
-              ${ICONS.userSlash} Revoke
-            </button>
-          </div>
-        </div>`;
-    }).join('');
+    return;
   }
+  container.innerHTML = slice.map(admin => {
+    const isActive = admin.status?.toLowerCase() === 'active';
+    const badgeClass = isActive ? 'pill-status-active' : 'pill-status-inactive';
+    const statusText = isActive ? 'Active' : 'Inactive';
+    return `
+      <div class="admin-identity-row-card responsive-row-card">
+        <div class="avatar-wireframe-box"></div>
+        <div class="admin-text-details">
+          <span class="admin-display-name">${admin.username}</span>
+          <span class="admin-display-email">${admin.email}</span>
+        </div>
+        <div class="admin-status-badge-zone">
+          <span class="badge-pill ${badgeClass}">${statusText}</span>
+        </div>
+        <div class="action-button-group">
+          <button class="action-trigger edit-trigger-btn"
+            onclick="handleAdmin('edit','${admin.username}','${admin.email}','${admin.status}',this)">
+            ${ICONS.edit} Edit
+          </button>
+          <div class="button-inner-divider"></div>
+          <button class="action-trigger revoke-trigger-btn"
+            onclick="handleAdmin('revoke','${admin.username}','${admin.email}','${admin.status}',this)">
+            ${ICONS.userSlash} Revoke
+          </button>
+        </div>
+      </div>`;
+  }).join('');
 
+  renderPagination('admins-stack-list', _adminsArray.length, _adminPage, p => { _adminPage = p; renderAdminPage(); });
   initSearch('.admin-identity-row-card');
+}
+
+function displayAdmins() {
+  renderAdminPage();
+
+  const addBtn = document.querySelector('.add-admin-action-btn');
+  if (addBtn) addBtn.onclick = () => openAddAdminModal();
+}
+
+function openAddAdminModal() {
+  openModal(`
+    <h3 style="${MS.title}">Add Administrator</h3>
+    <div style="${MS.body}">
+      <div style="${MS.row}">
+        <label style="${MS.label}">Full Name</label>
+        <input id="modal-new-admin-name" type="text" placeholder="e.g. Juan dela Cruz" style="${MS.input}">
+      </div>
+      <div style="${MS.row}">
+        <label style="${MS.label}">School Email</label>
+        <input id="modal-new-admin-email" type="email" placeholder="account@dlsu.edu.ph" style="${MS.input}">
+      </div>
+    </div>
+    <div style="${MS.footer}">
+      <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
+      <button onclick="saveNewAdmin()" style="${MS.primary}">Add Administrator</button>
+    </div>
+  `);
+}
+
+function saveNewAdmin() {
+  const name = document.getElementById('modal-new-admin-name')?.value.trim();
+  const email = document.getElementById('modal-new-admin-email')?.value.trim();
+  if (!name || !email) { showToast('Error', 'Name and email are required.', 'error'); return; }
+  _adminsArray.push({ username: name, email, status: 'active' });
+  closeModal();
+  renderAdminPage();
+  showToast('Added', `${name} has been added as an administrator.`, 'success');
 }
 
 function handleAdmin(action, username, email, status, btn) {
@@ -198,19 +265,23 @@ function saveAdminEdit() {
   showToast('Saved', 'Administrator updated successfully.', 'success');
 }
 
+const _usersArray = [
+  { username: 'Andie Kirsten Woo', email: 'andie_woo@dlsu.edu.ph', dateJoined: 'Jun 12, 2026', status: 'active' },
+  { username: 'Alexa Nicole Pleyto', email: 'alexa_pleyto@dlsu.edu.ph', dateJoined: 'May 28, 2026', status: 'suspended' },
+  { username: 'Christine Cote', email: 'tintin_cote@dlsu.edu.ph', dateJoined: 'Apr 04, 2026', status: 'banned' },
+];
+let _usersPage = 1;
+
 function displayUsers() {
   const container = document.getElementById('users-stack-list');
   if (!container) return;
 
+  const start = (_usersPage - 1) * ITEMS_PER_PAGE;
+  const usersArray = _usersArray.slice(start, start + ITEMS_PER_PAGE);
 
-  const usersArray = [
-    { username: 'Andie Kirsten Woo', email: 'andie_woo@dlsu.edu.ph', dateJoined: 'Jun 12, 2026', status: 'active' },
-    { username: 'Alexa Nicole Pleyto', email: 'alexa_pleyto@dlsu.edu.ph', dateJoined: 'May 28, 2026', status: 'suspended' },
-    { username: 'Christine Cote', email: 'tintin_cote@dlsu.edu.ph', dateJoined: 'Apr 04, 2026', status: 'banned' },
-  ];
-
-  if (!usersArray.length) {
+  if (!_usersArray.length) {
     container.innerHTML = `<div class="empty-msg">No users found.</div>`;
+    return;
   } else {
     container.innerHTML = usersArray.map(user => {
       const isActive = user.status?.toLowerCase() === 'active';
@@ -251,6 +322,7 @@ function displayUsers() {
     }).join('');
   }
 
+  renderPagination('users-stack-list', _usersArray.length, _usersPage, p => { _usersPage = p; displayUsers(); });
   initUserSearch();
 }
 
@@ -347,39 +419,77 @@ function saveUserEdit(username) {
   showToast('Updated', `${username}'s status has been updated.`, 'success');
 }
 
-function displayListingApprovals() {
+const _listingApprovalsArray = [
+  { productName: 'Casio FX-991EX', listingId: 'LST-1001', price: 250, seller: 'Kathryn Bernardo', category: 'Electronics', condition: 'Good', description: 'Scientific calculator in great condition. Minor scratches on the back. Comes with the original case.', images: ['Photo 1', 'Photo 2', 'Photo 3'] },
+  { productName: 'Chemistry Lab Kit', listingId: 'LST-1002', price: 950, seller: 'Kimi Antonelli', category: 'Lab Tools', condition: 'New', description: 'Brand new lab kit, never opened. Bought for CHEM1 but ended up not using it.', images: ['Photo 1', 'Photo 2'] },
+  { productName: 'Engineering Mechanics Textbook', listingId: 'LST-1003', price: 500, seller: 'Garrett Graham', category: 'Books', condition: 'Used', description: 'Meriam & Kraige, 7th edition. Pages are highlighted but still very readable.', images: ['Photo 1'] },
+  { productName: 'DLSU PE Uniform Set', listingId: 'LST-1004', price: 310, seller: 'Jeron Teng', category: 'Clothing', condition: 'Good', description: 'XL size, worn only a few times. Washed and clean.', images: ['Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'] },
+];
+
+let _approvalPage = 1;
+
+function renderApprovalPage() {
   const container = document.getElementById('approval-grid');
   if (!container) return;
+  const start = (_approvalPage - 1) * ITEMS_PER_PAGE;
+  const slice = _listingApprovalsArray.slice(start, start + ITEMS_PER_PAGE);
 
-  const listingApprovalsArray = [
-    { productName: 'Test Product', listingId: 'LST-1001', price: 250, seller: 'Kathryn Bernardo' },
-    { productName: 'Test Product', listingId: 'LST-1002', price: 950, seller: 'Kimi Antonelli' },
-    { productName: 'Test Product', listingId: 'LST-1003', price: 500.50, seller: 'Garrett Graham' },
-    { productName: 'Test Product', listingId: 'LST-1004', price: 310, seller: 'Jeron Teng' },
-  ];
-
-  if (!listingApprovalsArray.length) {
+  if (!slice.length) {
     container.innerHTML = `<div class="empty-msg">No listings needed for approval.</div>`;
-  } else {
-    container.innerHTML = listingApprovalsArray.map(listing => `
-      <div class="listing-card">
-        <div class="card-top">
-          <div class="listing-image"></div>
-          <div class="listing-info">
-            <h2>${listing.productName}</h2>
-            <p>${listing.listingId}</p>
-            <p>PHP ${listing.price.toFixed(2)}</p>
-            <p>${listing.seller}</p>
-            <span class="status-badge">Pending Approval</span>
-          </div>
-        </div>
-        <div class="listing-actions">
-          <button class="approve-btn" onclick="handleApproval('approve','${listing.listingId}',this)">${ICONS.check} Approve</button>
-          <button class="reject-btn"  onclick="handleApproval('reject', '${listing.listingId}',this)">${ICONS.close} Reject</button>
+    return;
+  }
+  container.innerHTML = slice.map(listing => `
+    <div class="listing-card" id="listing-card-${listing.listingId}">
+      <div class="card-top">
+        <div class="listing-image"></div>
+        <div class="listing-info">
+          <h2>${listing.productName}</h2>
+          <p>${listing.listingId}</p>
+          <p>PHP ${listing.price.toFixed(2)}</p>
+          <p>${listing.seller}</p>
+          <span class="status-badge">Pending Approval</span>
         </div>
       </div>
-    `).join('');
-  }
+      <div class="listing-actions">
+        <button class="view-details-btn" onclick="viewListingDetails('${listing.listingId}')">${ICONS.eye} View Details</button>
+        <button class="approve-btn" onclick="handleApproval('approve','${listing.listingId}',this)">${ICONS.check} Approve</button>
+        <button class="reject-btn"  onclick="handleApproval('reject', '${listing.listingId}',this)">${ICONS.close} Reject</button>
+      </div>
+    </div>
+  `).join('');
+
+  renderPagination('approval-grid', _listingApprovalsArray.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); });
+}
+
+function displayListingApprovals() {
+  renderApprovalPage();
+}
+
+function viewListingDetails(listingId) {
+  const listing = _listingApprovalsArray.find(l => l.listingId === listingId);
+  if (!listing) return;
+  const photosHtml = listing.images.map((_, i) =>
+    `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">Photo ${i+1}</div>`
+  ).join('');
+  openModal(`
+    <h3 style="${MS.title}">Listing Details</h3>
+    <div style="${MS.body}">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">${photosHtml}</div>
+      <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.productName}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="${MS.row}"><span style="${MS.label}">Listing ID</span><span style="font-size:13px;color:var(--text-muted);">${listing.listingId}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${listing.category}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
+        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
+        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description}</span></div>
+      </div>
+    </div>
+    <div style="${MS.footer}">
+      <button onclick="closeModal()" style="${MS.cancel}">Close</button>
+      <button onclick="closeModal();handleApproval('approve','${listing.listingId}',document.querySelector('#listing-card-${listing.listingId} .approve-btn'))" style="${MS.primary}">Approve</button>
+    </div>
+  `);
 }
 
 function handleApproval(action, listingId, btn) {
@@ -393,62 +503,116 @@ function handleApproval(action, listingId, btn) {
   btn.closest('.listing-actions').querySelectorAll('button').forEach(b => b.disabled = true);
 }
 
-function displayCategories() {
+let _categoriesArray = [
+  { categoryName: 'Electronics' },
+  { categoryName: 'Clothing' },
+  { categoryName: 'School Supplies' },
+  { categoryName: 'Books' },
+];
+
+const ITEMS_PER_PAGE = 12;
+let _catPage = 1;
+
+function renderCategoryPage() {
   const container = document.getElementById('category-grid');
   if (!container) return;
 
-  const categoriesArray = [
-    { categoryName: 'Electronics', categoryId: 'CTG-1001' },
-    { categoryName: 'Clothing', categoryId: 'CTG-1002' },
-    { categoryName: 'School Supplies', categoryId: 'CTG-1003' },
-    { categoryName: 'Books', categoryId: 'CTG-1004' },
-  ];
+  const start = (_catPage - 1) * ITEMS_PER_PAGE;
+  const slice = _categoriesArray.slice(start, start + ITEMS_PER_PAGE);
 
-  if (!categoriesArray.length) {
-    container.innerHTML = `<div class="empty-msg">No categories found.</div>`;
-  } else {
-    container.innerHTML = categoriesArray.map(category => `
-      <div class="category-card">
-        <div class="card-top">
-          <div class="category-image"></div>
-          <div class="category-info">
-            <h2>${category.categoryName}</h2>
-            <p>${category.categoryId}</p>
-          </div>
-        </div>
-        <div class="category-actions">
-          <button class="edit-btn"   onclick="handleCategory('edit',  '${category.categoryId}',this)">${ICONS.edit}  Edit</button>
-          <button class="delete-btn" onclick="handleCategory('delete','${category.categoryId}',this)">${ICONS.trash} Delete</button>
-        </div>
-      </div>
-    `).join('');
+  if (!_categoriesArray.length) {
+    container.innerHTML = `<div class="empty-msg">No categories found. Click "+ Add New Category" to create one.</div>`;
+    return;
   }
 
+  container.innerHTML = slice.map(category => `
+    <div class="category-card">
+      <div class="category-info">
+        <h2>${category.categoryName}</h2>
+      </div>
+      <div class="category-actions">
+        <button class="edit-btn"   onclick="handleCategory('edit',  '${category.categoryName}',this)">${ICONS.edit}  Edit</button>
+        <button class="delete-btn" onclick="handleCategory('delete','${category.categoryName}',this)">${ICONS.trash} Delete</button>
+      </div>
+    </div>
+  `).join('');
+
+  renderPagination('category-grid', _categoriesArray.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); });
   initSearch('.category-card');
 }
 
-function handleCategory(action, categoryId, btn) {
+function displayCategories() {
+  renderCategoryPage();
+
+  const addBtn = document.querySelector('.add-category-btn');
+  if (addBtn) addBtn.onclick = () => openAddCategoryModal();
+}
+
+function openAddCategoryModal() {
+  openModal(`
+    <h3 style="${MS.title}">Add New Category</h3>
+    <div style="${MS.body}">
+      <div style="${MS.row}">
+        <label style="${MS.label}">Category Name</label>
+        <input id="modal-cat-name" type="text" placeholder="e.g. Lab Supplies" style="${MS.input}">
+      </div>
+    </div>
+    <div style="${MS.footer}">
+      <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
+      <button onclick="saveNewCategory()" style="${MS.primary}">Add Category</button>
+    </div>
+  `);
+}
+
+function saveNewCategory() {
+  const name = document.getElementById('modal-cat-name')?.value.trim();
+  if (!name) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
+  _categoriesArray.push({ categoryName: name });
+  closeModal();
+  renderCategoryPage();
+  showToast('Added', `Category "${name}" created.`, 'success');
+}
+
+function handleCategory(action, categoryName, btn) {
   const card = btn.closest('.category-card');
   const nameEl = card?.querySelector('h2');
 
   if (action === 'edit') {
-    const current = nameEl?.textContent.trim() || '';
-    const newName = prompt('Rename category:', current);
-    if (newName === null) return;
-    const trimmed = newName.trim();
-    if (!trimmed) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
-    if (nameEl) nameEl.textContent = trimmed;
-    showToast('Updated', `Category renamed to "${trimmed}".`, 'success');
+    const current = nameEl?.textContent.trim() || categoryName;
+    openModal(`
+      <h3 style="${MS.title}">Edit Category</h3>
+      <div style="${MS.body}">
+        <div style="${MS.row}">
+          <label style="${MS.label}">Category Name</label>
+          <input id="modal-edit-cat-name" type="text" value="${current}" style="${MS.input}">
+        </div>
+      </div>
+      <div style="${MS.footer}">
+        <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
+        <button onclick="saveEditCategory('${current}')" style="${MS.primary}">Save</button>
+      </div>
+    `);
   } else {
     showConfirm(
       'Delete this Category?',
-      'This will permanently remove the category. This action cannot be undone.',
+      `Remove "${categoryName}"? This action cannot be undone.`,
       () => {
-        showToast('Deleted', `Category ${categoryId} removed.`, 'success');
-        if (card) card.remove();
+        _categoriesArray = _categoriesArray.filter(c => c.categoryName !== categoryName);
+        showToast('Deleted', `"${categoryName}" removed.`, 'success');
+        renderCategoryPage();
       }
     );
   }
+}
+
+function saveEditCategory(oldName) {
+  const newName = document.getElementById('modal-edit-cat-name')?.value.trim();
+  if (!newName) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
+  const cat = _categoriesArray.find(c => c.categoryName === oldName);
+  if (cat) cat.categoryName = newName;
+  closeModal();
+  renderCategoryPage();
+  showToast('Updated', `Category renamed to "${newName}".`, 'success');
 }
 
 function displayReports() {
