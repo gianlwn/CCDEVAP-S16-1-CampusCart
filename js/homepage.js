@@ -20,7 +20,7 @@ const CONDITION_COLOR = {
   'Good': '#7aaac8',
 };
 
-const HP_ITEMS_PER_PAGE = 10;
+const HP_ITEMS_PER_PAGE = 15;
 let allItems = [];
 let _filteredItems = [];
 let _hpPage = 1;
