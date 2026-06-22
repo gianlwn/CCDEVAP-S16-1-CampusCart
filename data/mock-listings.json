@@ -128,5 +128,83 @@
     "image": null,
     "reports": 0,
     "created": "2026-05-05"
+  },
+  {
+    "id": 16,
+    "name": "Engineering Drawing Set",
+    "price": 180,
+    "category": "Lab Tools",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Pat M.",
+    "description": "Complete drafting set: compass, protractor, set squares, ruler. Used for one term.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-05-12"
+  },
+  {
+    "id": 17,
+    "name": "Fluid Mechanics Textbook",
+    "price": 350,
+    "category": "Books",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Chris B.",
+    "description": "Munson, Young & Okiishi 8th edition. Light pencil marks only, all pages intact.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-04-22"
+  },
+  {
+    "id": 18,
+    "name": "Black Polo Shirt (L)",
+    "price": 90,
+    "category": "Clothing",
+    "status": "active",
+    "condition": "Used",
+    "seller": "Zara N.",
+    "description": "Plain black polo, size large. Washed and ironed, no stains.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-06-01"
+  },
+  {
+    "id": 19,
+    "name": "USB-C Hub (7-in-1)",
+    "price": 500,
+    "category": "Electronics",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Ian F.",
+    "description": "HDMI 4K, 3x USB-A, SD/TF card reader, 100W PD pass-through. Works perfectly.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-03-30"
+  },
+  {
+    "id": 20,
+    "name": "Data Structures & Algorithms",
+    "price": 420,
+    "category": "Books",
+    "status": "active",
+    "condition": "New",
+    "seller": "Jana K.",
+    "description": "Cormen CLRS 4th edition, sealed. Bought as backup, never opened.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-06-10"
+  },
+  {
+    "id": 21,
+    "name": "Lab Manual (CHEM101)",
+    "price": 50,
+    "category": "Books",
+    "status": "active",
+    "condition": "Used",
+    "seller": "Eli G.",
+    "description": "Filled out but all experiments are complete. Great reference for future lab reports.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-06-15"
   }
 ]
