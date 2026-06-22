@@ -112,9 +112,14 @@ function loadSideNav() {
             <span class="nav-item-icon">${ICONS.overview}</span>Overview
           </a>
         </li>
-        <li class="${a('userListings')}">
+        <li class="${a('userListings') || a('addListing')}">
           <a href="../user-profile-dashboard/userListings.html">
             <span class="nav-item-icon">${ICONS.tag}</span>Listings
+          </a>
+        </li>
+        <li class="${a('claimed')}">
+          <a href="../user-profile-dashboard/claimed.html">
+            <span class="nav-item-icon">${ICONS.bag}</span>Claimed
           </a>
         </li>
         <li class="${a('userProfile')}">
@@ -123,12 +128,6 @@ function loadSideNav() {
           </a>
         </li>
       </ul>
-      <div class="sidebar-top-action">
-        <a href="../user-profile-dashboard/userListings.html" class="btn-add-listing-nav">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add Listing
-        </a>
-      </div>
       <div class="sidebar-bottom">
         <button class="admin-dash-btn" onclick="window.location.href='../admin-dashboard/adminDashboard.html'">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -151,8 +150,11 @@ function loadBottomNav() {
     <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard.html')}">
       <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
     </a>
-    <a href="../user-profile-dashboard/userListings.html" class="${a('userListings')}">
+    <a href="../user-profile-dashboard/userListings.html" class="${a('userListings') || a('addListing')}">
       <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
+    </a>
+    <a href="../user-profile-dashboard/claimed.html" class="${a('claimed')}">
+      <span class="nav-icon">${ICONS.bag}</span><span>Claimed</span>
     </a>
     <a href="../user-profile-dashboard/userProfile.html" class="${a('userProfile')}">
       <span class="nav-icon">${ICONS.user}</span><span>Profile</span>
@@ -272,8 +274,8 @@ const _CONFIRM_ICONS = {
 };
 
 function handleSignOut() {
-  showToast('Signed out', "You've successfully signed out.", 'success', 3000);
-  setTimeout(() => { window.location.href = '../login-path/login.html'; }, 1200);
+  sessionStorage.setItem('cc_signout', '1');
+  window.location.href = '../login-path/login.html';
 }
 
 function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 'trash') {

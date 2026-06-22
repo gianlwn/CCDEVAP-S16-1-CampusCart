@@ -7,7 +7,7 @@
     "status": "active",
     "condition": "Used",
     "seller": "Mara R.",
-    "description": "Casio FX-991EX, bought last year.",
+    "description": "Casio FX-991EX, bought last year. Works perfectly, complete with case.",
     "image": null,
     "reports": 0,
     "created": "2026-6-7"
@@ -50,5 +50,83 @@
     "image": null,
     "reports": 0,
     "created": "2025-09-15"
+  },
+  {
+    "id": 10,
+    "name": "Graph Paper Notebook",
+    "price": 60,
+    "category": "Books",
+    "status": "active",
+    "condition": "New",
+    "seller": "Ana D.",
+    "description": "Engineering graph pad, 50 sheets. Great for technical drawings and charting.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-05-20"
+  },
+  {
+    "id": 11,
+    "name": "Soldering Iron Set",
+    "price": 280,
+    "category": "Electronics",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Marco T.",
+    "description": "Adjustable temperature soldering iron with stand and solder wire. Used for one semester.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-04-10"
+  },
+  {
+    "id": 12,
+    "name": "Safety Goggles",
+    "price": 75,
+    "category": "Lab Tools",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Reina V.",
+    "description": "Clear polycarbonate lens, anti-fog. Compliant with DLSU lab requirements.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-03-15"
+  },
+  {
+    "id": 13,
+    "name": "Denim Jacket (M)",
+    "price": 250,
+    "category": "Clothing",
+    "status": "active",
+    "condition": "Used",
+    "seller": "Cleo R.",
+    "description": "Barely worn, good condition. Classic medium wash denim. Size M, fits true to size.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-02-28"
+  },
+  {
+    "id": 14,
+    "name": "Thermodynamics Book",
+    "price": 400,
+    "category": "Books",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Bea L.",
+    "description": "Cengel & Boles 9th edition. Some highlighting, no missing pages.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-01-18"
+  },
+  {
+    "id": 15,
+    "name": "Breadboard + Wires",
+    "price": 120,
+    "category": "Electronics",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Juno P.",
+    "description": "830 tie-point breadboard with full set of jumper wires (M-M, M-F, F-F). Great for circuits.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-05-05"
   }
 ]

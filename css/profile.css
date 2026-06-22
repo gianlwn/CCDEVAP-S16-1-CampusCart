@@ -140,7 +140,7 @@
   padding-bottom: 22px;
   border-bottom: 1px solid var(--border);
 }
-.form-section:last-of-type {
+.form-section:nth-last-child(2) {
   border-bottom: none;
   margin-bottom: 0;
   padding-bottom: 0;
@@ -171,7 +171,34 @@
   gap: 10px;
   padding-top: 20px;
   margin-top: 20px;
-  border-top: 1px solid var(--border);
+}
+
+.pw-input-wrap {
+  position: relative;
+}
+.pw-input-wrap .form-input {
+  padding-right: 38px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.btn-pw-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  transition: color var(--transition);
+}
+.btn-pw-toggle:hover {
+  color: var(--accent);
 }
 
 .danger-zone-card {

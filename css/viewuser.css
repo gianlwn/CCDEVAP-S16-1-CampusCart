@@ -1,0 +1,171 @@
+.vu-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 16px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition);
+  margin-bottom: 24px;
+}
+.vu-back-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.vu-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.vu-profile-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  backdrop-filter: blur(10px) saturate(1.12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.12);
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+.vu-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  border: 3px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.vu-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+
+.vu-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--star-fill);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.vu-school {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.vu-bio {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+.vu-stats-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 4px 0;
+}
+
+.vu-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.vu-stat-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+.vu-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.vu-main-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vu-section-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(10px) saturate(1.12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.12);
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+@media (max-width: 900px) {
+  .vu-layout {
+    grid-template-columns: 1fr;
+  }
+  .vu-profile-card {
+    flex-direction: row;
+    text-align: left;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .vu-stats-row {
+    justify-content: flex-start;
+    gap: 28px;
+    border-top: none;
+    border-bottom: none;
+    padding: 0;
+    margin: 0;
+  }
+  .vu-bio {
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .vu-profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .vu-stats-row {
+    justify-content: space-around;
+    width: 100%;
+  }
+}

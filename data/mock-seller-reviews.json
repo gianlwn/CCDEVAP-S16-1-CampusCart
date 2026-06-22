@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "listingId": 1,
+    "item": "Scientific Calculator",
+    "buyer": "Ria M.",
+    "rating": 5,
+    "review": "Item was exactly as described. Super fast response and easy pickup!",
+    "date": "2026-05-10"
+  },
+  {
+    "id": 2,
+    "listingId": 2,
+    "item": "Purple T-Shirt",
+    "buyer": "Geo C.",
+    "rating": 4,
+    "review": "Good condition, fits well. Seller was very accommodating.",
+    "date": "2026-05-18"
+  },
+  {
+    "id": 3,
+    "listingId": 3,
+    "item": "Lab Gown (Size L)",
+    "buyer": "Anna P.",
+    "rating": 5,
+    "review": "Clean and exactly as described. Would buy from this seller again.",
+    "date": "2026-04-02"
+  },
+  {
+    "id": 4,
+    "listingId": 4,
+    "item": "Arduino Uno Kit",
+    "buyer": "Dan R.",
+    "rating": 3,
+    "review": "Took a while to coordinate pickup but item was complete.",
+    "date": "2026-03-14"
+  }
+]

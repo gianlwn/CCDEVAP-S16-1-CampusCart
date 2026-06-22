@@ -5,31 +5,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CampusCart | Cart</title>
+  <title>CampusCart | Item Details</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/top-nav.css">
   <link rel="stylesheet" href="../css/toast.css">
-  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/itempage.css">
 </head>
 
 <body>
 
   <div id="top-nav"></div>
+
   <div class="page-top-only">
-    <h1 class="page-title">Cart</h1>
-
-    <div class="cart-list" id="cart-list">
-      <p class="loading-text">Loading…</p>
+    <button class="ip-back-btn" onclick="history.back()">&#8592; Back to Listings</button>
+    <div id="ip-layout-wrap">
+      <p class="loading-text">Loading item…</p>
     </div>
-    <div id="cart-pagination"></div>
-
   </div>
 
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/main.js"></script>
-  <script src="../js/cart.js"></script>
+  <script src="../js/itempage.js"></script>
 
 </body>
 

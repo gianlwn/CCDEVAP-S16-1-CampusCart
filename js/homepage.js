@@ -20,7 +20,10 @@ const CONDITION_COLOR = {
   'Good': '#7aaac8',
 };
 
+const HP_ITEMS_PER_PAGE = 10;
 let allItems = [];
+let _filteredItems = [];
+let _hpPage = 1;
 let activeFilter = 'all';
 
 let _advConditions = [];
@@ -28,19 +31,30 @@ let _advMinPrice = 0;
 let _advMaxPrice = Infinity;
 
 function renderGrid(items) {
+  _filteredItems = items;
+  _hpPage = 1;
+  _renderHpPage();
+}
+
+function _renderHpPage() {
   const grid = document.getElementById('item-grid');
+  const pag = document.getElementById('hp-pagination');
   if (!grid) return;
 
-  if (!items.length) {
+  const start = (_hpPage - 1) * HP_ITEMS_PER_PAGE;
+  const pageItems = _filteredItems.slice(start, start + HP_ITEMS_PER_PAGE);
+
+  if (!_filteredItems.length) {
     grid.innerHTML = `
       <div class="empty-state" style="grid-column:1/-1">
         <div class="empty-icon-svg">${ICONS.search}</div>
         <p>No items found.</p>
       </div>`;
+    if (pag) pag.innerHTML = '';
     return;
   }
 
-  grid.innerHTML = items.map(item => {
+  grid.innerHTML = pageItems.map(item => {
     const bg = CATEGORY_BG[item.category] || CATEGORY_BG.Others;
     const cond = item.condition || 'Available';
     const dotColor = CONDITION_COLOR[cond] || '#9e9084';
@@ -62,11 +76,33 @@ function renderGrid(items) {
           <p class="hp-item-seller">${ICONS.user} ${seller}</p>
           <div class="hp-item-footer">
             <p class="hp-item-price">₱${item.price}</p>
-            <button class="hp-view-btn" onclick="event.stopPropagation();viewItem(${item.id})">Add to Cart</button>
+            <button class="hp-view-btn" onclick="event.stopPropagation();addToCart(${item.id})">Add to Cart</button>
           </div>
         </div>
       </div>`;
   }).join('');
+
+  if (pag) _renderHpPagination(pag);
+}
+
+function _renderHpPagination(pag) {
+  const totalPages = Math.ceil(_filteredItems.length / HP_ITEMS_PER_PAGE);
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+
+  let btns = `<button class="pg-btn${_hpPage === 1 ? ' pg-disabled' : ''}" onclick="_hpPageTo(${_hpPage - 1})">&#8592;</button>`;
+  for (let p = 1; p <= totalPages; p++) {
+    btns += `<button class="pg-btn${p === _hpPage ? ' pg-active' : ''}" onclick="_hpPageTo(${p})">${p}</button>`;
+  }
+  btns += `<button class="pg-btn${_hpPage === totalPages ? ' pg-disabled' : ''}" onclick="_hpPageTo(${_hpPage + 1})">&#8594;</button>`;
+  pag.innerHTML = `<div class="pg-wrap">${btns}</div>`;
+}
+
+function _hpPageTo(p) {
+  const totalPages = Math.ceil(_filteredItems.length / HP_ITEMS_PER_PAGE);
+  if (p < 1 || p > totalPages) return;
+  _hpPage = p;
+  _renderHpPage();
+  document.getElementById('item-grid')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function filterBy(cat, btn) {
@@ -155,7 +191,14 @@ function resetAdvFilters() {
 }
 
 function viewItem(id) {
-  showToast('Item Details', 'Item detail page coming soon!', 'info');
+  const item = allItems.find(i => i.id === id);
+  if (item) sessionStorage.setItem('cc_item', JSON.stringify(item));
+  window.location.href = 'itempage.html?id=' + id;
+}
+
+function addToCart(id) {
+  const item = allItems.find(i => i.id === id);
+  showToast('Added to Cart', `"${item ? item.name : 'Item'}" added to your cart.`, 'success');
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -174,16 +217,6 @@ document.addEventListener('DOMContentLoaded', function () {
           condition: i.condition || 'Used',
         }));
 
-
-      const extras = [
-        { id: 10, name: 'Graph Paper Notebook', price: 60, category: 'Books', status: 'active', condition: 'New', seller: 'Ana D.', description: 'Engineering graph pad' },
-        { id: 11, name: 'Soldering Iron Set', price: 280, category: 'Electronics', status: 'active', condition: 'Good', seller: 'Marco T.', description: 'Adjustable temperature' },
-        { id: 12, name: 'Safety Goggles', price: 75, category: 'Lab Tools', status: 'active', condition: 'Good', seller: 'Reina V.', description: 'Clear polycarbonate lens' },
-        { id: 13, name: 'Denim Jacket (M)', price: 250, category: 'Clothing', status: 'active', condition: 'Used', seller: 'Cleo R.', description: 'Barely worn, good condition' },
-        { id: 14, name: 'Thermodynamics Book', price: 400, category: 'Books', status: 'active', condition: 'Good', seller: 'Bea L.', description: 'Cengel & Boles 9th ed' },
-        { id: 15, name: 'Breadboard + Wires', price: 120, category: 'Electronics', status: 'active', condition: 'Good', seller: 'Juno P.', description: '830 tie-point breadboard' },
-      ];
-      allItems = [...allItems, ...extras];
       renderGrid(allItems);
     })
     .catch(() => showToast('Error', 'Could not load listings.', 'error'));

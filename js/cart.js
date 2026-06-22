@@ -14,10 +14,18 @@ const CATEGORY_BG = {
   Others: 'rgba(158,144,132,0.18)',
 };
 
+const CART_PER_PAGE = 5;
 let cartItems = [];
+let _cartPage = 1;
 
 function renderCart() {
+  _cartPage = 1;
+  _renderCartPage();
+}
+
+function _renderCartPage() {
   const cartList = document.getElementById('cart-list');
+  const pag = document.getElementById('cart-pagination');
 
   if (!cartItems || !cartItems.length) {
     cartList.innerHTML = `
@@ -25,15 +33,19 @@ function renderCart() {
         <div class="empty-icon-svg">${ICONS.cart}</div>
         <p>Your cart is empty.</p>
       </div>`;
+    if (pag) pag.innerHTML = '';
     return;
   }
 
-  cartList.innerHTML = cartItems.map(item => `
+  const start = (_cartPage - 1) * CART_PER_PAGE;
+  const pageItems = cartItems.slice(start, start + CART_PER_PAGE);
+
+  cartList.innerHTML = pageItems.map(item => `
     <div class="cart-row" id="cart-row-${item.id}">
-      <div class="cart-thumb" style="background:${CATEGORY_BG[item.category] || CATEGORY_BG.Others}">
+      <div class="cart-thumb" style="background:${CATEGORY_BG[item.category] || CATEGORY_BG.Others};cursor:pointer;" onclick="viewCartItem(${item.id})">
         ${CATEGORY_ICONS[item.category] || CATEGORY_ICONS.Others}
       </div>
-      <div class="cart-item-info">
+      <div class="cart-item-info" style="cursor:pointer;" onclick="viewCartItem(${item.id})">
         <p class="cart-item-name">${item.name}</p>
         <p class="cart-item-meta">${item.category}${item.seller ? ' · ' + item.seller : ''}</p>
       </div>
@@ -44,6 +56,32 @@ function renderCart() {
       </div>
     </div>
   `).join('');
+
+  if (pag) _renderCartPagination(pag);
+}
+
+function _renderCartPagination(pag) {
+  const totalPages = Math.ceil(cartItems.length / CART_PER_PAGE);
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+
+  let btns = `<button class="pg-btn${_cartPage === 1 ? ' pg-disabled' : ''}" onclick="_cartPageTo(${_cartPage - 1})">&#8592;</button>`;
+  for (let p = 1; p <= totalPages; p++) {
+    btns += `<button class="pg-btn${p === _cartPage ? ' pg-active' : ''}" onclick="_cartPageTo(${p})">${p}</button>`;
+  }
+  btns += `<button class="pg-btn${_cartPage === totalPages ? ' pg-disabled' : ''}" onclick="_cartPageTo(${_cartPage + 1})">&#8594;</button>`;
+  pag.innerHTML = `<div class="pg-wrap">${btns}</div>`;
+}
+
+function _cartPageTo(p) {
+  const totalPages = Math.ceil(cartItems.length / CART_PER_PAGE);
+  if (p < 1 || p > totalPages) return;
+  _cartPage = p;
+  _renderCartPage();
+  document.getElementById('cart-list')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function viewCartItem(id) {
+  window.location.href = 'itempage.html?id=' + id;
 }
 
 function claimItem(id) {
@@ -51,7 +89,8 @@ function claimItem(id) {
   if (!item) return;
   showToast('Claimed!', `"${item.name}" reserved. Coordinate with the seller to arrange pickup.`, 'success', 4000);
   cartItems = cartItems.filter(i => String(i.id) !== String(id));
-  renderCart();
+  if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE)) _cartPage = Math.max(1, _cartPage - 1);
+  _renderCartPage();
 }
 
 function cancelItem(id) {
@@ -59,14 +98,15 @@ function cancelItem(id) {
   if (!item) return;
   showToast('Cancelled', `"${item.name}" has been cancelled and removed from your cart.`, 'warning');
   cartItems = cartItems.filter(i => String(i.id) !== String(id));
-  renderCart();
+  if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE)) _cartPage = Math.max(1, _cartPage - 1);
+  _renderCartPage();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   fetch('../data/mock-claimed.json')
     .then(r => r.json())
     .then(items => {
-      cartItems = items.slice(0, 4).map(item => ({
+      cartItems = items.slice(0, 8).map(item => ({
         id: item.id,
         name: item.name,
         price: parseInt(item.price.replace('₱', '')),

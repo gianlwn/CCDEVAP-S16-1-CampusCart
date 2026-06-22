@@ -1,98 +1,141 @@
-let catChart = null;
+const CLAIMED_CAT_ICONS = {
+  Electronics: ICONS.laptop, Books: ICONS.book,
+  'Lab Tools': ICONS.flask, Clothing: ICONS.shirt,
+};
 
-function buildCatChart(items) {
-  const counts = {};
-  items.forEach(it => { counts[it.category] = (counts[it.category] || 0) + 1; });
-  const labels = Object.keys(counts);
-  const values = Object.values(counts);
-  const t = getChartTheme();
+let claimedItems = [];
+let reviewingId = null;
+let pickedStar = 0;
 
-  const bgs = labels.map((_, i) => {
-    const a = Math.max(0.78 - i * 0.14, 0.22);
-    return `rgba(${t.barRgb}, ${a})`;
+function _highlightReviewStars(val) {
+  document.querySelectorAll('.review-star').forEach(s => {
+    const v = parseInt(s.dataset.val);
+    s.style.color = v <= val ? 'var(--star-fill)' : 'var(--star-empty)';
   });
+}
 
-  catChart = new Chart(document.getElementById('chart-cat'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        backgroundColor: bgs,
-        borderColor: t.accent,
-        borderWidth: 1,
-        borderRadius: 5,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid }, border: { color: t.axisBorder } },
-        y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, border: { color: t.axisBorder }, min: 0 }
-      },
-      plugins: { legend: { display: false } }
+function goToItem(id) {
+  window.location.href = '../homepage/itempage.html?id=' + id;
+}
+
+function renderClaimed() {
+  const el = document.getElementById('claimed-list');
+  if (!claimedItems.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No claimed items yet.</p></div>`;
+    return;
+  }
+  el.innerHTML = claimedItems.map(item => {
+    const statusCls = item.status === 'completed' ? 'completed' : 'pending';
+    const icon = CLAIMED_CAT_ICONS[item.category] || ICONS.package;
+    const hasReview = item.userRating !== null && item.userRating !== undefined;
+
+    if (hasReview) {
+      return `
+        <div class="item-row claimed-item-row" id="claimed-row-${item.id}">
+          <div class="item-thumb" style="cursor:pointer;" onclick="goToItem(${item.id})">${icon}</div>
+          <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem(${item.id})">
+            <p class="item-name">${item.name}</p>
+            <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ''} · ${item.date}</p>
+            ${item.userComment ? `<p class="item-review">"${item.userComment}"</p>` : ''}
+          </div>
+          ${renderStars(item.userRating)}
+          <div style="display:flex;gap:3px;flex-shrink:0;">
+            <button class="btn-icon" title="Edit Review" onclick="openReviewModal(${item.id})">${ICONS.edit}</button>
+            <button class="btn-icon" title="Report" onclick="reportClaimedItem(${item.id})" style="color:var(--warning-text);">${ICONS.alert}</button>
+          </div>
+        </div>
+      `;
+    } else {
+      const reviewBtn = item.status === 'completed'
+        ? `<button class="btn-icon" title="Write a Review" onclick="openReviewModal(${item.id})">${ICONS.edit}</button>`
+        : '';
+      return `
+        <div class="item-row claimed-item-row" id="claimed-row-${item.id}">
+          <div class="item-thumb" style="cursor:pointer;" onclick="goToItem(${item.id})">${icon}</div>
+          <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem(${item.id})">
+            <p class="item-name">${item.name}</p>
+            <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ''} · ${item.date}</p>
+          </div>
+          <span class="badge-status ${statusCls}">${item.status}</span>
+          <div style="display:flex;gap:3px;flex-shrink:0;">
+            ${reviewBtn}
+            <button class="btn-icon" title="Report" onclick="reportClaimedItem(${item.id})" style="color:var(--warning-text);">${ICONS.alert}</button>
+          </div>
+        </div>
+      `;
     }
-  });
+  }).join('');
 }
 
-function buildSummary(items) {
-  const total = items.length;
-  const completed = items.filter(i => i.status === 'completed').length;
-  const pending = total - completed;
-  const avgRating = items.length
-    ? (items.reduce((s, i) => s + i.rating, 0) / items.length).toFixed(1)
-    : '–';
+function openReviewModal(id) {
+  const item = claimedItems.find(c => c.id === id);
+  if (!item) return;
+  reviewingId = id;
+  pickedStar = item.userRating || 0;
 
-  document.getElementById('summary-content').innerHTML = `
-    <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-      <div style="display:flex;justify-content:space-between;">
-        <span style="color:var(--text-muted);">Total claimed</span>
-        <strong>${total}</strong>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <span style="color:var(--text-muted);">Completed</span>
-        <span style="color:var(--success-text);font-weight:600;">${completed}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <span style="color:var(--text-muted);">Pending</span>
-        <span style="color:var(--pending-text);font-weight:600;">${pending}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;">
-        <span style="color:var(--text-muted);">Avg. rating given</span>
-        <span style="color:var(--star-fill);font-weight:600;">${avgRating} ★</span>
-      </div>
-    </div>
-  `;
-  document.getElementById('summary-card').style.display = '';
+  document.getElementById('review-modal-title').textContent =
+    (item.userRating ? 'Edit Review' : 'Rate & Review');
+  document.getElementById('review-modal-subtitle').textContent =
+    `"${item.name}" from ${item.seller}`;
+  document.getElementById('review-comment').value = item.userComment || '';
+  _highlightReviewStars(pickedStar);
+  document.getElementById('review-modal').style.display = 'flex';
 }
 
-document.addEventListener('themeChanged', () => {
-  if (!catChart) return;
-  const t = getChartTheme();
-  catChart.options.scales.x.ticks.color = t.text;
-  catChart.options.scales.y.ticks.color = t.text;
-  catChart.options.scales.x.grid.color = t.grid;
-  catChart.options.scales.y.grid.color = t.grid;
-  catChart.options.scales.x.border.color = t.axisBorder;
-  catChart.options.scales.y.border.color = t.axisBorder;
-  catChart.data.datasets[0].borderColor = t.accent;
-  catChart.update('none');
-});
+function closeReviewModal() {
+  document.getElementById('review-modal').style.display = 'none';
+  reviewingId = null;
+  pickedStar = 0;
+}
+
+function saveReview() {
+  if (!reviewingId) return;
+  if (!pickedStar) {
+    showToast('Rating Required', 'Please select a star rating.', 'warning');
+    return;
+  }
+  const item = claimedItems.find(c => c.id === reviewingId);
+  if (!item) return;
+  item.userRating = pickedStar;
+  item.userComment = document.getElementById('review-comment').value.trim();
+  closeReviewModal();
+  renderClaimed();
+  showToast('Review Saved', 'Your review has been submitted.', 'success');
+}
+
+function reportClaimedItem(id) {
+  const item = claimedItems.find(c => c.id === id);
+  if (!item) return;
+  showConfirm(
+    'Report this Transaction?',
+    `Report your claim of "${item.name}" from ${item.seller}? Only report if there was an issue with this transaction.`,
+    () => {
+      showToast('Reported', 'Your report has been submitted for review.', 'info');
+    },
+    'Submit Report',
+    'ban'
+  );
+}
 
 document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.review-star').forEach(star => {
+    star.addEventListener('mouseover', () => _highlightReviewStars(parseInt(star.dataset.val)));
+    star.addEventListener('mouseleave', () => _highlightReviewStars(pickedStar));
+    star.addEventListener('click', () => {
+      pickedStar = parseInt(star.dataset.val);
+      _highlightReviewStars(pickedStar);
+    });
+  });
+
+  document.getElementById('review-modal').addEventListener('click', function (e) {
+    if (e.target === this) closeReviewModal();
+  });
+
   fetch('../data/mock-claimed.json')
     .then(r => r.json())
     .then(items => {
-      const el = document.getElementById('claimed-list');
-      if (!items.length) {
-        el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No claimed items yet.</p></div>`;
-        return;
-      }
-      el.innerHTML = items.map(createClaimedRow).join('');
-      buildCatChart(items);
-      buildSummary(items);
+      claimedItems = items;
+      renderClaimed();
       showToast('Claimed Items', `You have ${items.length} claimed items.`, 'info', 2500);
     })
     .catch(() => {

@@ -248,6 +248,14 @@
   background: var(--pending-bg);
   color: var(--pending-text);
 }
+.badge-status.completed {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+.badge-status.pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
 
 .preview-card {
   background: var(--card-bg);
@@ -368,6 +376,111 @@
   height: 100%;
 }
 
+/* ── Listings page header ── */
+.listings-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-add-listing-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.btn-add-listing-page:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-back-listings {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.btn-back-listings:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* ── Add Listing split layout ── */
+.add-listing-split {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.add-listing-preview-col {
+  position: sticky;
+  top: calc(var(--nav-height) + 16px);
+}
+
+.add-listing-form-col {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(10px) saturate(1.12);
+  -webkit-backdrop-filter: blur(10px) saturate(1.12);
+  transition: background-color var(--transition), border-color var(--transition);
+}
+
+/* ── Claimed review UI ── */
+.claimed-item-row {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.claimed-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.claimed-rating-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .add-listing-split {
+    grid-template-columns: 220px 1fr;
+    gap: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   .listings-content-row {
     grid-template-columns: 1fr;
@@ -408,5 +521,19 @@
   }
   .edit-listing-grid {
     grid-template-columns: 1fr !important;
+  }
+  .add-listing-split {
+    grid-template-columns: 1fr;
+  }
+  .add-listing-preview-col {
+    position: static;
+    order: 2;
+  }
+  .add-listing-form-col {
+    order: 1;
+  }
+  .listings-page-header {
+    flex-direction: row;
+    gap: 8px;
   }
 }

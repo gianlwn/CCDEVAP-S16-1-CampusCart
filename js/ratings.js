@@ -1,5 +1,4 @@
 let allRatings = [];
-let distChart = null;
 let editingId = null;
 let pickedStar = 0;
 
@@ -17,44 +16,6 @@ function renderAvg(items) {
     <div class="stars-row">${stars}</div>
     <div class="count">${items.length} review${items.length !== 1 ? 's' : ''}</div>
   `;
-}
-
-function buildDistChart(items) {
-  const t = getChartTheme();
-  const dist = [0, 0, 0, 0, 0];
-  items.forEach(i => dist[i.rating - 1]++);
-
-  const DIST_COLORS = [
-    'rgba(200,65,65,0.75)',
-    'rgba(200,121,65,0.75)',
-    'rgba(200,180,65,0.75)',
-    'rgba(100,160,90,0.75)',
-    'rgba(74,124,89,0.85)',
-  ];
-
-  if (distChart) distChart.destroy();
-
-  distChart = new Chart(document.getElementById('chart-dist'), {
-    type: 'bar',
-    data: {
-      labels: ['1 ★', '2 ★', '3 ★', '4 ★', '5 ★'],
-      datasets: [{
-        data: dist,
-        backgroundColor: DIST_COLORS,
-        borderRadius: 5,
-        borderWidth: 0,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid }, border: { color: t.axisBorder } },
-        y: { ticks: { color: t.text, stepSize: 1 }, grid: { color: t.grid }, border: { color: t.axisBorder }, min: 0 }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
 }
 
 function renderList() {
@@ -90,7 +51,6 @@ function saveEdit() {
   closeEdit();
   renderList();
   renderAvg(allRatings);
-  buildDistChart(allRatings);
   showToast('Updated', 'Your rating has been updated.', 'success');
 }
 
@@ -102,7 +62,6 @@ function deleteRating(id) {
       allRatings = allRatings.filter(r => r.id !== id);
       renderList();
       renderAvg(allRatings);
-      buildDistChart(allRatings);
       showToast('Removed', 'Rating has been removed.', 'success');
     }
   );
@@ -135,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
       allRatings = items;
       renderList();
       renderAvg(items);
-      buildDistChart(items);
     })
     .catch(() => {
       document.getElementById('ratings-list').innerHTML =
@@ -144,14 +102,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.addEventListener('themeChanged', () => {
-  if (!distChart) return;
-  const t = getChartTheme();
-  distChart.options.scales.x.ticks.color = t.text;
-  distChart.options.scales.y.ticks.color = t.text;
-  distChart.options.scales.x.grid.color = t.grid;
-  distChart.options.scales.y.grid.color = t.grid;
-  distChart.options.scales.x.border.color = t.axisBorder;
-  distChart.options.scales.y.border.color = t.axisBorder;
-  distChart.update('none');
-});

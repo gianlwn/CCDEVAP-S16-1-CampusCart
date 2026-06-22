@@ -87,7 +87,7 @@ body {
   background-attachment: fixed;
   color: var(--text);
   font-family: "Segoe UI", Arial, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.55;
   min-height: 100vh;
 }
@@ -149,7 +149,7 @@ img {
 }
 
 .page-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
   margin-bottom: 22px;
@@ -157,7 +157,7 @@ img {
 }
 
 .section-title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.7px;
@@ -216,7 +216,7 @@ img {
 
 .item-name {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -224,13 +224,13 @@ img {
 }
 
 .item-meta {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   margin-top: 2px;
 }
 
 .item-review {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   font-style: italic;
   margin-top: 3px;
@@ -380,11 +380,11 @@ img {
     min-width: 0;
   }
   .item-name {
-    font-size: 13px;
+    font-size: 14px;
   }
   .item-meta,
   .item-review {
-    font-size: 11px;
+    font-size: 12px;
   }
   .stars {
     margin-left: 42px;
@@ -850,5 +850,87 @@ body.darkMode .big-number {
   .confirm-ok {
     padding: 12px;
     font-size: 15px;
+  }
+}
+
+.pg-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 0 8px;
+  flex-wrap: wrap;
+}
+
+.pg-btn {
+  min-width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: inherit;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pg-btn:hover:not(.pg-disabled):not(.pg-active) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.pg-btn.pg-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.pg-btn.pg-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 14px 10px 80px;
+  }
+  .page-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+  .item-row {
+    padding: 9px 10px;
+    gap: 8px 8px;
+  }
+  .btn-icon {
+    padding: 5px 6px;
+  }
+  .badge-status {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+  .form-group {
+    margin-bottom: 12px;
+  }
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 16px;
+  }
+  .pg-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 12px;
   }
 }

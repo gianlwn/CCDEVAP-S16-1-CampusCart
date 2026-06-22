@@ -66,6 +66,13 @@
   <script src="../js/toastNotification.js"></script>
   <script src="../js/login.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (sessionStorage.getItem('cc_signout')) {
+        sessionStorage.removeItem('cc_signout');
+        showToast('Signed Out', "You've been successfully signed out.", 'success', 3500);
+      }
+    });
+
     function togglePw(inputId, btn) {
       const inp = document.getElementById(inputId);
       const icon = btn.querySelector('svg');

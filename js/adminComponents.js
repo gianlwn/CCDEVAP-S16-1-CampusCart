@@ -1,8 +1,8 @@
 let _editTargetCard = null;
 
 function handleAdminSignOut() {
-  showToast('Signed out', "You've successfully signed out.", 'success', 3000);
-  setTimeout(() => { window.location.href = '../login-path/login.html'; }, 1200);
+  sessionStorage.setItem('cc_signout', '1');
+  window.location.href = '../login-path/login.html';
 }
 
 function renderPagination(containerId, total, currentPage, onPageChange) {
@@ -128,6 +128,7 @@ let _adminsArray = [
   { username: 'Bernard Florian Llagas', email: 'bernard_florian_llagas@dlsu.edu.ph', status: 'inactive' },
   { username: 'Sky Hannah Parado', email: 'sky_parado@dlsu.edu.ph', status: 'active' },
   { username: 'Camille Erika Sarabia', email: 'camille_erika_sarabia@dlsu.edu.ph', status: 'active' },
+  { username: 'Rafael Tan', email: 'rafael_tan@dlsu.edu.ph', status: 'active' },
 ];
 let _adminPage = 1;
 
@@ -269,6 +270,11 @@ const _usersArray = [
   { username: 'Andie Kirsten Woo', email: 'andie_woo@dlsu.edu.ph', dateJoined: 'Jun 12, 2026', status: 'active' },
   { username: 'Alexa Nicole Pleyto', email: 'alexa_pleyto@dlsu.edu.ph', dateJoined: 'May 28, 2026', status: 'suspended' },
   { username: 'Christine Cote', email: 'tintin_cote@dlsu.edu.ph', dateJoined: 'Apr 04, 2026', status: 'banned' },
+  { username: 'Marco Dela Cruz', email: 'marco_delacruz@dlsu.edu.ph', dateJoined: 'Mar 15, 2026', status: 'active' },
+  { username: 'Ria Magpantay', email: 'ria_magpantay@dlsu.edu.ph', dateJoined: 'Feb 20, 2026', status: 'active' },
+  { username: 'Janna Reyes', email: 'janna_reyes@dlsu.edu.ph', dateJoined: 'Jan 08, 2026', status: 'active' },
+  { username: 'Eli Santos', email: 'eli_santos@dlsu.edu.ph', dateJoined: 'Dec 02, 2025', status: 'suspended' },
+  { username: 'Dana Flores', email: 'dana_flores@dlsu.edu.ph', dateJoined: 'Nov 19, 2025', status: 'active' },
 ];
 let _usersPage = 1;
 
@@ -424,6 +430,10 @@ const _listingApprovalsArray = [
   { productName: 'Chemistry Lab Kit', listingId: 'LST-1002', price: 950, seller: 'Kimi Antonelli', category: 'Lab Tools', condition: 'New', description: 'Brand new lab kit, never opened. Bought for CHEM1 but ended up not using it.', images: ['Photo 1', 'Photo 2'] },
   { productName: 'Engineering Mechanics Textbook', listingId: 'LST-1003', price: 500, seller: 'Garrett Graham', category: 'Books', condition: 'Used', description: 'Meriam & Kraige, 7th edition. Pages are highlighted but still very readable.', images: ['Photo 1'] },
   { productName: 'DLSU PE Uniform Set', listingId: 'LST-1004', price: 310, seller: 'Jeron Teng', category: 'Clothing', condition: 'Good', description: 'XL size, worn only a few times. Washed and clean.', images: ['Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'] },
+  { productName: 'Arduino Mega 2560', listingId: 'LST-1005', price: 480, seller: 'Ria Magpantay', category: 'Electronics', condition: 'Used', description: 'Fully functional Arduino Mega. Tested before listing. No shields included.', images: ['Photo 1', 'Photo 2'] },
+  { productName: 'Fluid Mechanics Textbook', listingId: 'LST-1006', price: 380, seller: 'Marco Dela Cruz', category: 'Books', condition: 'Good', description: 'Cengel & Cimbala, 3rd edition. Some annotations in pencil, easy to erase.', images: ['Photo 1'] },
+  { productName: 'Lab Goggles (Pack of 2)', listingId: 'LST-1007', price: 120, seller: 'Dana Flores', category: 'Lab Tools', condition: 'New', description: 'Never used, sealed pack. Safety goggles required for CHEM lab.', images: ['Photo 1', 'Photo 2'] },
+  { productName: 'DLSU Lanyard + ID Holder', listingId: 'LST-1008', price: 80, seller: 'Janna Reyes', category: 'Others', condition: 'Good', description: 'Official DLSU lanyard, slightly used. ID holder is still clear and intact.', images: ['Photo 1'] },
 ];
 
 let _approvalPage = 1;
@@ -508,9 +518,13 @@ let _categoriesArray = [
   { categoryName: 'Clothing' },
   { categoryName: 'School Supplies' },
   { categoryName: 'Books' },
+  { categoryName: 'Lab Tools' },
+  { categoryName: 'Others' },
+  { categoryName: 'Instruments' },
+  { categoryName: 'Sports & Fitness' },
 ];
 
-const ITEMS_PER_PAGE = 12;
+const ITEMS_PER_PAGE = 5;
 let _catPage = 1;
 
 function renderCategoryPage() {
@@ -615,47 +629,63 @@ function saveEditCategory(oldName) {
   showToast('Updated', `Category renamed to "${newName}".`, 'success');
 }
 
-function displayReports() {
+const _reportsArray = [
+  { reportType: 'User Report', reportId: 'RPT-3012', reporter: 'Andie Kirsten Woo', status: 'Pending Review', reason: 'Spam account repeatedly posting misleading listings.', subject: 'User: @marie_santos', date: 'Jun 14, 2026' },
+  { reportType: 'Listing Report', reportId: 'RPT-3013', reporter: 'Alexa Nicole Pleyto', status: 'Pending Review', reason: 'Possible scam listing requesting payment outside the website.', subject: 'Listing: Casio FX-991EX', date: 'Jun 15, 2026' },
+  { reportType: 'User Report', reportId: 'RPT-3014', reporter: 'Christine Cote', status: 'Pending Review', reason: 'Hate speech directed toward another user in listing comments.', subject: 'User: @jay_ramos', date: 'Jun 15, 2026' },
+  { reportType: 'Review Report', reportId: 'RPT-3015', reporter: 'Mara R.', status: 'Pending Review', reason: 'Review contains false information and is clearly from a competitor account.', subject: 'Review on: Scientific Calculator', date: 'Jun 16, 2026' },
+  { reportType: 'Listing Report', reportId: 'RPT-3016', reporter: 'Sam V.', status: 'Pending Review', reason: 'Listing price is grossly inflated compared to market value.', subject: 'Listing: Arduino Uno Kit', date: 'Jun 17, 2026' },
+  { reportType: 'User Report', reportId: 'RPT-3017', reporter: 'Eli Santos', status: 'Pending Review', reason: 'User is sending unsolicited messages to buyers asking for payment via GCash only.', subject: 'User: @kai_a', date: 'Jun 18, 2026' },
+  { reportType: 'Listing Report', reportId: 'RPT-3018', reporter: 'Janna Reyes', status: 'Pending Review', reason: 'Item listed is prohibited under campus marketplace rules.', subject: 'Listing: Chemistry Lab Kit', date: 'Jun 19, 2026' },
+];
+let _reportsPage = 1;
+
+function renderReportsPage() {
   const container = document.getElementById('reports-stack-list');
   if (!container) return;
 
-  const reportsArray = [
-    { reportType: 'User Report', reportId: 'RPT-3012', reporter: 'Andie Kirsten Woo', status: 'Pending Review', reason: 'Spam account repeatedly posting misleading listings.', subject: 'User: @marie_santos', date: 'Jun 14, 2026' },
-    { reportType: 'Listing Report', reportId: 'RPT-3013', reporter: 'Alexa Nicole Pleyto', status: 'Pending Review', reason: 'Possible scam listing requesting payment outside the website.', subject: 'Listing: Casio FX-991EX', date: 'Jun 15, 2026' },
-    { reportType: 'User Report', reportId: 'RPT-3014', reporter: 'Christine Cote', status: 'Pending Review', reason: 'Hate speech directed toward another user in listing comments.', subject: 'User: @jay_ramos', date: 'Jun 15, 2026' },
-  ];
+  const start = (_reportsPage - 1) * ITEMS_PER_PAGE;
+  const slice = _reportsArray.slice(start, start + ITEMS_PER_PAGE);
 
-  if (!reportsArray.length) {
+  if (!_reportsArray.length) {
     container.innerHTML = `<div class="empty-msg">No reports found.</div>`;
-  } else {
-    container.innerHTML = reportsArray.map(report => `
-      <div class="report-row-card">
-        <div class="avatar-wireframe-box"></div>
-        <div class="report-text-details">
-          <span class="report-type">${report.reportType}</span>
-          <span class="report-id">#${report.reportId}</span>
-          <span class="report-reporter">${report.reporter}</span>
-        </div>
-        <div class="report-status-zone">
-          <span class="report-status-badge">${report.status}</span>
-        </div>
-        <div class="report-reason-section">
-          <span class="info-label">Reported</span>
-          <span class="info-value" style="margin-bottom:8px;">${report.subject}</span>
-          <span class="reason-title">Reason</span>
-          <span class="reason-content">${report.reason}</span>
-        </div>
-        <div class="report-meta-col">
-          <span class="info-label">Date Filed</span>
-          <span class="info-value">${report.date}</span>
-        </div>
-        <div class="report-action-group">
-          <button class="warning-btn" onclick="handleReportAction('warning','${report.reportId}',this)">${ICONS.shield} Warning</button>
-          <button class="dismiss-btn" onclick="handleReportAction('dismiss','${report.reportId}',this)">${ICONS.close} Dismiss</button>
-        </div>
-      </div>
-    `).join('');
+    return;
   }
+
+  container.innerHTML = slice.map(report => `
+    <div class="report-row-card">
+      <div class="avatar-wireframe-box"></div>
+      <div class="report-text-details">
+        <span class="report-type">${report.reportType}</span>
+        <span class="report-id">#${report.reportId}</span>
+        <span class="report-reporter">${report.reporter}</span>
+      </div>
+      <div class="report-status-zone">
+        <span class="report-status-badge">${report.status}</span>
+      </div>
+      <div class="report-reason-section">
+        <span class="info-label">Reported</span>
+        <span class="info-value" style="margin-bottom:8px;">${report.subject}</span>
+        <span class="reason-title">Reason</span>
+        <span class="reason-content">${report.reason}</span>
+      </div>
+      <div class="report-meta-col">
+        <span class="info-label">Date Filed</span>
+        <span class="info-value">${report.date}</span>
+      </div>
+      <div class="report-action-group">
+        <button class="warning-btn" onclick="handleReportAction('warning','${report.reportId}',this)">${ICONS.shield} Warning</button>
+        <button class="dismiss-btn" onclick="handleReportAction('dismiss','${report.reportId}',this)">${ICONS.close} Dismiss</button>
+      </div>
+    </div>
+  `).join('');
+
+  renderPagination('reports-stack-list', _reportsArray.length, _reportsPage, p => { _reportsPage = p; renderReportsPage(); });
+  initSearch('.report-row-card');
+}
+
+function displayReports() {
+  renderReportsPage();
 }
 
 function handleReportAction(action, reportId, btn) {

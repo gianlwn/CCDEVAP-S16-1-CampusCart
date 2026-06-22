@@ -248,6 +248,10 @@
   .cart-row {
     flex-wrap: wrap;
     gap: 10px;
+    padding: 12px 12px;
+  }
+  .cart-item-info {
+    flex: 1 1 calc(100% - 80px);
   }
   .cart-item-name {
     font-size: 13px;
@@ -258,5 +262,29 @@
   .cart-item-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+  .cart-summary-card {
+    position: static;
+    margin-top: 4px;
+  }
+  .btn-claim-item,
+  .btn-cancel-item {
+    flex: 1;
+    text-align: center;
+    padding: 9px 10px;
+  }
+  .cart-item-actions {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cart-thumb {
+    width: 44px;
+    height: 44px;
+  }
+  .cart-thumb svg {
+    width: 20px;
+    height: 20px;
   }
 }

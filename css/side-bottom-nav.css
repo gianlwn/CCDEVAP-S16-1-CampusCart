@@ -52,13 +52,24 @@
   padding: 9px 11px;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 15px;
   transition: all var(--transition);
 }
 
-.side-nav .nav-icon {
+.side-nav .nav-icon,
+.side-nav .nav-item-icon {
   width: 18px;
   height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.75;
+  transition: opacity var(--transition);
+}
+.side-nav .nav-item-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .side-nav ul li a:hover {
@@ -214,6 +225,20 @@
   }
   .main-content {
     margin-left: 0;
-    padding-bottom: 60px;
+    padding-bottom: 68px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-nav {
+    height: 54px;
+  }
+  .bottom-nav a {
+    font-size: 9px;
+    gap: 1px;
+  }
+  .bottom-nav a .nav-icon {
+    width: 20px;
+    height: 20px;
   }
 }
