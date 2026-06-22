@@ -450,8 +450,8 @@ function renderApprovalPage() {
           <span class="status-badge">Pending Approval</span>
         </div>
       </div>
+      <button class="view-details-btn" onclick="viewListingDetails('${listing.listingId}')">${ICONS.eye} View Details</button>
       <div class="listing-actions">
-        <button class="view-details-btn" onclick="viewListingDetails('${listing.listingId}')">${ICONS.eye} View Details</button>
         <button class="approve-btn" onclick="handleApproval('approve','${listing.listingId}',this)">${ICONS.check} Approve</button>
         <button class="reject-btn"  onclick="handleApproval('reject', '${listing.listingId}',this)">${ICONS.close} Reject</button>
       </div>

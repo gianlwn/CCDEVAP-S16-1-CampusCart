@@ -131,9 +131,9 @@
 }
 
 .listing-actions {
-  margin-top: 14px;
+  margin-top: 10px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 8px;
 }
 
@@ -181,6 +181,9 @@
   background: var(--card-bg);
   color: var(--text-muted);
   transition: all var(--transition);
+  width: 100%;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .view-details-btn:hover {
