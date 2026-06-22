@@ -206,5 +206,98 @@
     "image": null,
     "reports": 0,
     "created": "2026-06-15"
+
+  },
+  {
+    "id": 22,
+    "name": "Multimeter",
+    "price": 1200,
+    "category": "Electronics",
+    "status": "active",
+    "condition": "New",
+    "seller": "Rico D.",
+    "description": "Digital multimeter for circuit testing. Brand new.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-07-01"
+  },
+  {
+    "id": 23,
+    "name": "Calc Pad",
+    "price": 40,
+    "category": "Books",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Mina L.",
+    "description": "Spiral bound calculation pad. Very useful for quick notes.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-08-15"
+  },
+  {
+    "id": 24,
+    "name": "Lab Coat (XL)",
+    "price": 300,
+    "category": "Clothing",
+    "status": "active",
+    "condition": "New",
+    "seller": "Toni S.",
+    "description": "Fresh from the store, no stains. Size XL.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-09-10"
+  },
+  {
+    "id": 25,
+    "name": "Microcontroller Board",
+    "price": 80,
+    "category": "Electronics",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Kyle W.",
+    "description": "ESP32 development board with WiFi/Bluetooth support.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-10-20"
+  },
+  {
+    "id": 26,
+    "name": "Protoboard",
+    "price": 30,
+    "category": "Electronics",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Mark T.",
+    "description": "Small breadboard for quick prototype testing.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-11-05"
+  },
+  {
+    "id": 27,
+    "name": "Physics Vol 1",
+    "price": 450,
+    "category": "Books",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Santi G.",
+    "description": "Halliday Resnick Fundamentals of Physics. Good condition.",
+    "image": null,
+    "reports": 0,
+    "created": "2026-12-12"
+  },
+  {
+    "id": 28,
+    "name": "Wire Strippers",
+    "price": 150,
+    "category": "Lab Tools",
+    "status": "active",
+    "condition": "Good",
+    "seller": "Gina P.",
+    "description": "Heavy duty wire stripper tool.",
+    "image": null,
+    "reports": 0,
+    "created": "2027-01"
   }
 ]
+
