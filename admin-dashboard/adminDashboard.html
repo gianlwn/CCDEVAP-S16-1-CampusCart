@@ -59,6 +59,21 @@
               <canvas id="listingsStatusChart"></canvas>
             </div>
           </div>
+
+          <div class="analytics-card">
+            <h3>New Registrations Per Month</h3>
+            <div class="chart-container">
+              <canvas id="registrationsChart"></canvas>
+            </div>
+          </div>
+
+          <div class="analytics-card">
+            <h3>Items Sold Sitewide Per Month</h3>
+            <div class="chart-container">
+              <canvas id="soldSitewideChart"></canvas>
+            </div>
+          </div>
+
         </div>
       </main>
     </div>
@@ -147,6 +162,45 @@
           responsive: true, maintainAspectRatio: false,
           scales: {
             x: { ticks: { color: t.text }, grid: { color: t.grid } },
+            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      new Chart(document.getElementById('registrationsChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [{
+            label: 'New Users', data: [34, 52, 48, 61, 79, 90, 55, 68, 43, 72, 88, 64],
+            backgroundColor: 'rgba(72,130,210,0.78)', borderRadius: 5, borderColor: 'transparent'
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
+            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+          },
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      new Chart(document.getElementById('soldSitewideChart'), {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [{
+            label: 'Items Sold', data: [42, 58, 35, 71, 95, 110, 88, 76, 50, 103, 119, 89],
+            borderColor: 'rgba(14,136,120,0.9)', backgroundColor: 'rgba(14,136,120,0.08)',
+            borderWidth: 2, tension: 0.4, fill: true, pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          scales: {
+            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
             y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
           },
           plugins: { legend: { display: false } }

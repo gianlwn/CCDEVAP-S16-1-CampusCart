@@ -326,6 +326,18 @@ img {
   margin-bottom: 10px;
 }
 
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 180px;
+  }
+  .main-content {
+    padding: 20px 18px 40px;
+  }
+  .page-top-only {
+    padding: 20px 20px 48px;
+  }
+}
+
 @media (max-width: 768px) {
   .side-nav {
     display: none;

@@ -166,3 +166,25 @@
 .reject-btn:hover {
   opacity: 0.8;
 }
+
+.view-details-btn {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  background: var(--card-bg);
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+
+.view-details-btn:hover {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}

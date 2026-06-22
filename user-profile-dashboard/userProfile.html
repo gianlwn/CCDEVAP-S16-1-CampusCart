@@ -89,7 +89,10 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-input" id="prof-phone" placeholder="0000 000 0000">
+                <div class="input-prefix-wrap">
+                  <span class="input-prefix">+63</span>
+                  <input type="tel" class="form-input with-prefix" id="prof-phone" placeholder="9XX XXX XXXX" maxlength="10">
+                </div>
               </div>
               <div class="form-group full">
                 <label class="form-label">Bio</label>
@@ -162,7 +165,7 @@
           </svg>
           Admin Dashboard
         </button>
-        <button class="signout-btn" onclick="window.location.href='../login-path/login.html'">
+        <button class="signout-btn" onclick="handleSignOut()">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

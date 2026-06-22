@@ -39,5 +39,28 @@
     { "month": "Apr", "sold": 1 },
     { "month": "May", "sold": 2 },
     { "month": "Jun", "sold": 1 }
+  ],
+  "earningsMonthly": [
+    { "month": "Jan", "amount": 400 },
+    { "month": "Feb", "amount": 850 },
+    { "month": "Mar", "amount": 0 },
+    { "month": "Apr", "amount": 500 },
+    { "month": "May", "amount": 1200 },
+    { "month": "Jun", "amount": 1300 }
+  ],
+  "listingStatus": [
+    { "label": "Active",  "value": 4 },
+    { "label": "Claimed", "value": 7 },
+    { "label": "Pending", "value": 2 },
+    { "label": "Rejected","value": 1 }
+  ],
+  "cartAddsByDay": [
+    { "day": "Mon", "count": 3 },
+    { "day": "Tue", "count": 5 },
+    { "day": "Wed", "count": 2 },
+    { "day": "Thu", "count": 8 },
+    { "day": "Fri", "count": 6 },
+    { "day": "Sat", "count": 4 },
+    { "day": "Sun", "count": 1 }
   ]
 }

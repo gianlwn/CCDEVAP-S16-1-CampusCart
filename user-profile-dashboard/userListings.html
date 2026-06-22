@@ -62,27 +62,39 @@
               </div>
             </div>
 
+            <div class="form-group">
+              <label class="form-label">Primary Category</label>
+              <select class="form-select" id="inp-category" onchange="updateSecondaryCategories()">
+                <option value="">Select…</option>
+                <option>Electronics</option>
+                <option>Books</option>
+                <option>Lab Tools</option>
+                <option>Clothing</option>
+                <option>Others</option>
+              </select>
+            </div>
             <div class="form-row-two">
               <div class="form-group">
-                <label class="form-label">Category</label>
-                <select class="form-select" id="inp-category">
-                  <option value="">Select…</option>
-                  <option>Electronics</option>
-                  <option>Books</option>
-                  <option>Lab Tools</option>
-                  <option>Clothing</option>
-                  <option>Others</option>
+                <label class="form-label">Secondary Category</label>
+                <select class="form-select" id="inp-category-2">
+                  <option value="">None</option>
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">Condition</label>
-                <select class="form-select" id="inp-condition">
-                  <option value="">Select…</option>
-                  <option>New</option>
-                  <option>Good</option>
-                  <option>Used</option>
+                <label class="form-label">Tertiary Category</label>
+                <select class="form-select" id="inp-category-3">
+                  <option value="">None</option>
                 </select>
               </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Condition</label>
+              <select class="form-select" id="inp-condition">
+                <option value="">Select…</option>
+                <option>New</option>
+                <option>Good</option>
+                <option>Used</option>
+              </select>
             </div>
 
             <div class="form-group">
@@ -298,6 +310,34 @@
   <script src="../js/toastNotification.js"></script>
   <script src="../js/main.js"></script>
   <script src="../js/listings.js"></script>
+  <script>
+    const CATEGORY_SUBS = {
+      Electronics: ['Calculators', 'Laptops', 'Peripherals', 'Cables & Chargers', 'Audio', 'Others'],
+      Books: ['Textbooks', 'References', 'Novels', 'Workbooks', 'Others'],
+      'Lab Tools': ['Chemistry', 'Physics', 'Biology', 'Engineering', 'Others'],
+      Clothing: ['Uniform', 'Org Shirt', 'PE Uniform', 'Casual', 'Others'],
+      Others: ['Stationery', 'Bags', 'Food', 'Accessories', 'Misc'],
+    };
+
+    function populateSelect(sel, options) {
+      sel.innerHTML = '<option value="">None</option>' +
+        options.map(o => `<option>${o}</option>`).join('');
+    }
+
+    function updateSecondaryCategories() {
+      const primary = document.getElementById('inp-category').value;
+      const sec = document.getElementById('inp-category-2');
+      const ter = document.getElementById('inp-category-3');
+      const subs = CATEGORY_SUBS[primary] || [];
+      if (subs.length) {
+        populateSelect(sec, subs);
+        populateSelect(ter, subs);
+      } else {
+        populateSelect(sec, []);
+        populateSelect(ter, []);
+      }
+    }
+  </script>
 
 </body>
 

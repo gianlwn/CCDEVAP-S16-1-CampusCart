@@ -37,9 +37,11 @@ const ICONS = {
 function loadTopNav() {
   
   const notifItems = [
-    { icon: ICONS.check, text: 'Listing <b>Casio FX-991EX</b> was approved.', time: 'Just now', unread: true },
-    { icon: ICONS.alert, text: 'New report filed by <b>Andie Kirsten Woo</b>.', time: '5 min ago', unread: true },
-    { icon: ICONS.users, text: 'New user <b>Christine Cote</b> registered.', time: '1 hour ago', unread: true },
+    { icon: ICONS.check,   text: 'Listing <b>Casio FX-991EX</b> was approved.', time: 'Just now', unread: true },
+    { icon: ICONS.alert,   text: 'New report filed by <b>Andie Kirsten Woo</b>.', time: '5 min ago', unread: true },
+    { icon: ICONS.users,   text: 'New user <b>Christine Cote</b> registered.', time: '1 hour ago', unread: true },
+    { icon: ICONS.tag,     text: '<b>Alexa Pleyto</b> added your item to their cart.', time: '3 hours ago', unread: false },
+    { icon: ICONS.star,    text: 'You received a new 5-star rating from <b>Jay Ramos</b>.', time: 'Yesterday', unread: false },
   ].map(n => `
     <div class="notif-item${n.unread ? ' unread' : ''}">
       <span class="notif-icon">${n.icon}</span>
@@ -60,12 +62,12 @@ function loadTopNav() {
         <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">${ICONS.moon}</button>
         <div class="notif-wrapper">
           <button id="btn-notifications" title="Notifications" onclick="toggleNotifs(event)">
-            ${ICONS.bell}<span class="nav-badge" id="notif-badge">3</span>
+            ${ICONS.bell}<span class="nav-badge" id="notif-badge">2</span>
           </button>
           <div id="notif-panel" class="notif-panel">
             <div class="notif-panel-header">
               <span>Notifications</span>
-              <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark as all read</button>
+              <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark all as read</button>
             </div>
             <div class="notif-list">${notifItems}</div>
           </div>
@@ -112,17 +114,7 @@ function loadSideNav() {
         </li>
         <li class="${a('userListings')}">
           <a href="../user-profile-dashboard/userListings.html">
-            <span class="nav-item-icon">${ICONS.tag}</span>My Listings
-          </a>
-        </li>
-        <li class="${a('claimed')}">
-          <a href="../user-profile-dashboard/claimed.html">
-            <span class="nav-item-icon">${ICONS.bag}</span>Claimed
-          </a>
-        </li>
-        <li class="${a('ratings')}">
-          <a href="../user-profile-dashboard/ratings.html">
-            <span class="nav-item-icon">${ICONS.star}</span>Ratings
+            <span class="nav-item-icon">${ICONS.tag}</span>Listings
           </a>
         </li>
         <li class="${a('userProfile')}">
@@ -131,12 +123,18 @@ function loadSideNav() {
           </a>
         </li>
       </ul>
+      <div class="sidebar-top-action">
+        <a href="../user-profile-dashboard/userListings.html" class="btn-add-listing-nav">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Listing
+        </a>
+      </div>
       <div class="sidebar-bottom">
         <button class="admin-dash-btn" onclick="window.location.href='../admin-dashboard/adminDashboard.html'">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Admin Dashboard
         </button>
-        <button class="signout-btn" onclick="window.location.href='../login-path/login.html'">
+        <button class="signout-btn" onclick="handleSignOut()">
           ${ICONS.logout} Sign Out
         </button>
       </div>
@@ -155,12 +153,6 @@ function loadBottomNav() {
     </a>
     <a href="../user-profile-dashboard/userListings.html" class="${a('userListings')}">
       <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
-    </a>
-    <a href="../user-profile-dashboard/claimed.html" class="${a('claimed')}">
-      <span class="nav-icon">${ICONS.bag}</span><span>Claimed</span>
-    </a>
-    <a href="../user-profile-dashboard/ratings.html" class="${a('ratings')}">
-      <span class="nav-icon">${ICONS.star}</span><span>Ratings</span>
     </a>
     <a href="../user-profile-dashboard/userProfile.html" class="${a('userProfile')}">
       <span class="nav-icon">${ICONS.user}</span><span>Profile</span>
@@ -278,6 +270,11 @@ const _CONFIRM_ICONS = {
   unban:  `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
   revoke: `<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>`,
 };
+
+function handleSignOut() {
+  showToast('Signed out', "You've successfully signed out.", 'success', 3000);
+  setTimeout(() => { window.location.href = '../login-path/login.html'; }, 1200);
+}
 
 function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 'trash') {
   const iconPath = _CONFIRM_ICONS[iconKey] || _CONFIRM_ICONS.trash;
