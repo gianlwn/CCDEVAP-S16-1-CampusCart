@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('darkMode');
   }
 
-
   const regEmailInput = document.getElementById('reg-email');
   if (regEmailInput) {
     const verifiedEmail = localStorage.getItem('verified-signup-email');
@@ -35,7 +34,6 @@ function handleLogin() {
 
   setTimeout(() => {
     localStorage.setItem('session_email', email);
-
 
     const lowerEmail = email.toLowerCase();
     if (
@@ -75,7 +73,6 @@ function handleSendCode() {
 
   const codeInput = document.getElementById('vfy-code');
   if (codeInput) codeInput.focus();
-
 
   setTimeout(() => {
     btn.disabled = false;
@@ -126,13 +123,11 @@ function handleRegister(event) {
     return;
   }
 
-
   const courseRegex = /^[a-zA-Z-]+$/;
   if (!courseRegex.test(course)) {
     showToast('Invalid Course', 'Course code can only contain letters or hyphens (e.g., BSIT, BS-CS).', 'error');
     return;
   }
-
 
   const phoneCleaned = phone.replace(/\s+/g, '');
   const phoneRegex = /^09\d{9}$/;
@@ -140,7 +135,6 @@ function handleRegister(event) {
     showToast('Invalid Phone', 'Phone number must be exactly 11 digits and start with 09 (e.g., 09123456789).', 'error');
     return;
   }
-
 
   localStorage.setItem('cached_profile_display_name', name);
 
@@ -169,7 +163,6 @@ function handleConfirmRecoveryCode() {
     showToast('Invalid Code', 'The verification token is incorrect.', 'error');
     return;
   }
-
 
   const emailField = document.getElementById('rec-email');
   if (emailField) {

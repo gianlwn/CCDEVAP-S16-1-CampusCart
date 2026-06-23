@@ -149,7 +149,6 @@ function loadAdminSideNav(page) {
   const sidebar = document.getElementById('admin-side-nav');
   sidebar.innerHTML = html;
 
-
   const activeLink = sidebar.querySelector(`a[href="${page}"]`);
   if (activeLink) activeLink.classList.add('active');
 }
@@ -767,4 +766,3 @@ function handleReportAction(action, reportId, btn) {
   if (row) row.style.opacity = '0.4';
   btn.closest('.report-action-group').querySelectorAll('button').forEach(b => b.disabled = true);
 }
-

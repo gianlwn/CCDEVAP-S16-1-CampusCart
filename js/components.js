@@ -35,7 +35,6 @@ const ICONS = {
 };
 
 function loadTopNav() {
-  
   const notifItems = [
     { icon: ICONS.check,   text: 'Listing <b>Casio FX-991EX</b> was approved.', time: 'Just now', unread: true },
     { icon: ICONS.alert,   text: 'New report filed by <b>Andie Kirsten Woo</b>.', time: '5 min ago', unread: true },
@@ -101,7 +100,6 @@ function markAllNotifsRead() {
 
 function loadSideNav() {
   const cur = window.location.pathname;
-  
   const a = (p) => cur.includes(p) ? 'active' : '';
 
   const html = `
@@ -302,7 +300,6 @@ function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 't
   const close = () => document.body.removeChild(overlay);
   overlay.querySelector('.confirm-cancel').addEventListener('click', close);
   overlay.querySelector('.confirm-ok').addEventListener('click', () => { close(); onConfirm(); });
-  
   overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
 
   document.body.appendChild(overlay);

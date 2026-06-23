@@ -101,4 +101,3 @@ document.addEventListener('DOMContentLoaded', function () {
       showToast('Error', 'Failed to load ratings.', 'error');
     });
 });
-

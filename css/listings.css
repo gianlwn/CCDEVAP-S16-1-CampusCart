@@ -376,7 +376,6 @@
   height: 100%;
 }
 
-/* ── Listings page header ── */
 .listings-page-header {
   display: flex;
   align-items: center;
@@ -431,7 +430,6 @@
   background: var(--accent-light);
 }
 
-/* ── Add Listing split layout ── */
 .add-listing-split {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -455,7 +453,6 @@
   transition: background-color var(--transition), border-color var(--transition);
 }
 
-/* ── Claimed review UI ── */
 .claimed-item-row {
   flex-wrap: wrap;
   align-items: flex-start;
