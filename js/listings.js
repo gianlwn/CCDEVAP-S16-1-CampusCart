@@ -133,8 +133,7 @@ function reportReview(id) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('../data/mock-listings.json')
-    .then(r => r.json())
+  fetchListings()
     .then(items => {
       allListings = items;
       renderListings();
@@ -145,8 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
       showToast('Error', 'Failed to load listings.', 'error');
     });
 
-  fetch('../data/mock-seller-reviews.json')
-    .then(r => r.json())
+  fetchSellerReviews()
     .then(reviews => renderSellerReviews(reviews))
     .catch(() => {
       document.getElementById('seller-reviews-list').innerHTML =

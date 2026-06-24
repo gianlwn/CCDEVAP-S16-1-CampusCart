@@ -103,8 +103,7 @@ function cancelItem(id) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('../data/mock-claimed.json')
-    .then(r => r.json())
+  fetchClaimedItems()
     .then(items => {
       cartItems = items.slice(0, 8).map(item => ({
         id: item.id,

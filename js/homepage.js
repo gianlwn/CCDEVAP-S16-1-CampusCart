@@ -118,18 +118,13 @@ function applyFilters() {
   const searchInput = document.getElementById('search-input');
   if (!searchInput) return;
   const q = searchInput.value.toLowerCase().trim();
-
-  let results = allItems;
-  if (activeFilter !== 'all') results = results.filter(i => i.category === activeFilter);
-  if (q) results = results.filter(i =>
-    i.name.toLowerCase().includes(q) ||
-    (i.description?.toLowerCase() || '').includes(q)
-  );
-  if (_advConditions.length) results = results.filter(i => _advConditions.includes(i.condition));
-  if (_advMinPrice > 0) results = results.filter(i => i.price >= _advMinPrice);
-  if (_advMaxPrice < Infinity) results = results.filter(i => i.price <= _advMaxPrice);
-
-  renderGrid(results);
+  renderGrid(filterListings(allItems, {
+    category: activeFilter,
+    query: q,
+    conditions: _advConditions,
+    minPrice: _advMinPrice,
+    maxPrice: _advMaxPrice,
+  }));
 }
 
 function openFiltersPanel() {
@@ -206,8 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const searchInput = document.getElementById('search-input');
   if (searchInput) searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSearch(); });
 
-  fetch('../data/mock-listings.json')
-    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+  fetchListings()
     .then(items => {
       allItems = items
         .filter(i => i.status === 'active')

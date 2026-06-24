@@ -88,8 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.target === this) closeEdit();
   });
 
-  fetch('../data/mock-ratings.json')
-    .then(r => r.json())
+  fetchRatings()
     .then(items => {
       allRatings = items;
       renderList();

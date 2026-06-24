@@ -131,8 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.target === this) closeReviewModal();
   });
 
-  fetch('../data/mock-claimed.json')
-    .then(r => r.json())
+  fetchClaimedItems()
     .then(items => {
       claimedItems = items;
       renderClaimed();

@@ -339,8 +339,7 @@ function refreshChartTheme() {
 document.addEventListener('themeChanged', refreshChartTheme);
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('../data/mock-dashboard.json')
-    .then(r => r.json())
+  fetchDashboardData()
     .then(data => {
       document.getElementById('kpi-total-listings').textContent = data.kpi.totalListings;
       document.getElementById('kpi-items-sold').textContent = data.kpi.itemsSold;

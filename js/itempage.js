@@ -159,8 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch (_) {}
   }
 
-  fetch('../data/mock-listings.json')
-    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+  fetchListings()
     .then(items => {
       const item = items.find(i => i.id === id);
       if (!item) {

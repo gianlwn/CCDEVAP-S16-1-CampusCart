@@ -232,8 +232,7 @@ function loadClaimedRows(containerId) {
   const el = document.getElementById(containerId);
   el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Loading…</p>';
 
-  fetch('../data/mock-claimed.json')
-    .then(r => r.json())
+  fetchClaimedItems()
     .then(items => {
       if (!items.length) {
         el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No claimed items yet.</p></div>`;
@@ -250,8 +249,7 @@ function loadRatingsRows(containerId) {
   const el = document.getElementById(containerId);
   el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Loading…</p>';
 
-  fetch('../data/mock-ratings.json')
-    .then(r => r.json())
+  fetchRatings()
     .then(items => {
       if (!items.length) {
         el.innerHTML = `<div class="empty-state"><div class="empty-icon">⭐</div><p>No ratings yet.</p></div>`;

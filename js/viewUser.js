@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   Promise.all([
-    fetch('../data/mock-users.json').then(r => r.json()),
-    fetch('../data/mock-listings.json').then(r => r.json()),
+    fetchUsers(),
+    fetchListings(),
   ]).then(([users, listings]) => {
     const user = users.find(u => u.name === sellerName) || { name: sellerName };
     const sellerListings = listings.filter(l => l.seller === sellerName);
