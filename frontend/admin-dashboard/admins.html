@@ -1,17 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/admin-style.css">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/admin-style.css" />
     <link rel="stylesheet" href="../css/admin-sidebar.css">
-    <link rel="stylesheet" href="../css/admin-listingsApproval.css">
+    <link rel="stylesheet" href="../css/admin-admins.css">
     <link rel="stylesheet" href="../css/top-nav.css">
     <link rel="stylesheet" href="../css/toast.css">
-    <title>CampusCart | Listing Approvals</title>
+    <title>CampusCart | Admins</title>
 </head>
 
 <body>
@@ -31,18 +31,21 @@
 
             <main class="main-content">
 
-                <div class="approval-header page-toolbar">
-                    <h3>Listings Approval Queue</h3>
-                    <div class="approval-controls">
-                        <div class="pending-count">
-                            Pending Approval: 4
-                        </div>
+                <div class="page-toolbar">
+                    <div class="toolbar-left-panel">
+                        <h3>Administrators</h3>
+                        <span class="admins-counter-text">Current Admins: 5</span>
+                    </div>
+                    <div class="toolbar-right-panel">
+                        <button class="add-admin-action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+                            </svg> Add Administrator
+                        </button>
                         <div class="search-capsule-box">
-                            <input type="text" placeholder="Search..." class="search-input-field">
+                            <input type="text" placeholder="Search....." class="search-input-field">
                             <button class="search-glass-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="11" cy="11" r="8" />
                                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                                 </svg>
@@ -51,12 +54,12 @@
                     </div>
                 </div>
 
-                <div id="approval-grid"></div>
+                <div id="admins-stack-list"></div>
             </main>
         </div>
     </div>
 
-    <script src="../backend/api.js"></script>
+    <script src="../../backend/api.js"></script>
     <script src="../js/components.js"></script>
     <script src="../js/toggleTheme.js"></script>
     <script src="../js/toastNotification.js"></script>
@@ -64,10 +67,9 @@
     <script>
         loadTopNav();
         storeTheme();
-        loadAdminSideNav('listingApproval.html');
-        displayListingApprovals();
+        loadAdminSideNav('admins.html');
+        displayAdmins();
     </script>
-
 </body>
 
 </html>

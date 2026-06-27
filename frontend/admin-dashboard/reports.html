@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/admin-style.css" />
     <link rel="stylesheet" href="../css/admin-sidebar.css">
-    <link rel="stylesheet" href="../css/admin-users.css">
+    <link rel="stylesheet" href="../css/admin-reports.css">
     <link rel="stylesheet" href="../css/top-nav.css">
     <link rel="stylesheet" href="../css/toast.css">
-    <title>CampusCart | Users</title>
+    <title>CampusCart | Reports</title>
 </head>
 
 <body>
@@ -33,21 +33,12 @@
 
                 <div class="page-toolbar">
                     <div class="toolbar-left-panel">
-                        <h3>Registered Users</h3>
-                        <span class="users-counter-text">Total Users: 8</span>
+                        <h3>User Reports</h3>
+                        <span class="reports-counter-text">Pending Reports: 12</span>
                     </div>
                     <div class="toolbar-right-panel">
-
-                        <div class="filter-wrapper">
-                            <select class="status-filter-dropdown">
-                                <option value="all">All Statuses</option>
-                                <option value="active">Active Only</option>
-                                <option value="suspended">Suspended Only</option>
-                                <option value="banned">Banned Only</option>
-                            </select>
-                        </div>
                         <div class="search-capsule-box">
-                            <input type="text" placeholder="Search users....." class="search-input-field">
+                            <input type="text" placeholder="Search reports....." class="search-input-field">
                             <button class="search-glass-btn"><svg xmlns="http://www.w3.org/2000/svg" width="14"
                                     height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
@@ -58,11 +49,12 @@
                     </div>
                 </div>
 
-                <div id="users-stack-list"></div>
+                <div id="reports-stack-list"></div>
+            </main>
         </div>
     </div>
 
-    <script src="../backend/api.js"></script>
+    <script src="../../backend/api.js"></script>
     <script src="../js/components.js"></script>
     <script src="../js/toggleTheme.js"></script>
     <script src="../js/toastNotification.js"></script>
@@ -70,8 +62,8 @@
     <script>
         loadTopNav();
         storeTheme();
-        loadAdminSideNav('users.html');
-        displayUsers();
+        loadAdminSideNav('reports.html');
+        displayReports();
     </script>
 </body>
 
