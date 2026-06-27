@@ -42,16 +42,16 @@ CampusCart is a peer-to-peer campus marketplace where university students can bu
 
 ```
 CCDEVAP-S16-1-CampusCart/
-├── login-path/               # Auth pages (login, register, verify, forgot password)
-├── homepage/                 # Marketplace (browse, item detail, cart, seller profile)
-├── user-profile-dashboard/   # Student area (dashboard, profile, listings, ratings, claimed)
-├── admin-dashboard/          # Admin panel (dashboard, users, admins, approvals, categories, reports)
-├── css/                      # Stylesheets (20 files)
-├── js/                       # JavaScript (16 files)
-├── data/                     # Mock JSON data
-└── images/icons/             # SVG icons
+|-- frontend/
+|   |-- login-path/               # Auth pages (login, register, verify, forgot password)
+|   |-- homepage/                 # Marketplace (browse, item detail, cart, seller profile)
+|   |-- user-profile-dashboard/   # Student area (dashboard, profile, listings, ratings, claimed)
+|   |-- admin-dashboard/          # Admin panel (dashboard, users, admins, approvals, categories, reports)
+|   |-- css/                      # Stylesheets
+|   `-- js/                       # JavaScript
+|-- backend/                      # Client-side API/search helpers for the prototype
+`-- data/                         # Mock JSON data
 ```
-
 ---
 
 ## Tech Stack
@@ -65,11 +65,11 @@ CCDEVAP-S16-1-CampusCart/
 
 ## Key User Flows
 
-1. **Register** — `login-path/emailVerification.html` → enter email → code `123456` → fill profile → dashboard
-2. **Login as student** — `login-path/login.html` → redirects to `user-profile-dashboard/dashboard.html`
-3. **Login as admin** — same login page → redirects to `admin-dashboard/adminDashboard.html`
-4. **Add a listing** — `user-profile-dashboard/addListing.html` → fill form → submitted for admin approval
-5. **Browse & buy** — `homepage/homepage.html` → search/filter → item detail → add to cart
+1. **Register** — `frontend/login-path/emailVerification.html` → enter email → code `123456` → fill profile → dashboard
+2. **Login as student** — `frontend/login-path/login.html` → redirects to `frontend/user-profile-dashboard/dashboard.html`
+3. **Login as admin** — same login page → redirects to `frontend/admin-dashboard/adminDashboard.html`
+4. **Add a listing** — `frontend/user-profile-dashboard/addListing.html` → fill form → submitted for admin approval
+5. **Browse & buy** — `frontend/homepage/homepage.html` → search/filter → item detail → add to cart
 
 ---
 
