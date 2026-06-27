@@ -122,10 +122,6 @@ function renderItemPage(item) {
             <p class="ip-detail-value">${item.condition || '—'}</p>
           </div>
           <div class="ip-detail-item">
-            <p class="ip-detail-label">Item ID</p>
-            <p class="ip-detail-value">#${item.id}</p>
-          </div>
-          <div class="ip-detail-item">
             <p class="ip-detail-label">Listed On</p>
             <p class="ip-detail-value">${createdDate}</p>
           </div>
@@ -135,9 +131,9 @@ function renderItemPage(item) {
 
         <div class="ip-actions">
           ${item.status === 'claimed'
-            ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
-            : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
-          }
+      ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
+      : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
+    }
         </div>
       </div>
 
@@ -156,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderItemPage(item);
         return;
       }
-    } catch (_) {}
+    } catch (_) { }
   }
 
   fetchListings()
