@@ -12,7 +12,10 @@ const reportSchema = new mongoose.Schema(
     action_taken: { type: String, default: null },
     resolved_at: { type: Date, default: null },
   },
-  { timestamps: { createdAt: "created_at", updatedAt: false }, versionKey: false },
+  {
+    timestamps: { createdAt: "created_at", updatedAt: false },
+    versionKey: false,
+  },
 );
 
 module.exports = mongoose.model("Report", reportSchema);

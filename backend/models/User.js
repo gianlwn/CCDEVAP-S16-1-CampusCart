@@ -14,7 +14,10 @@ const userSchema = new mongoose.Schema(
     is_suspended: { type: Boolean, default: false },
     is_banned: { type: Boolean, default: false },
   },
-  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" }, versionKey: false },
+  {
+    timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
+    versionKey: false,
+  },
 );
 
 module.exports = mongoose.model("User", userSchema);
