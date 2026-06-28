@@ -1,0 +1,29 @@
+{
+  "name": "ccdevap-s16-1-campuscart",
+  "version": "1.0.0",
+  "description": "**Student essentials, student prices.**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gianlwn/CCDEVAP-S16-1-CampusCart.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gianlwn/CCDEVAP-S16-1-CampusCart/issues"
+  },
+  "homepage": "https://github.com/gianlwn/CCDEVAP-S16-1-CampusCart#readme",
+  "dependencies": {
+    "@emailjs/nodejs": "^5.0.2",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.7.3"
+  }
+}

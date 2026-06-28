@@ -1,15 +1,15 @@
 const IP_CATEGORY_BG = {
-  Electronics: 'rgba(122,171,138,0.18)',
-  Books: 'rgba(212,184,150,0.28)',
-  'Lab Tools': 'rgba(122,171,215,0.18)',
-  Clothing: 'rgba(210,160,60,0.14)',
-  Others: 'rgba(158,144,132,0.18)',
+  Electronics: "rgba(122,171,138,0.18)",
+  Books: "rgba(212,184,150,0.28)",
+  "Lab Tools": "rgba(122,171,215,0.18)",
+  Clothing: "rgba(210,160,60,0.14)",
+  Others: "rgba(158,144,132,0.18)",
 };
 
 const IP_CONDITION_CLASS = {
-  New: 'ip-condition-new',
-  Good: 'ip-condition-good',
-  Used: 'ip-condition-used',
+  New: "ip-condition-new",
+  Good: "ip-condition-good",
+  Used: "ip-condition-used",
 };
 
 const IP_THUMB_OPACITIES = [1, 0.72, 0.52];
@@ -20,45 +20,59 @@ let _activeThumb = 0;
 
 function _getItemId() {
   const params = new URLSearchParams(window.location.search);
-  return parseInt(params.get('id'), 10);
+  return parseInt(params.get("id"), 10);
 }
 
 function _setActiveThumb(idx) {
   _activeThumb = idx;
-  document.querySelectorAll('.ip-thumb').forEach((t, i) => {
-    t.classList.toggle('active', i === idx);
+  document.querySelectorAll(".ip-thumb").forEach((t, i) => {
+    t.classList.toggle("active", i === idx);
   });
-  const main = document.getElementById('ip-main-img-inner');
+  const main = document.getElementById("ip-main-img-inner");
   if (main) {
     const bg = IP_CATEGORY_BG[_ipItem.category] || IP_CATEGORY_BG.Others;
     const op = IP_THUMB_OPACITIES[idx] || 0.45;
     main.style.opacity = op;
     main.parentElement.style.background = bg;
   }
-  const label = document.getElementById('ip-img-label');
+  const label = document.getElementById("ip-img-label");
   if (label) label.textContent = `Photo ${idx + 1} of 3`;
 }
 
 function _addToCartFromPage() {
   if (!_ipItem) return;
-  if (_ipItem.status === 'claimed') {
-    showToast('Already Claimed', 'This item has already been claimed and is no longer available.', 'warning');
+  if (_ipItem.status === "claimed") {
+    showToast(
+      "Already Claimed",
+      "This item has already been claimed and is no longer available.",
+      "warning",
+    );
     return;
   }
-  showToast('Added to Cart', `"${_ipItem.name}" added to your cart.`, 'success');
+  showToast(
+    "Added to Cart",
+    `"${_ipItem.name}" added to your cart.`,
+    "success",
+  );
 }
 
 function renderItemPage(item) {
   _ipItem = item;
-  const wrap = document.getElementById('ip-layout-wrap');
+  const wrap = document.getElementById("ip-layout-wrap");
   if (!wrap) return;
 
   document.title = `CampusCart | ${item.name}`;
 
   const bg = IP_CATEGORY_BG[item.category] || IP_CATEGORY_BG.Others;
-  const condClass = IP_CONDITION_CLASS[item.condition] || 'ip-condition-used';
-  const sellerInitial = (item.seller || 'S').charAt(0).toUpperCase();
-  const createdDate = item.created ? new Date(item.created).toLocaleDateString('en-PH', { year: 'numeric', month: 'short', day: 'numeric' }) : '—';
+  const condClass = IP_CONDITION_CLASS[item.condition] || "ip-condition-used";
+  const sellerInitial = (item.seller || "S").charAt(0).toUpperCase();
+  const createdDate = item.created
+    ? new Date(item.created).toLocaleDateString("en-PH", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "—";
 
   const cartSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
 
@@ -77,11 +91,15 @@ function renderItemPage(item) {
           <span class="ip-img-label" id="ip-img-label">Photo 1 of 3</span>
         </div>
         <div class="ip-thumbs">
-          ${[0, 1, 2].map(i => `
-            <div class="ip-thumb${i === 0 ? ' active' : ''}" style="background:${bg};opacity:${IP_THUMB_OPACITIES[i]};" onclick="_setActiveThumb(${i})">
+          ${[0, 1, 2]
+            .map(
+              (i) => `
+            <div class="ip-thumb${i === 0 ? " active" : ""}" style="background:${bg};opacity:${IP_THUMB_OPACITIES[i]};" onclick="_setActiveThumb(${i})">
               ${thumbIcon}
             </div>
-          `).join('')}
+          `,
+            )
+            .join("")}
         </div>
       </div>
 
@@ -93,15 +111,15 @@ function renderItemPage(item) {
 
         <div class="ip-price-row">
           <span class="ip-price">₱${Number(item.price).toLocaleString()}</span>
-          <span class="ip-condition-badge ${condClass}">${item.condition || 'Available'}</span>
+          <span class="ip-condition-badge ${condClass}">${item.condition || "Available"}</span>
         </div>
 
         <div class="ip-divider"></div>
 
-        <div class="ip-seller-card" style="cursor:pointer;" onclick="window.location.href='viewUser.html?seller=${encodeURIComponent(item.seller || '')}'">
+        <div class="ip-seller-card" style="cursor:pointer;" onclick="window.location.href='viewUser.html?seller=${encodeURIComponent(item.seller || "")}'">
           <div class="ip-seller-avatar">${sellerInitial}</div>
           <div class="ip-seller-info">
-            <p class="ip-seller-name">${item.seller || 'Campus Seller'}</p>
+            <p class="ip-seller-name">${item.seller || "Campus Seller"}</p>
             <p class="ip-seller-meta">Seller · Tap to view profile</p>
           </div>
           <span style="color:var(--text-muted);font-size:12px;flex-shrink:0;">View →</span>
@@ -109,7 +127,7 @@ function renderItemPage(item) {
 
         <div class="ip-desc-section">
           <h3>Description</h3>
-          <p class="ip-desc-text">${item.description || 'No description provided.'}</p>
+          <p class="ip-desc-text">${item.description || "No description provided."}</p>
         </div>
 
         <div class="ip-details-grid">
@@ -119,7 +137,7 @@ function renderItemPage(item) {
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Condition</p>
-            <p class="ip-detail-value">${item.condition || '—'}</p>
+            <p class="ip-detail-value">${item.condition || "—"}</p>
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Listed On</p>
@@ -130,10 +148,11 @@ function renderItemPage(item) {
         <div class="ip-divider"></div>
 
         <div class="ip-actions">
-          ${item.status === 'claimed'
-      ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
-      : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
-    }
+          ${
+            item.status === "claimed"
+              ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
+              : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
+          }
         </div>
       </div>
 
@@ -141,10 +160,10 @@ function renderItemPage(item) {
   `;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   const id = _getItemId();
 
-  const cached = sessionStorage.getItem('cc_item');
+  const cached = sessionStorage.getItem("cc_item");
   if (cached) {
     try {
       const item = JSON.parse(cached);
@@ -152,21 +171,21 @@ document.addEventListener('DOMContentLoaded', function () {
         renderItemPage(item);
         return;
       }
-    } catch (_) { }
+    } catch (_) {}
   }
 
   fetchListings()
-    .then(items => {
-      const item = items.find(i => i.id === id);
+    .then((items) => {
+      const item = items.find((i) => i.id === id);
       if (!item) {
-        document.getElementById('ip-layout-wrap').innerHTML =
+        document.getElementById("ip-layout-wrap").innerHTML =
           `<div class="empty-state"><p>Item not found.</p></div>`;
         return;
       }
       renderItemPage(item);
     })
     .catch(() => {
-      document.getElementById('ip-layout-wrap').innerHTML =
+      document.getElementById("ip-layout-wrap").innerHTML =
         `<div class="empty-state"><p>Could not load item details.</p></div>`;
     });
 });

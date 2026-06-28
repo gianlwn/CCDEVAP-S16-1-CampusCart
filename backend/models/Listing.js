@@ -1,0 +1,19 @@
+const mongoose = require("mongoose");
+
+const listingSchema = new mongoose.Schema({
+  listings_id: { type: String, required: true, unique: true },
+  product_name: { type: String, required: true },
+  price: { type: Number, required: true },
+  status: {
+    type: String,
+    enum: ["active", "pending_review", "claimed"],
+    default: "pending_review",
+  },
+  condition: { type: String, enum: ["New", "Good", "Used"], required: true },
+  seller_id: { type: String, required: true },
+  description: { type: String },
+  images: [{ type: String }],
+  created: { type: Date, default: Date.now },
+});
+
+module.exports = mongoose.model("Listing", listingSchema);
