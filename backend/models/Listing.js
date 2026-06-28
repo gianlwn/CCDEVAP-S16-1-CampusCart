@@ -14,6 +14,6 @@ const listingSchema = new mongoose.Schema({
   description: { type: String },
   images: [{ type: String }],
   created: { type: Date, default: Date.now },
-});
+}, { versionKey: false });
 
 module.exports = mongoose.model("Listing", listingSchema);

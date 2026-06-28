@@ -10,6 +10,6 @@ const claimSchema = new mongoose.Schema({
   claim_date: { type: Date, default: Date.now },
   buyer_completed: { type: Boolean, default: false },
   seller_completed: { type: Boolean, default: false },
-});
+}, { versionKey: false });
 
 module.exports = mongoose.model("Claim", claimSchema);
