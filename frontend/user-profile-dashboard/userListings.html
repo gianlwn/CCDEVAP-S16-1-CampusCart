@@ -26,7 +26,11 @@
       <div class="listings-page-header">
         <h1 class="page-title" style="margin-bottom:0;">My Listings</h1>
         <a href="../user-profile-dashboard/addListing.html" class="btn-add-listing-page">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
           Add Listing
         </a>
       </div>
@@ -60,7 +64,9 @@
     ">
       <h2 style="font-size:16px;font-weight:800;margin-bottom:20px;color:var(--text);">Edit Listing</h2>
 
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Item Name</p>
+      <p
+        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+        Item Name</p>
       <input id="edit-inp-name" type="text" style="
         width:100%;padding:9px 11px;border:1px solid var(--border);
         border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -70,7 +76,9 @@
 
       <div class="edit-listing-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
         <div>
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Price (₱)</p>
+          <p
+            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+            Price (₱)</p>
           <input id="edit-inp-price" type="number" min="0" style="
             width:100%;padding:9px 11px;border:1px solid var(--border);
             border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -79,7 +87,9 @@
           " placeholder="0">
         </div>
         <div>
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Quantity</p>
+          <p
+            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+            Quantity</p>
           <input id="edit-inp-qty" type="number" min="1" style="
             width:100%;padding:9px 11px;border:1px solid var(--border);
             border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -91,7 +101,9 @@
 
       <div class="edit-listing-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
         <div>
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Category</p>
+          <p
+            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+            Category</p>
           <select id="edit-inp-category" style="
             width:100%;padding:9px 11px;border:1px solid var(--border);
             border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -107,7 +119,9 @@
           </select>
         </div>
         <div>
-          <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Condition</p>
+          <p
+            style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+            Condition</p>
           <select id="edit-inp-condition" style="
             width:100%;padding:9px 11px;border:1px solid var(--border);
             border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -122,7 +136,9 @@
         </div>
       </div>
 
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Pickup Location</p>
+      <p
+        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+        Pickup Location</p>
       <input id="edit-inp-location" type="text" style="
         width:100%;padding:9px 11px;border:1px solid var(--border);
         border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -130,7 +146,9 @@
         transition:all var(--transition);box-sizing:border-box;margin-bottom:14px;
       " placeholder="e.g. Henry Sy Hall Lobby, Gate 1">
 
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Description</p>
+      <p
+        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+        Description</p>
       <textarea id="edit-inp-desc" rows="3" style="
         width:100%;padding:9px 11px;border:1px solid var(--border);
         border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
@@ -154,6 +172,7 @@
   </div>
 
   <script src="../../backend/api.js"></script>
+  <script src="../../backend/listings-crud.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>

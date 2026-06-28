@@ -44,10 +44,11 @@ function closeEdit() {
 
 function saveEdit() {
   if (!editingId) return;
-  const item = allRatings.find(r => r.id === editingId);
-  if (!item) return;
-  item.rating = pickedStar || item.rating;
-  item.review = document.getElementById('modal-review').value.trim() || item.review;
+  const star = pickedStar;
+  const review = document.getElementById('modal-review').value.trim();
+  const result = editRatingEntry(allRatings, editingId, star, review);
+  if (!result.success) return;
+  allRatings = result.ratings;
   closeEdit();
   renderList();
   renderAvg(allRatings);
@@ -59,7 +60,8 @@ function deleteRating(id) {
     'Remove this Rating?',
     'This will permanently remove the rating. This action cannot be undone.',
     () => {
-      allRatings = allRatings.filter(r => r.id !== id);
+      const result = deleteRatingRecord(allRatings, id);
+      allRatings = result.ratings;
       renderList();
       renderAvg(allRatings);
       showToast('Removed', 'Rating has been removed.', 'success');
