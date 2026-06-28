@@ -154,7 +154,7 @@ async function handleRegister(event) {
   const course = document.getElementById('reg-course').value.trim();
   const phone  = document.getElementById('reg-phone').value.trim();
 
-  if (!name || !email || !pw || !school || !course || !phone) {
+  if (!name || !email || !pw || !school || !phone) {
     showToast('Missing Fields', 'Please fill in all required fields.', 'warning');
     return;
   }

@@ -63,7 +63,7 @@ router.post("/verify-code", (req, res) => {
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, school, course_code, phone } = req.body;
-    if (!name || !email || !password || !course_code) {
+    if (!name || !email || !password) {
       return res.status(400).json({ error: "missing_fields" });
     }
     const existing = await User.findOne({ email: email.toLowerCase() });
