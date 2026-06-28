@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const listingSchema = new mongoose.Schema(
   {
     listings_id: { type: String, required: true, unique: true },
@@ -18,5 +17,4 @@ const listingSchema = new mongoose.Schema(
   },
   { versionKey: false },
 );
-
 module.exports = mongoose.model("Listing", listingSchema);

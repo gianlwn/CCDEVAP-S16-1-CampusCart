@@ -1,11 +1,9 @@
 function updateListingFields(listings, id, updates) {
   return listings.map((l) => (l.id === id ? { ...l, ...updates } : l));
 }
-
 function removeListingById(listings, id) {
   return listings.filter((l) => l.id !== id);
 }
-
 function buildNewListing(
   name,
   price,
@@ -28,7 +26,6 @@ function buildNewListing(
     created: new Date().toISOString(),
   };
 }
-
 function saveListingEdit(
   listings,
   id,
@@ -56,7 +53,6 @@ function saveListingEdit(
     }),
   };
 }
-
 function deleteListingRecord(listings, id) {
   return { success: true, listings: removeListingById(listings, id) };
 }
