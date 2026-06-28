@@ -82,21 +82,21 @@ function closeEditListing() {
 }
 
 function saveEditListing() {
-  const item = allListings.find(l => l.id === editingListingId);
-  if (!item) return;
   const name = document.getElementById('edit-inp-name').value.trim();
   const price = document.getElementById('edit-inp-price').value.trim();
-  if (!name || !price) {
-    showToast('Missing Fields', 'Name and Price are required.', 'warning');
+  const result = saveListingEdit(
+    allListings, editingListingId, name, price,
+    document.getElementById('edit-inp-category').value,
+    document.getElementById('edit-inp-condition').value,
+    document.getElementById('edit-inp-location').value.trim(),
+    document.getElementById('edit-inp-desc').value.trim(),
+    document.getElementById('edit-inp-qty').value,
+  );
+  if (!result.success) {
+    if (result.error === 'missing_fields') showToast('Missing Fields', 'Name and Price are required.', 'warning');
     return;
   }
-  item.name = name;
-  item.price = parseFloat(price);
-  item.quantity = parseInt(document.getElementById('edit-inp-qty').value) || 1;
-  item.category = document.getElementById('edit-inp-category').value;
-  item.condition = document.getElementById('edit-inp-condition').value;
-  item.location = document.getElementById('edit-inp-location').value.trim();
-  item.description = document.getElementById('edit-inp-desc').value.trim();
+  allListings = result.listings;
   renderListings();
   closeEditListing();
   showToast('Updated', 'Listing has been updated.', 'success');
@@ -111,7 +111,8 @@ function deleteListing(id) {
     'Delete this Listing?',
     'This will permanently remove the listing. This action cannot be undone.',
     () => {
-      allListings = allListings.filter(l => l.id !== id);
+      const res = deleteListingRecord(allListings, id);
+      allListings = res.listings;
       renderListings();
       showToast('Deleted', 'Listing removed.', 'success');
     }

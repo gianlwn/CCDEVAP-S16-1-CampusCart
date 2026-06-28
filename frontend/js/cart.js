@@ -85,19 +85,19 @@ function viewCartItem(id) {
 }
 
 function claimItem(id) {
-  const item = cartItems.find(i => String(i.id) === String(id));
-  if (!item) return;
-  showToast('Claimed!', `"${item.name}" reserved. Coordinate with the seller to arrange pickup.`, 'success', 4000);
-  cartItems = cartItems.filter(i => String(i.id) !== String(id));
+  const result = claimCartItem(cartItems, id);
+  if (!result.success) return;
+  showToast('Claimed!', `"${result.itemName}" reserved. Coordinate with the seller to arrange pickup.`, 'success', 4000);
+  cartItems = result.items;
   if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE)) _cartPage = Math.max(1, _cartPage - 1);
   _renderCartPage();
 }
 
 function cancelItem(id) {
-  const item = cartItems.find(i => String(i.id) === String(id));
-  if (!item) return;
-  showToast('Cancelled', `"${item.name}" has been cancelled and removed from your cart.`, 'warning');
-  cartItems = cartItems.filter(i => String(i.id) !== String(id));
+  const result = cancelCartItem(cartItems, id);
+  if (!result.success) return;
+  showToast('Cancelled', `"${result.itemName}" has been cancelled and removed from your cart.`, 'warning');
+  cartItems = result.items;
   if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE)) _cartPage = Math.max(1, _cartPage - 1);
   _renderCartPage();
 }

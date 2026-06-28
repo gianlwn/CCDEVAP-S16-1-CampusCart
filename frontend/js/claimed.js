@@ -90,14 +90,13 @@ function closeReviewModal() {
 
 function saveReview() {
   if (!reviewingId) return;
-  if (!pickedStar) {
-    showToast('Rating Required', 'Please select a star rating.', 'warning');
+  const comment = document.getElementById('review-comment').value.trim();
+  const result = submitItemReview(claimedItems, reviewingId, pickedStar, comment);
+  if (!result.success) {
+    if (result.error === 'no_rating') showToast('Rating Required', 'Please select a star rating.', 'warning');
     return;
   }
-  const item = claimedItems.find(c => c.id === reviewingId);
-  if (!item) return;
-  item.userRating = pickedStar;
-  item.userComment = document.getElementById('review-comment').value.trim();
+  claimedItems = result.items;
   closeReviewModal();
   renderClaimed();
   showToast('Review Saved', 'Your review has been submitted.', 'success');

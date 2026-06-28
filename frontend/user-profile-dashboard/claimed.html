@@ -41,10 +41,14 @@
       box-shadow:0 8px 40px rgba(0,0,0,0.18);
       transition:background-color var(--transition);
     ">
-      <h2 style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--text);" id="review-modal-title">Rate & Review</h2>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px;" id="review-modal-subtitle">Share your experience with this seller</p>
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--text);" id="review-modal-title">Rate &
+        Review</h2>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:18px;" id="review-modal-subtitle">Share your
+        experience with this seller</p>
 
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">Your Rating</p>
+      <p
+        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:8px;">
+        Your Rating</p>
       <div id="review-star-picker" style="display:flex;gap:8px;margin-bottom:18px;font-size:30px;cursor:pointer;">
         <span class="review-star" data-val="1">★</span>
         <span class="review-star" data-val="2">★</span>
@@ -53,7 +57,9 @@
         <span class="review-star" data-val="5">★</span>
       </div>
 
-      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">Comment</p>
+      <p
+        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+        Comment</p>
       <textarea id="review-comment" rows="3" style="
         width:100%; padding:9px 11px; border:1px solid var(--border);
         border-radius:var(--radius-xs); background:var(--bg); color:var(--text);
@@ -77,6 +83,7 @@
   </div>
 
   <script src="../../backend/api.js"></script>
+  <script src="../../backend/reviews-crud.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>

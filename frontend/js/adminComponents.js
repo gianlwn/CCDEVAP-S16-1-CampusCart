@@ -1,4 +1,5 @@
 let _editTargetCard = null;
+let _editTargetAdminName = null;
 
 function handleAdminSignOut() {
   sessionStorage.setItem('cc_signout', '1');
@@ -68,7 +69,6 @@ function openModal(html) {
   box.style.cssText = 'background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:24px;min-width:320px;max-width:460px;width:90%;box-shadow:var(--shadow-card);';
   box.innerHTML = html;
   overlay.appendChild(box);
-
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
   document.body.appendChild(overlay);
 }
@@ -153,31 +153,17 @@ function loadAdminSideNav(page) {
   if (activeLink) activeLink.classList.add('active');
 }
 
-let _adminsArray = [
-  { username: 'Mikyla Kirsten Aguirre', email: 'mikyla_kirsten_aguirre@dlsu.edu.ph', status: 'active' },
-  { username: 'Giancarlo Lawan', email: 'giancarlo_lawan@dlsu.edu.ph', status: 'active' },
-  { username: 'Bernard Florian Llagas', email: 'bernard_florian_llagas@dlsu.edu.ph', status: 'inactive' },
-  { username: 'Sky Hannah Parado', email: 'sky_parado@dlsu.edu.ph', status: 'active' },
-  { username: 'Camille Erika Sarabia', email: 'camille_erika_sarabia@dlsu.edu.ph', status: 'active' },
-  { username: 'Rafael Tan', email: 'rafael_tan@dlsu.edu.ph', status: 'active' },
-  { username: 'Jose Dela Vega', email: 'jose_delavega@dlsu.edu.ph', status: 'active' },
-  { username: 'Maria Santos', email: 'maria_santos@dlsu.edu.ph', status: 'active' },
-  { username: 'Luis Fernandez', email: 'luis_fernandez@dlsu.edu.ph', status: 'inactive' },
-  { username: 'Ana Cruz', email: 'ana_cruz@dlsu.edu.ph', status: 'active' },
-  { username: 'Carlos Ramos', email: 'carlos_ramos@dlsu.edu.ph', status: 'active' },
-  { username: 'Lea Bautista', email: 'lea_bautista@dlsu.edu.ph', status: 'active' },
-  { username: 'Diego Navarro', email: 'diego_navarro@dlsu.edu.ph', status: 'inactive' },
-];
 let _adminPage = 1;
 
 function renderAdminPage() {
   const container = document.getElementById('admins-stack-list');
   if (!container) return;
+  const admins = getAdmins();
   const perPage = getItemsPerPage('admins');
   const start = (_adminPage - 1) * perPage;
-  const slice = _adminsArray.slice(start, start + perPage);
+  const slice = admins.slice(start, start + perPage);
 
-  if (!_adminsArray.length) {
+  if (!admins.length) {
     container.innerHTML = `<div class="empty-msg">No administrators found. Click "Add Administrator" to create one.</div>`;
     return;
   }
@@ -209,8 +195,8 @@ function renderAdminPage() {
       </div>`;
   }).join('');
 
-  updateCounter('.admins-counter-text', 'Current Admins', _adminsArray.length);
-  renderPagination('admins-stack-list', _adminsArray.length, _adminPage, p => { _adminPage = p; renderAdminPage(); }, perPage);
+  updateCounter('.admins-counter-text', 'Current Admins', admins.length);
+  renderPagination('admins-stack-list', admins.length, _adminPage, p => { _adminPage = p; renderAdminPage(); }, perPage);
   initSearch('.admin-identity-row-card');
 }
 
@@ -245,8 +231,8 @@ function openAddAdminModal() {
 function saveNewAdmin() {
   const name = document.getElementById('modal-new-admin-name')?.value.trim();
   const email = document.getElementById('modal-new-admin-email')?.value.trim();
-  if (!name || !email) { showToast('Error', 'Name and email are required.', 'error'); return; }
-  _adminsArray.push({ username: name, email, status: 'active' });
+  const result = createAdmin(name, email);
+  if (!result.success) { showToast('Error', 'Name and email are required.', 'error'); return; }
   closeModal();
   renderAdminPage();
   showToast('Added', `${name} has been added as an administrator.`, 'success');
@@ -258,6 +244,7 @@ function handleAdmin(action, username, email, status, btn) {
 
   if (action === 'edit') {
     _editTargetCard = card;
+    _editTargetAdminName = username;
     openModal(`
       <h3 style="${MS.title}">Edit Administrator</h3>
       <div style="${MS.body}">
@@ -286,6 +273,8 @@ function handleAdmin(action, username, email, status, btn) {
       `Revoke Admin Access?`,
       `Revoke admin access for ${username}? They will no longer be able to manage the platform.`,
       () => {
+        const result = revokeAdmin(username);
+        if (!result.success) return;
         if (badge) { badge.className = 'badge-pill pill-status-inactive'; badge.textContent = 'Inactive'; }
         btn.disabled = true;
         showToast('Access Revoked', `${username}'s admin access has been revoked.`, 'warning');
@@ -298,47 +287,33 @@ function handleAdmin(action, username, email, status, btn) {
 function saveAdminEdit() {
   const name = document.getElementById('modal-admin-name')?.value.trim();
   const email = document.getElementById('modal-admin-email')?.value.trim();
-  if (!name || !email) { showToast('Error', 'Name and email cannot be empty.', 'error'); return; }
+  const result = updateAdmin(_editTargetAdminName, name, email);
+  if (!result.success) { showToast('Error', 'Name and email cannot be empty.', 'error'); return; }
   if (_editTargetCard) {
     _editTargetCard.querySelector('.admin-display-name').textContent = name;
     _editTargetCard.querySelector('.admin-display-email').textContent = email;
   }
+  _editTargetAdminName = null;
   closeModal();
   showToast('Saved', 'Administrator updated successfully.', 'success');
 }
 
-const _usersArray = [
-  { username: 'Andie Kirsten Woo', email: 'andie_woo@dlsu.edu.ph', dateJoined: 'Jun 12, 2026', status: 'active' },
-  { username: 'Alexa Nicole Pleyto', email: 'alexa_pleyto@dlsu.edu.ph', dateJoined: 'May 28, 2026', status: 'suspended' },
-  { username: 'Christine Cote', email: 'tintin_cote@dlsu.edu.ph', dateJoined: 'Apr 04, 2026', status: 'banned' },
-  { username: 'Marco Dela Cruz', email: 'marco_delacruz@dlsu.edu.ph', dateJoined: 'Mar 15, 2026', status: 'active' },
-  { username: 'Ria Magpantay', email: 'ria_magpantay@dlsu.edu.ph', dateJoined: 'Feb 20, 2026', status: 'active' },
-  { username: 'Janna Reyes', email: 'janna_reyes@dlsu.edu.ph', dateJoined: 'Jan 08, 2026', status: 'active' },
-  { username: 'Eli Santos', email: 'eli_santos@dlsu.edu.ph', dateJoined: 'Dec 02, 2025', status: 'suspended' },
-  { username: 'Dana Flores', email: 'dana_flores@dlsu.edu.ph', dateJoined: 'Nov 19, 2025', status: 'active' },
-  { username: 'Paolo Mendoza', email: 'paolo_mendoza@dlsu.edu.ph', dateJoined: 'Oct 15, 2025', status: 'active' },
-  { username: 'Bianca Torres', email: 'bianca_torres@dlsu.edu.ph', dateJoined: 'Sep 22, 2025', status: 'active' },
-  { username: 'Kyle Reyes', email: 'kyle_reyes@dlsu.edu.ph', dateJoined: 'Aug 10, 2025', status: 'suspended' },
-  { username: 'Lia Castillo', email: 'lia_castillo@dlsu.edu.ph', dateJoined: 'Jul 30, 2025', status: 'active' },
-  { username: 'Noel Garcia', email: 'noel_garcia@dlsu.edu.ph', dateJoined: 'Jun 05, 2025', status: 'banned' },
-  { username: 'Sofia Aquino', email: 'sofia_aquino@dlsu.edu.ph', dateJoined: 'May 18, 2025', status: 'active' },
-  { username: 'Anton Villanueva', email: 'anton_villanueva@dlsu.edu.ph', dateJoined: 'Apr 02, 2025', status: 'active' },
-];
 let _usersPage = 1;
 
 function displayUsers() {
   const container = document.getElementById('users-stack-list');
   if (!container) return;
 
+  const users = getUsers();
   const perPage = getItemsPerPage('users');
   const start = (_usersPage - 1) * perPage;
-  const usersArray = _usersArray.slice(start, start + perPage);
+  const usersSlice = users.slice(start, start + perPage);
 
-  if (!_usersArray.length) {
+  if (!users.length) {
     container.innerHTML = `<div class="empty-msg">No users found.</div>`;
     return;
   } else {
-    container.innerHTML = usersArray.map(user => {
+    container.innerHTML = usersSlice.map(user => {
       const isActive = user.status?.toLowerCase() === 'active';
       const isSuspended = user.status?.toLowerCase() === 'suspended';
       const pillClass = isActive ? 'pill-status-active' : (isSuspended ? 'pill-status-suspended' : 'pill-status-banned');
@@ -377,8 +352,8 @@ function displayUsers() {
     }).join('');
   }
 
-  updateCounter('.users-counter-text', 'Total Users', _usersArray.length);
-  renderPagination('users-stack-list', _usersArray.length, _usersPage, p => { _usersPage = p; displayUsers(); }, perPage);
+  updateCounter('.users-counter-text', 'Total Users', users.length);
+  renderPagination('users-stack-list', users.length, _usersPage, p => { _usersPage = p; displayUsers(); }, perPage);
   setupResizePagination('users', () => { _usersPage = 1; displayUsers(); });
   initUserSearch();
 }
@@ -431,7 +406,7 @@ function handleUser(action, username, email, dateJoined, status, btn) {
       </div>
       <div style="${MS.footer}">
         <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
-        <button onclick="saveUserEdit('${username}')" style="${MS.primary}">Save</button>
+        <button onclick="saveUserEdit('${username}','${email}')" style="${MS.primary}">Save</button>
       </div>
     `);
 
@@ -442,6 +417,7 @@ function handleUser(action, username, email, dateJoined, status, btn) {
         `Unban ${username}?`,
         `This will restore their account and allow them to use CampusCart again.`,
         () => {
+          setUserStatus(email, 'active');
           if (badge) { badge.className = 'badge-pill pill-status-active'; badge.textContent = 'Active'; }
           showToast('Unbanned', `${username} has been unbanned.`, 'success');
         },
@@ -452,6 +428,7 @@ function handleUser(action, username, email, dateJoined, status, btn) {
         `Ban ${username}?`,
         `This will restrict their account and prevent them from using CampusCart.`,
         () => {
+          setUserStatus(email, 'banned');
           if (badge) { badge.className = 'badge-pill pill-status-banned'; badge.textContent = 'Banned'; }
           showToast('Banned', `${username} has been banned.`, 'error');
         },
@@ -461,10 +438,11 @@ function handleUser(action, username, email, dateJoined, status, btn) {
   }
 }
 
-function saveUserEdit(username) {
+function saveUserEdit(username, email) {
   const select = document.getElementById('modal-user-status');
   if (!select || !_editTargetCard) return;
   const newStatus = select.value;
+  setUserStatus(email, newStatus);
   const badge = _editTargetCard.querySelector('.badge-pill');
   if (badge) {
     const pillMap = { active: 'pill-status-active', suspended: 'pill-status-suspended', banned: 'pill-status-banned' };
@@ -476,31 +454,15 @@ function saveUserEdit(username) {
   showToast('Updated', `${username}'s status has been updated.`, 'success');
 }
 
-const _listingApprovalsArray = [
-  { productName: 'Casio FX-991EX', listingId: 'LST-1001', price: 250, seller: 'Kathryn Bernardo', category: 'Electronics', condition: 'Good', description: 'Scientific calculator in great condition. Minor scratches on the back. Comes with the original case.', images: ['Photo 1', 'Photo 2', 'Photo 3'] },
-  { productName: 'Chemistry Lab Kit', listingId: 'LST-1002', price: 950, seller: 'Kimi Antonelli', category: 'Lab Tools', condition: 'New', description: 'Brand new lab kit, never opened. Bought for CHEM1 but ended up not using it.', images: ['Photo 1', 'Photo 2'] },
-  { productName: 'Engineering Mechanics Textbook', listingId: 'LST-1003', price: 500, seller: 'Garrett Graham', category: 'Books', condition: 'Used', description: 'Meriam & Kraige, 7th edition. Pages are highlighted but still very readable.', images: ['Photo 1'] },
-  { productName: 'DLSU PE Uniform Set', listingId: 'LST-1004', price: 310, seller: 'Jeron Teng', category: 'Clothing', condition: 'Good', description: 'XL size, worn only a few times. Washed and clean.', images: ['Photo 1', 'Photo 2', 'Photo 3', 'Photo 4'] },
-  { productName: 'Arduino Mega 2560', listingId: 'LST-1005', price: 480, seller: 'Ria Magpantay', category: 'Electronics', condition: 'Used', description: 'Fully functional Arduino Mega. Tested before listing. No shields included.', images: ['Photo 1', 'Photo 2'] },
-  { productName: 'Fluid Mechanics Textbook', listingId: 'LST-1006', price: 380, seller: 'Marco Dela Cruz', category: 'Books', condition: 'Good', description: 'Cengel & Cimbala, 3rd edition. Some annotations in pencil, easy to erase.', images: ['Photo 1'] },
-  { productName: 'Lab Goggles (Pack of 2)', listingId: 'LST-1007', price: 120, seller: 'Dana Flores', category: 'Lab Tools', condition: 'New', description: 'Never used, sealed pack. Safety goggles required for CHEM lab.', images: ['Photo 1', 'Photo 2'] },
-  { productName: 'DLSU Lanyard + ID Holder', listingId: 'LST-1008', price: 80, seller: 'Janna Reyes', category: 'Others', condition: 'Good', description: 'Official DLSU lanyard, slightly used. ID holder is still clear and intact.', images: ['Photo 1'] },
-  { productName: 'Organic Chemistry Textbook', listingId: 'LST-1009', price: 420, seller: 'Paolo Mendoza', category: 'Books', condition: 'Good', description: 'Wade 8th edition. Some highlighting throughout but text is clear and readable.', images: ['Photo 1', 'Photo 2'] },
-  { productName: 'Graph Paper Pads (3 packs)', listingId: 'LST-1010', price: 75, seller: 'Bianca Torres', category: 'School Supplies', condition: 'New', description: 'Sealed packs, never opened. Bought extras by mistake for MATH class.', images: ['Photo 1'] },
-  { productName: 'TI-84 Plus Graphing Calculator', listingId: 'LST-1011', price: 1200, seller: 'Kyle Reyes', category: 'Electronics', condition: 'Good', description: 'Fully functional. Battery replaced last month. Comes with protective cover and manual.', images: ['Photo 1', 'Photo 2', 'Photo 3'] },
-  { productName: 'DLSU Engineering Uniform', listingId: 'LST-1012', price: 450, seller: 'Lia Castillo', category: 'Clothing', condition: 'Used', description: 'Medium size, worn for one term only. Washed and in good condition.', images: ['Photo 1', 'Photo 2'] },
-  { productName: 'Breadboard + Jumper Wires Kit', listingId: 'LST-1013', price: 180, seller: 'Noel Garcia', category: 'Electronics', condition: 'Good', description: '830-point breadboard with 65-piece jumper wire set. Used for one project only.', images: ['Photo 1'] },
-  { productName: 'Data Structures and Algorithms Book', listingId: 'LST-1014', price: 560, seller: 'Sofia Aquino', category: 'Books', condition: 'Used', description: 'Cormen et al., 3rd edition. Annotations in pencil on a few pages, otherwise clean.', images: ['Photo 1', 'Photo 2'] },
-];
-
 let _approvalPage = 1;
 
 function renderApprovalPage() {
   const container = document.getElementById('approval-grid');
   if (!container) return;
+  const approvals = getListingApprovals();
   const perPage = getItemsPerPage('listings');
   const start = (_approvalPage - 1) * perPage;
-  const slice = _listingApprovalsArray.slice(start, start + perPage);
+  const slice = approvals.slice(start, start + perPage);
 
   if (!slice.length) {
     container.innerHTML = `<div class="empty-msg">No listings needed for approval.</div>`;
@@ -526,8 +488,8 @@ function renderApprovalPage() {
     </div>
   `).join('');
 
-  updateCounter('.pending-count', 'Pending Approval', _listingApprovalsArray.length);
-  renderPagination('approval-grid', _listingApprovalsArray.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); }, perPage);
+  updateCounter('.pending-count', 'Pending Approval', approvals.length);
+  renderPagination('approval-grid', approvals.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); }, perPage);
 }
 
 function displayListingApprovals() {
@@ -536,7 +498,7 @@ function displayListingApprovals() {
 }
 
 function viewListingDetails(listingId) {
-  const listing = _listingApprovalsArray.find(l => l.listingId === listingId);
+  const listing = getListingApprovals().find(l => l.listingId === listingId);
   if (!listing) return;
   const photosHtml = listing.images.map((_, i) =>
     `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">Photo ${i + 1}</div>`
@@ -564,6 +526,7 @@ function viewListingDetails(listingId) {
 
 function handleApproval(action, listingId, btn) {
   const card = btn.closest('.listing-card');
+  processApproval(listingId, action);
   if (action === 'approve') {
     showToast('Approved', `Listing ${listingId} has been approved.`, 'success');
   } else {
@@ -573,28 +536,18 @@ function handleApproval(action, listingId, btn) {
   btn.closest('.listing-actions').querySelectorAll('button').forEach(b => b.disabled = true);
 }
 
-let _categoriesArray = [
-  { categoryName: 'Electronics' },
-  { categoryName: 'Clothing' },
-  { categoryName: 'School Supplies' },
-  { categoryName: 'Books' },
-  { categoryName: 'Lab Tools' },
-  { categoryName: 'Others' },
-  { categoryName: 'Instruments' },
-  { categoryName: 'Sports & Fitness' },
-];
-
 let _catPage = 1;
 
 function renderCategoryPage() {
   const container = document.getElementById('category-grid');
   if (!container) return;
 
+  const categories = getCategories();
   const perPage = getItemsPerPage('categories');
   const start = (_catPage - 1) * perPage;
-  const slice = _categoriesArray.slice(start, start + perPage);
+  const slice = categories.slice(start, start + perPage);
 
-  if (!_categoriesArray.length) {
+  if (!categories.length) {
     container.innerHTML = `<div class="empty-msg">No categories found. Click "+ Add New Category" to create one.</div>`;
     return;
   }
@@ -611,7 +564,7 @@ function renderCategoryPage() {
     </div>
   `).join('');
 
-  renderPagination('category-grid', _categoriesArray.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
+  renderPagination('category-grid', categories.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
   initSearch('.category-card');
 }
 
@@ -640,8 +593,8 @@ function openAddCategoryModal() {
 
 function saveNewCategory() {
   const name = document.getElementById('modal-cat-name')?.value.trim();
-  if (!name) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
-  _categoriesArray.push({ categoryName: name });
+  const result = createCategory(name);
+  if (!result.success) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
   closeModal();
   renderCategoryPage();
   showToast('Added', `Category "${name}" created.`, 'success');
@@ -671,7 +624,7 @@ function handleCategory(action, categoryName, btn) {
       'Delete this Category?',
       `Remove "${categoryName}"? This action cannot be undone.`,
       () => {
-        _categoriesArray = _categoriesArray.filter(c => c.categoryName !== categoryName);
+        removeCategory(categoryName);
         showToast('Deleted', `"${categoryName}" removed.`, 'success');
         renderCategoryPage();
       }
@@ -681,39 +634,25 @@ function handleCategory(action, categoryName, btn) {
 
 function saveEditCategory(oldName) {
   const newName = document.getElementById('modal-edit-cat-name')?.value.trim();
-  if (!newName) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
-  const cat = _categoriesArray.find(c => c.categoryName === oldName);
-  if (cat) cat.categoryName = newName;
+  const result = updateCategory(oldName, newName);
+  if (!result.success) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
   closeModal();
   renderCategoryPage();
   showToast('Updated', `Category renamed to "${newName}".`, 'success');
 }
 
-const _reportsArray = [
-  { reportType: 'User Report', reportId: 'RPT-3012', reporter: 'Andie Kirsten Woo', status: 'Pending Review', reason: 'Spam account repeatedly posting misleading listings.', subject: 'User: @marie_santos', date: 'Jun 14, 2026' },
-  { reportType: 'Listing Report', reportId: 'RPT-3013', reporter: 'Alexa Nicole Pleyto', status: 'Pending Review', reason: 'Possible scam listing requesting payment outside the website.', subject: 'Listing: Casio FX-991EX', date: 'Jun 15, 2026' },
-  { reportType: 'User Report', reportId: 'RPT-3014', reporter: 'Christine Cote', status: 'Pending Review', reason: 'Hate speech directed toward another user in listing comments.', subject: 'User: @jay_ramos', date: 'Jun 15, 2026' },
-  { reportType: 'Review Report', reportId: 'RPT-3015', reporter: 'Mara R.', status: 'Pending Review', reason: 'Review contains false information and is clearly from a competitor account.', subject: 'Review on: Scientific Calculator', date: 'Jun 16, 2026' },
-  { reportType: 'Listing Report', reportId: 'RPT-3016', reporter: 'Sam V.', status: 'Pending Review', reason: 'Listing price is grossly inflated compared to market value.', subject: 'Listing: Arduino Uno Kit', date: 'Jun 17, 2026' },
-  { reportType: 'User Report', reportId: 'RPT-3017', reporter: 'Eli Santos', status: 'Pending Review', reason: 'User is sending unsolicited messages to buyers asking for payment via GCash only.', subject: 'User: @kai_a', date: 'Jun 18, 2026' },
-  { reportType: 'Listing Report', reportId: 'RPT-3018', reporter: 'Janna Reyes', status: 'Pending Review', reason: 'Item listed is prohibited under campus marketplace rules.', subject: 'Listing: Chemistry Lab Kit', date: 'Jun 19, 2026' },
-  { reportType: 'Listing Report', reportId: 'RPT-3019', reporter: 'Paolo Mendoza', status: 'Pending Review', reason: 'Listing photos are stolen from another platform. Seller is not the original owner.', subject: 'Listing: DLSU PE Uniform Set', date: 'Jun 20, 2026' },
-  { reportType: 'User Report', reportId: 'RPT-3020', reporter: 'Bianca Torres', status: 'Pending Review', reason: 'User refused to complete a transaction after payment was sent outside the platform.', subject: 'User: @noel_garcia', date: 'Jun 21, 2026' },
-  { reportType: 'Review Report', reportId: 'RPT-3021', reporter: 'Dana Flores', status: 'Pending Review', reason: 'Review contains abusive language and is clearly targeted harassment toward the seller.', subject: 'Review on: Lab Goggles', date: 'Jun 22, 2026' },
-  { reportType: 'Listing Report', reportId: 'RPT-3022', reporter: 'Kyle Reyes', status: 'Pending Review', reason: 'Duplicate listing posted multiple times to push other sellers down the queue.', subject: 'Listing: Arduino Mega 2560', date: 'Jun 23, 2026' },
-  { reportType: 'User Report', reportId: 'RPT-3023', reporter: 'Lia Castillo', status: 'Pending Review', reason: 'Account appears to be a bot creating fake listings with no intention to sell.', subject: 'User: @bot_seller99', date: 'Jun 23, 2026' },
-];
 let _reportsPage = 1;
 
 function renderReportsPage() {
   const container = document.getElementById('reports-stack-list');
   if (!container) return;
 
+  const reports = getReports();
   const perPage = getItemsPerPage('reports');
   const start = (_reportsPage - 1) * perPage;
-  const slice = _reportsArray.slice(start, start + perPage);
+  const slice = reports.slice(start, start + perPage);
 
-  if (!_reportsArray.length) {
+  if (!reports.length) {
     container.innerHTML = `<div class="empty-msg">No reports found.</div>`;
     return;
   }
@@ -746,8 +685,8 @@ function renderReportsPage() {
     </div>
   `).join('');
 
-  updateCounter('.reports-counter-text', 'Pending Reports', _reportsArray.length);
-  renderPagination('reports-stack-list', _reportsArray.length, _reportsPage, p => { _reportsPage = p; renderReportsPage(); }, perPage);
+  updateCounter('.reports-counter-text', 'Pending Reports', reports.length);
+  renderPagination('reports-stack-list', reports.length, _reportsPage, p => { _reportsPage = p; renderReportsPage(); }, perPage);
   initSearch('.report-row-card');
 }
 

@@ -33,22 +33,8 @@ function handleLogin() {
   showToast('Logging in…', 'Redirecting to your workspace dashboard.', 'info', 1500);
 
   setTimeout(() => {
-    localStorage.setItem('session_email', email);
-
-    const lowerEmail = email.toLowerCase();
-    if (
-      lowerEmail === 'mikyla_kirsten_aguirre@dlsu.edu.ph' ||
-      lowerEmail === 'giancarlo_lawan@dlsu.edu.ph' ||
-      lowerEmail === 'bernard_florian_llagas@dlsu.edu.ph' ||
-      lowerEmail === 'sky_parado@dlsu.edu.ph' ||
-      lowerEmail === 'camille_erika_sarabia@dlsu.edu.ph'
-    ) {
-      localStorage.setItem('session_role', 'Administrator');
-      window.location.href = '../admin-dashboard/adminDashboard.html';
-    } else {
-      localStorage.setItem('session_role', 'Student');
-      window.location.href = '../user-profile-dashboard/dashboard.html';
-    }
+    setSession(email);
+    window.location.href = getLoginRedirect(email);
   }, 1200);
 }
 
