@@ -31,19 +31,19 @@
 
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" id="reg-name" placeholder="Juan Dela Cruz" autocomplete="name">
+          <input type="text" class="form-input" id="reg-name" placeholder="Juan Dela Cruz" autocomplete="name" required>
         </div>
 
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">School Email</label>
           <input type="email" class="form-input" id="reg-email" placeholder="account@university.edu.ph"
-            autocomplete="email" readonly style="opacity: 0.7; cursor: not-allowed;">
+            autocomplete="email" readonly required style="opacity: 0.7; cursor: not-allowed;">
         </div>
 
         <div class="form-group">
           <label class="form-label">Password</label>
           <div class="input-eye-wrap">
-            <input type="password" class="form-input" id="reg-pw" placeholder="••••••••" autocomplete="new-password">
+            <input type="password" class="form-input" id="reg-pw" placeholder="••••••••" autocomplete="new-password" required>
             <button type="button" class="btn-eye" onclick="togglePw('reg-pw',this)" tabindex="-1"
               title="Show/hide password">
               <svg id="eye-icon-reg-pw" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -58,7 +58,7 @@
         <div class="form-group">
           <label class="form-label">Confirm Password</label>
           <div class="input-eye-wrap">
-            <input type="password" class="form-input" id="reg-pw2" placeholder="••••••••" autocomplete="new-password">
+            <input type="password" class="form-input" id="reg-pw2" placeholder="••••••••" autocomplete="new-password" required>
             <button type="button" class="btn-eye" onclick="togglePw('reg-pw2',this)" tabindex="-1"
               title="Show/hide password">
               <svg id="eye-icon-reg-pw2" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -72,7 +72,7 @@
 
         <div class="form-group" style="grid-column:1/-1;">
           <label class="form-label">School / University</label>
-          <select class="form-select" id="reg-school">
+          <select class="form-select" id="reg-school" required>
             <option value="">Select…</option>
             <option>De La Salle University</option>
             <option>University of Santo Tomas</option>
@@ -90,7 +90,7 @@
 
         <div class="form-group">
           <label class="form-label">Phone</label>
-          <input type="tel" class="form-input" id="reg-phone" placeholder="0000 000 0000">
+          <input type="tel" class="form-input" id="reg-phone" placeholder="0000 000 0000" required>
         </div>
 
       </div>

@@ -30,7 +30,7 @@
       <div class="form-group">
         <label class="form-label">School Email</label>
         <input type="email" class="form-input" id="vfy-email" placeholder="account@university.edu.ph"
-          autocomplete="email">
+          autocomplete="email" required>
       </div>
 
       <button type="button" class="auth-btn" id="btn-send" onclick="handleSendCode()"
@@ -39,7 +39,7 @@
       <div class="form-group">
         <label class="form-label">Verification Code</label>
         <input type="text" class="form-input" id="vfy-code" placeholder="••••••" maxlength="6"
-          autocomplete="one-time-code">
+          autocomplete="one-time-code" required>
       </div>
 
       <button class="auth-btn" onclick="handleConfirm()">CONFIRM</button>

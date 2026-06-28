@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     course_code: { type: String },
+    phone: { type: String },
     role: { type: String, enum: ["student", "admin"], default: "student" },
     profile_picture: { type: String, default: "default_pfp.jpg" },
     warning_count: { type: Number, default: 0 },
