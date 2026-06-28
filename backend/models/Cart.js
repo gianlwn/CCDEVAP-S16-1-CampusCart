@@ -6,7 +6,10 @@ const cartSchema = new mongoose.Schema(
     listing_id: { type: String, required: true },
     quantity: { type: Number, default: 1 },
   },
-  { timestamps: { createdAt: "added_at", updatedAt: false }, versionKey: false },
+  {
+    timestamps: { createdAt: "added_at", updatedAt: false },
+    versionKey: false,
+  },
 );
 
 module.exports = mongoose.model("Cart", cartSchema);
