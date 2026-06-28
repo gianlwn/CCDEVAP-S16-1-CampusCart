@@ -19,6 +19,6 @@ app.use('/api/auth', require('./backend/routes/auth'));
 app.get("/", (req, res) => res.json({ message: "CampusCart API is running" }));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
+app.listen(PORT, 'localhost', () =>
   console.log(`Server running on http://localhost:${PORT}`),
 );
