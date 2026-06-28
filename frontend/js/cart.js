@@ -93,45 +93,50 @@ function viewCartItem(id) {
   window.location.href = "itempage.html?id=" + id;
 }
 
-function claimItem(id) {
-  const result = claimCartItem(cartItems, id);
-  if (!result.success) return;
-  showToast(
-    "Claimed!",
-    `"${result.itemName}" reserved. Coordinate with the seller to arrange pickup.`,
-    "success",
-    4000,
-  );
-  cartItems = result.items;
-  if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
-    _cartPage = Math.max(1, _cartPage - 1);
-  _renderCartPage();
+async function claimItem(id) {
+  const item = cartItems.find((i) => String(i.id) === String(id));
+  if (!item) return;
+  try {
+    const { ok, data } = await claimCartItemAPI(id);
+    if (ok) {
+      showToast("Claimed!", `"${item.name}" reserved. Coordinate with the seller to arrange pickup.`, "success", 4000);
+      cartItems = cartItems.filter((i) => String(i.id) !== String(id));
+      if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
+        _cartPage = Math.max(1, _cartPage - 1);
+      _renderCartPage();
+    } else if (data.error === "listing_unavailable") {
+      showToast("Unavailable", "This item has already been claimed by someone else.", "warning");
+    } else {
+      showToast("Error", "Could not complete the claim.", "error");
+    }
+  } catch {
+    showToast("Error", "Could not reach the server.", "error");
+  }
 }
 
-function cancelItem(id) {
-  const result = cancelCartItem(cartItems, id);
-  if (!result.success) return;
-  showToast(
-    "Cancelled",
-    `"${result.itemName}" has been cancelled and removed from your cart.`,
-    "warning",
-  );
-  cartItems = result.items;
-  if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
-    _cartPage = Math.max(1, _cartPage - 1);
-  _renderCartPage();
+async function cancelItem(id) {
+  const item = cartItems.find((i) => String(i.id) === String(id));
+  if (!item) return;
+  try {
+    const { ok } = await removeFromCartAPI(id);
+    if (ok) {
+      showToast("Cancelled", `"${item.name}" has been removed from your cart.`, "warning");
+      cartItems = cartItems.filter((i) => String(i.id) !== String(id));
+      if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
+        _cartPage = Math.max(1, _cartPage - 1);
+      _renderCartPage();
+    } else {
+      showToast("Error", "Could not remove item from cart.", "error");
+    }
+  } catch {
+    showToast("Error", "Could not reach the server.", "error");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   fetchClaimedItems()
     .then((items) => {
-      cartItems = items.slice(0, 8).map((item) => ({
-        id: item.id,
-        name: item.name,
-        price: parseInt(item.price.replace("₱", "")),
-        category: item.category,
-        seller: item.seller || null,
-      }));
+      cartItems = items;
       renderCart();
     })
     .catch(() => {

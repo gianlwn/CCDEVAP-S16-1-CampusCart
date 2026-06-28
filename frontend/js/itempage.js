@@ -19,8 +19,7 @@ let _ipItem = null;
 let _activeThumb = 0;
 
 function _getItemId() {
-  const params = new URLSearchParams(window.location.search);
-  return parseInt(params.get("id"), 10);
+  return new URLSearchParams(window.location.search).get("id");
 }
 
 function _setActiveThumb(idx) {
@@ -39,21 +38,30 @@ function _setActiveThumb(idx) {
   if (label) label.textContent = `Photo ${idx + 1} of 3`;
 }
 
-function _addToCartFromPage() {
+async function _addToCartFromPage() {
   if (!_ipItem) return;
-  if (_ipItem.status === "claimed") {
-    showToast(
-      "Already Claimed",
-      "This item has already been claimed and is no longer available.",
-      "warning",
-    );
+  if (_ipItem.seller_id === getSessionUserId()) {
+    showToast("Not Allowed", "You cannot add your own listing to your cart.", "warning");
     return;
   }
-  showToast(
-    "Added to Cart",
-    `"${_ipItem.name}" added to your cart.`,
-    "success",
-  );
+  if (_ipItem.status === "claimed") {
+    showToast("Already Claimed", "This item has already been claimed.", "warning");
+    return;
+  }
+  try {
+    const { ok, data } = await addToCartAPI(_ipItem.id);
+    if (ok) {
+      showToast("Added to Cart", `"${_ipItem.name}" added to your cart.`, "success");
+    } else if (data.error === "already_in_cart") {
+      showToast("Already in Cart", "This item is already in your cart.", "warning");
+    } else if (data.error === "listing_unavailable") {
+      showToast("Unavailable", "This item is no longer available.", "warning");
+    } else {
+      showToast("Error", "Could not add to cart.", "error");
+    }
+  } catch {
+    showToast("Not Logged In", "Please log in to add items to your cart.", "warning");
+  }
 }
 
 function renderItemPage(item) {
@@ -66,6 +74,7 @@ function renderItemPage(item) {
   const bg = IP_CATEGORY_BG[item.category] || IP_CATEGORY_BG.Others;
   const condClass = IP_CONDITION_CLASS[item.condition] || "ip-condition-used";
   const sellerInitial = (item.seller || "S").charAt(0).toUpperCase();
+  const isOwn = item.seller_id && item.seller_id === getSessionUserId();
   const createdDate = item.created
     ? new Date(item.created).toLocaleDateString("en-PH", {
         year: "numeric",
@@ -105,7 +114,9 @@ function renderItemPage(item) {
 
       <div class="ip-info-panel">
         <div>
-          <p class="ip-cat-label">${item.category}</p>
+          <div class="ip-cat-pills">
+            ${(item.categories || [item.category]).map(c => `<span class="ip-cat-pill">${c}</span>`).join("")}
+          </div>
           <h1 class="ip-title">${item.name}</h1>
         </div>
 
@@ -116,7 +127,7 @@ function renderItemPage(item) {
 
         <div class="ip-divider"></div>
 
-        <div class="ip-seller-card" style="cursor:pointer;" onclick="window.location.href='viewUser.html?seller=${encodeURIComponent(item.seller || "")}'">
+        <div class="ip-seller-card" style="cursor:pointer;" onclick="window.location.href='viewUser.html?seller_id=${encodeURIComponent(item.seller_id || "")}'">
           <div class="ip-seller-avatar">${sellerInitial}</div>
           <div class="ip-seller-info">
             <p class="ip-seller-name">${item.seller || "Campus Seller"}</p>
@@ -133,11 +144,15 @@ function renderItemPage(item) {
         <div class="ip-details-grid">
           <div class="ip-detail-item">
             <p class="ip-detail-label">Category</p>
-            <p class="ip-detail-value">${item.category}</p>
+            <p class="ip-detail-value">${(item.categories || [item.category]).join(", ")}</p>
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Condition</p>
             <p class="ip-detail-value">${item.condition || "—"}</p>
+          </div>
+          <div class="ip-detail-item">
+            <p class="ip-detail-label">Quantity</p>
+            <p class="ip-detail-value">${item.quantity ?? 1}</p>
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Listed On</p>
@@ -149,7 +164,9 @@ function renderItemPage(item) {
 
         <div class="ip-actions">
           ${
-            item.status === "claimed"
+            isOwn
+              ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Your Listing</button>`
+              : item.status === "claimed"
               ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
               : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
           }
@@ -167,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (cached) {
     try {
       const item = JSON.parse(cached);
-      if (item.id === id) {
+      if (String(item.id) === String(id)) {
         renderItemPage(item);
         return;
       }
@@ -176,7 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   fetchListings()
     .then((items) => {
-      const item = items.find((i) => i.id === id);
+      const item = items.find((i) => String(i.id) === String(id));
       if (!item) {
         document.getElementById("ip-layout-wrap").innerHTML =
           `<div class="empty-state"><p>Item not found.</p></div>`;

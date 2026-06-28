@@ -53,7 +53,7 @@ async function handleLogin() {
     }
 
     showToast('Logging in…', 'Redirecting to your dashboard.', 'info', 1500);
-    setSession(data.email, data.role);
+    setSession(data.email, data.role, data.user_id);
     setTimeout(() => { window.location.href = getLoginRedirect(data.role); }, 1200);
   } catch {
     showToast('Connection Error', 'Could not reach the server. Make sure it is running.', 'error');

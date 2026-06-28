@@ -6,4 +6,4 @@ const listingCategorySchema = new mongoose.Schema(
   },
   { versionKey: false },
 );
-module.exports = mongoose.model("ListingCategory", listingCategorySchema);
+module.exports = mongoose.model("ListingCategory", listingCategorySchema, "listing_categories");

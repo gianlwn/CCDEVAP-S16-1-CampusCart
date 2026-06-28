@@ -113,6 +113,22 @@
   letter-spacing: 1px;
   color: var(--accent);
 }
+.ip-cat-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+.ip-cat-pill {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb, 122,171,138), 0.12);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
 
 .ip-title {
   font-size: clamp(20px, 2.5vw, 26px);
@@ -306,11 +322,15 @@
   .ip-thumbs {
     gap: 6px;
   }
+  .ip-cat-pill {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
 }
 
 @media (max-width: 480px) {
   .ip-details-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
   .ip-price {
     font-size: 20px;
@@ -321,5 +341,13 @@
   }
   .ip-seller-card {
     padding: 12px;
+  }
+  .ip-cat-pill {
+    font-size: 8px;
+    padding: 2px 6px;
+    letter-spacing: 0.5px;
+  }
+  .ip-info-panel {
+    gap: 12px;
   }
 }

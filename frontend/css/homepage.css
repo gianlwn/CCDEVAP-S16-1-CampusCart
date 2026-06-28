@@ -243,6 +243,22 @@ body.darkMode .hp-condition-badge {
   color: var(--accent);
   margin-bottom: 4px;
 }
+.hp-cat-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.hp-cat-pill {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--accent);
+  background: rgba(var(--accent-rgb, 122,171,138), 0.12);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
 .hp-item-name {
   font-weight: 700;
   font-size: 14px;
@@ -274,6 +290,11 @@ body.darkMode .hp-condition-badge {
   font-size: 16px;
   font-weight: 800;
   color: var(--accent);
+}
+.hp-item-qty {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 .hp-view-btn {
   background: var(--accent);
@@ -343,6 +364,9 @@ body.darkMode .hp-condition-badge {
     align-items: stretch;
     gap: 6px;
   }
+  .hp-item-footer > div {
+    align-self: flex-start;
+  }
   .hp-view-btn {
     text-align: center;
   }
@@ -372,8 +396,16 @@ body.darkMode .hp-condition-badge {
   .hp-item-price {
     font-size: 14px;
   }
+  .hp-item-qty {
+    font-size: 10px;
+  }
   .hp-cat-label {
     font-size: 9px;
+  }
+  .hp-cat-pill {
+    font-size: 8px;
+    padding: 2px 5px;
+    letter-spacing: 0.5px;
   }
   .hp-condition-badge {
     font-size: 10px;

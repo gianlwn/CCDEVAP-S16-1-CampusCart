@@ -61,9 +61,10 @@ function _renderHpPage() {
       const dotColor = CONDITION_COLOR[cond] || "#9e9084";
       const seller = item.seller || "Campus Seller";
       const icon = CATEGORY_ICONS[item.category] || ICONS.package;
+      const isOwn = item.seller_id && item.seller_id === getSessionUserId();
 
       return `
-      <div class="hp-item-card" onclick="viewItem(${item.id})">
+      <div class="hp-item-card" onclick="viewItem('${item.id}')">
         <div class="hp-item-thumb" style="background:${bg}">
           <span class="hp-condition-badge">
             <span class="hp-condition-dot" style="background:${dotColor}"></span>
@@ -72,12 +73,20 @@ function _renderHpPage() {
           ${icon}
         </div>
         <div class="hp-item-info">
-          <p class="hp-cat-label">${item.category}</p>
+          <div class="hp-cat-pills">
+            ${(item.categories || [item.category]).map(c => `<span class="hp-cat-pill">${c}</span>`).join("")}
+          </div>
           <p class="hp-item-name">${item.name}</p>
           <p class="hp-item-seller">${ICONS.user} ${seller}</p>
           <div class="hp-item-footer">
-            <p class="hp-item-price">₱${item.price}</p>
-            <button class="hp-view-btn" onclick="event.stopPropagation();addToCart(${item.id})">Add to Cart</button>
+            <div>
+              <p class="hp-item-price">₱${item.price}</p>
+              <p class="hp-item-qty">Qty: ${item.quantity ?? 1}</p>
+            </div>
+            ${isOwn
+              ? `<button class="hp-view-btn" disabled style="opacity:0.5;cursor:not-allowed;">Your Listing</button>`
+              : `<button class="hp-view-btn" onclick="event.stopPropagation();addToCart('${item.id}')">Add to Cart</button>`
+            }
           </div>
         </div>
       </div>`;
@@ -219,13 +228,27 @@ function viewItem(id) {
   window.location.href = "itempage.html?id=" + id;
 }
 
-function addToCart(id) {
+async function addToCart(id) {
   const item = allItems.find((i) => i.id === id);
-  showToast(
-    "Added to Cart",
-    `"${item ? item.name : "Item"}" added to your cart.`,
-    "success",
-  );
+  if (item && item.seller_id === getSessionUserId()) {
+    showToast("Not Allowed", "You cannot add your own listing to your cart.", "warning");
+    return;
+  }
+  const itemName = item ? item.name : "Item";
+  try {
+    const { ok, data } = await addToCartAPI(id);
+    if (ok) {
+      showToast("Added to Cart", `"${itemName}" added to your cart.`, "success");
+    } else if (data.error === "already_in_cart") {
+      showToast("Already in Cart", "This item is already in your cart.", "warning");
+    } else if (data.error === "listing_unavailable") {
+      showToast("Unavailable", "This item is no longer available.", "warning");
+    } else {
+      showToast("Error", "Could not add to cart.", "error");
+    }
+  } catch {
+    showToast("Not Logged In", "Please log in to add items to your cart.", "warning");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {

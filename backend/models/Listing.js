@@ -13,6 +13,7 @@ const listingSchema = new mongoose.Schema(
     seller_id: { type: String, required: true },
     description: { type: String },
     images: [{ type: String }],
+    quantity: { type: Number, default: 1 },
     created: { type: Date, default: Date.now },
   },
   { versionKey: false },
