@@ -16,7 +16,8 @@ app.use('/api/auth', require('./backend/routes/auth'));
 // app.use('/api/users',      require('./backend/routes/users'));
 // app.use('/api/categories', require('./backend/routes/categories'));
 
-app.get("/", (req, res) => res.json({ message: "CampusCart API is running" }));
+app.use(express.static('frontend'));
+app.get("/", (req, res) => res.sendFile(__dirname + '/frontend/login-path/login.html'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, 'localhost', () =>
