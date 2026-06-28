@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const emailjs = require('@emailjs/nodejs');
 const User = require('../models/User');
+const generateId = require('../utils/generateId');
 
 const otpStore = new Map();
 const recoveryVerified = new Set();
@@ -80,7 +81,7 @@ router.post('/register', async (req, res) => {
     const first_name = nameParts.join(' ');
 
     const password_hash = await bcrypt.hash(password, 10);
-    const user_id = `user_${Date.now()}`;
+    const user_id = await generateId(User, 'user_id', 'user_id_');
 
     const user = new User({
       user_id,
