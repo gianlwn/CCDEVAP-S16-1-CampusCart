@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const claimSchema = new mongoose.Schema(
   {
     claim_id: { type: String, required: true, unique: true },
@@ -18,5 +17,4 @@ const claimSchema = new mongoose.Schema(
   },
   { versionKey: false },
 );
-
 module.exports = mongoose.model("Claim", claimSchema);

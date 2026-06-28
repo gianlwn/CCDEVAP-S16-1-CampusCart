@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const categorySchema = new mongoose.Schema(
   {
     category_id: { type: String, required: true, unique: true },
@@ -11,5 +10,4 @@ const categorySchema = new mongoose.Schema(
     versionKey: false,
   },
 );
-
 module.exports = mongoose.model("Category", categorySchema);

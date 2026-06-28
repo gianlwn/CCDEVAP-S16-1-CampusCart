@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const cartSchema = new mongoose.Schema(
   {
     cart_id: { type: String, required: true, unique: true },
@@ -13,5 +12,4 @@ const cartSchema = new mongoose.Schema(
     versionKey: false,
   },
 );
-
 module.exports = mongoose.model("Cart", cartSchema);

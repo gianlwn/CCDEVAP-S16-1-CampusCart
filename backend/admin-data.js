@@ -57,7 +57,6 @@ const _adminsData = [
     status: "inactive",
   },
 ];
-
 const _usersData = [
   {
     username: "Andie Kirsten Woo",
@@ -150,7 +149,6 @@ const _usersData = [
     status: "active",
   },
 ];
-
 const _listingApprovalsData = [
   {
     productName: "Casio FX-991EX",
@@ -306,7 +304,6 @@ const _listingApprovalsData = [
     images: ["Photo 1", "Photo 2"],
   },
 ];
-
 const _categoriesData = [
   { categoryName: "Electronics" },
   { categoryName: "Clothing" },
@@ -317,7 +314,6 @@ const _categoriesData = [
   { categoryName: "Instruments" },
   { categoryName: "Sports & Fitness" },
 ];
-
 const _reportsData = [
   {
     reportType: "User Report",
@@ -435,17 +431,13 @@ const _reportsData = [
     date: "Jun 23, 2026",
   },
 ];
-
 // --- Low-level accessors ---
-
 function getAdmins() {
   return _adminsData;
 }
-
 function addAdminRecord(name, email) {
   _adminsData.push({ username: name, email, status: "active" });
 }
-
 function editAdminRecord(oldName, newName, email) {
   const admin = _adminsData.find((a) => a.username === oldName);
   if (admin) {
@@ -453,66 +445,52 @@ function editAdminRecord(oldName, newName, email) {
     admin.email = email;
   }
 }
-
 function revokeAdminAccess(name) {
   const admin = _adminsData.find((a) => a.username === name);
   if (admin) admin.status = "inactive";
 }
-
 function getUsers() {
   return _usersData;
 }
-
 function updateUserStatus(email, newStatus) {
   const user = _usersData.find((u) => u.email === email);
   if (user) user.status = newStatus;
 }
-
 function getListingApprovals() {
   return _listingApprovalsData;
 }
-
 function processApprovalRecord(listingId) {
   const idx = _listingApprovalsData.findIndex((l) => l.listingId === listingId);
   if (idx !== -1) _listingApprovalsData.splice(idx, 1);
 }
-
 function getCategories() {
   return _categoriesData;
 }
-
 function addCategoryRecord(name) {
   _categoriesData.push({ categoryName: name });
 }
-
 function editCategoryRecord(oldName, newName) {
   const cat = _categoriesData.find((c) => c.categoryName === oldName);
   if (cat) cat.categoryName = newName;
 }
-
 function deleteCategoryRecord(name) {
   const idx = _categoriesData.findIndex((c) => c.categoryName === name);
   if (idx !== -1) _categoriesData.splice(idx, 1);
 }
-
 function getReports() {
   return _reportsData;
 }
-
 // --- High-level CRUD handlers (validate + mutate + return result) ---
-
 function createAdmin(name, email) {
   if (!name || !email) return { success: false, error: "missing_fields" };
   addAdminRecord(name, email);
   return { success: true };
 }
-
 function updateAdmin(oldName, newName, email) {
   if (!newName || !email) return { success: false, error: "missing_fields" };
   editAdminRecord(oldName, newName, email);
   return { success: true };
 }
-
 function revokeAdmin(name) {
   const admin = getAdmins().find((a) => a.username === name);
   if (!admin) return { success: false, error: "not_found" };
@@ -521,13 +499,11 @@ function revokeAdmin(name) {
   revokeAdminAccess(name);
   return { success: true };
 }
-
 function setUserStatus(email, newStatus) {
   if (!newStatus) return { success: false, error: "missing_fields" };
   updateUserStatus(email, newStatus);
   return { success: true };
 }
-
 function toggleUserBan(email) {
   const user = getUsers().find((u) => u.email === email);
   if (!user) return { success: false, error: "not_found" };
@@ -536,24 +512,20 @@ function toggleUserBan(email) {
   updateUserStatus(email, newStatus);
   return { success: true, newStatus, wasBanned };
 }
-
 function processApproval(listingId, action) {
   processApprovalRecord(listingId);
   return { success: true, action };
 }
-
 function createCategory(name) {
   if (!name) return { success: false, error: "missing_fields" };
   addCategoryRecord(name);
   return { success: true };
 }
-
 function updateCategory(oldName, newName) {
   if (!newName) return { success: false, error: "missing_fields" };
   editCategoryRecord(oldName, newName);
   return { success: true };
 }
-
 function removeCategory(name) {
   deleteCategoryRecord(name);
   return { success: true };
