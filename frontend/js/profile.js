@@ -26,6 +26,14 @@ function handleSaveProfile() {
     showToast("Missing Field", "Full name cannot be empty.", "warning");
     return;
   }
+  if (pw && !pw2) {
+    showToast("Confirm Password", "Please confirm your new password.", "warning");
+    return;
+  }
+  if (!pw && pw2) {
+    showToast("New Password", "Please enter a new password to confirm.", "warning");
+    return;
+  }
   if (pw && pw !== pw2) {
     showToast("Password Mismatch", "Passwords do not match.", "error");
     return;
