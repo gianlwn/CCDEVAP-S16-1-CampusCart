@@ -5,6 +5,7 @@ const User = require("../models/User");
 const Listing = require("../models/Listing");
 const Claim = require("../models/Claim");
 const Rating = require("../models/Rating");
+const Cart = require("../models/Cart");
 
 // GET /api/users/:user_id
 router.get("/:user_id", async (req, res) => {
@@ -84,6 +85,33 @@ router.put("/:user_id", async (req, res) => {
     );
     if (!updated) return res.status(404).json({ error: "not_found" });
     res.json({ user_id: updated.user_id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+// DELETE /api/users/:user_id
+router.delete("/:user_id", async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const user = await User.findOne({ user_id });
+    if (!user) return res.status(404).json({ error: "not_found" });
+
+    const listings = await Listing.find({ seller_id: user_id }, "listings_id");
+    const listingIds = listings.map((l) => l.listings_id);
+
+    await Promise.all([
+      User.deleteOne({ user_id }),
+      Listing.deleteMany({ seller_id: user_id }),
+      Cart.deleteMany({ buyer_id: user_id }),
+      Rating.deleteMany({ rater_id: user_id }),
+      ...(listingIds.length
+        ? [Rating.deleteMany({ listing_id: { $in: listingIds } })]
+        : []),
+    ]);
+
+    res.json({ success: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

@@ -7,6 +7,7 @@ const User = require("../models/User");
 const ListingCategory = require("../models/ListingCategory");
 const Category = require("../models/Category");
 const generateId = require("../utils/generateId");
+const createNotification = require("../utils/createNotification");
 
 async function cartDocToFrontend(cartDoc) {
   const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
@@ -140,6 +141,22 @@ router.post("/:cart_id/claim", async (req, res) => {
       { cart_id: req.params.cart_id },
       { does_exist: false },
     );
+
+    try {
+      const buyer = await User.findOne(
+        { user_id: cartDoc.buyer_id },
+        "first_name last_name",
+      );
+      const buyerName = buyer
+        ? `${buyer.first_name} ${buyer.last_name}`.trim()
+        : "A buyer";
+      createNotification(
+        listing.seller_id,
+        "claim_received",
+        `${buyerName} claimed your item "${listing.product_name}"`,
+        claim_id,
+      ).catch(() => {});
+    } catch (_) {}
 
     res.json({ claim_id });
   } catch (err) {
