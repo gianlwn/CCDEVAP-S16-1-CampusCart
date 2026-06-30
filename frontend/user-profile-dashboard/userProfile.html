@@ -47,7 +47,7 @@
             </button>
           </div>
 
-          <div class="profile-display-name" id="summary-name">Sky Hannah G Parado</div>
+          <div class="profile-display-name" id="summary-name">—</div>
 
           <span class="verified-badge" id="verified-badge">✓ Verified</span>
 
@@ -57,21 +57,21 @@
               <polygon
                 points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            4.2 / 5.0
+            <span id="summary-rating-val">—</span>
           </div>
 
           <div class="profile-stats-table">
             <div class="profile-stat-row">
               <span>Items Sold</span>
-              <strong>7</strong>
+              <strong id="stat-items-sold">—</strong>
             </div>
             <div class="profile-stat-row">
               <span>Active Listings</span>
-              <strong>4</strong>
+              <strong id="stat-active-listings">—</strong>
             </div>
             <div class="profile-stat-row">
               <span>Member Since</span>
-              <strong>Jun 2024</strong>
+              <strong id="stat-member-since">—</strong>
             </div>
           </div>
 
@@ -84,8 +84,7 @@
             <div class="profile-form-grid">
               <div class="form-group">
                 <label class="form-label">Full Name</label>
-                <input type="text" class="form-input" id="prof-name" value="Sky Hannah G Parado"
-                  oninput="syncSummaryName(this.value)">
+                <input type="text" class="form-input" id="prof-name" value="" oninput="syncSummaryName(this.value)">
               </div>
               <div class="form-group">
                 <label class="form-label">Phone Number</label>
@@ -104,7 +103,7 @@
             <div class="profile-form-grid">
               <div class="form-group full">
                 <label class="form-label">Email</label>
-                <input type="email" class="form-input" id="prof-email" value="sky_parado@dlsu.edu.ph" readonly>
+                <input type="email" class="form-input" id="prof-email" value="" readonly>
               </div>
               <div class="form-group">
                 <label class="form-label">School / University</label>
@@ -132,7 +131,11 @@
                 <div class="pw-input-wrap">
                   <input type="password" class="form-input" id="prof-pw" placeholder="Leave blank to keep current">
                   <button type="button" class="btn-pw-toggle" onclick="togglePw('prof-pw', this)" tabindex="-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -141,7 +144,11 @@
                 <div class="pw-input-wrap">
                   <input type="password" class="form-input" id="prof-pw2" placeholder="Repeat new password">
                   <button type="button" class="btn-pw-toggle" onclick="togglePw('prof-pw2', this)" tabindex="-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
                   </button>
                 </div>
               </div>

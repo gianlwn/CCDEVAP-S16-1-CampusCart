@@ -6,8 +6,8 @@ const CLAIMED_CAT_ICONS = {
 };
 
 let claimedItems = [];
-let reviewingId = null;
-let pickedStar = 0;
+let reviewingId  = null;
+let pickedStar   = 0;
 
 function _highlightReviewStars(val) {
   document.querySelectorAll(".review-star").forEach((s) => {
@@ -26,65 +26,69 @@ function renderClaimed() {
     el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No claimed items yet.</p></div>`;
     return;
   }
-  el.innerHTML = claimedItems
-    .map((item) => {
-      const statusCls = item.status === "completed" ? "completed" : "pending";
-      const icon = CLAIMED_CAT_ICONS[item.category] || ICONS.package;
-      const hasReview =
-        item.userRating !== null && item.userRating !== undefined;
+  el.innerHTML = claimedItems.map((item) => {
+    const icon      = CLAIMED_CAT_ICONS[item.category] || ICONS.package;
+    const hasReview = item.userRating != null;
 
-      if (hasReview) {
-        return `
-        <div class="item-row claimed-item-row" id="claimed-row-${item.id}">
-          <div class="item-thumb" style="cursor:pointer;" onclick="goToItem(${item.id})">${icon}</div>
-          <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem(${item.id})">
-            <p class="item-name">${item.name}</p>
-            <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ""} · ${item.date}</p>
-            ${item.userComment ? `<p class="item-review">"${item.userComment}"</p>` : ""}
-          </div>
-          ${renderStars(item.userRating)}
-          <div style="display:flex;gap:3px;flex-shrink:0;">
-            <button class="btn-icon" title="Edit Review" onclick="openReviewModal(${item.id})">${ICONS.edit}</button>
-            <button class="btn-icon" title="Report" onclick="reportClaimedItem(${item.id})" style="color:var(--warning-text);">${ICONS.alert}</button>
-          </div>
+    // Review is only available once the seller has confirmed the handoff
+    const canReview = item.seller_completed;
+
+    let actionBtns = "";
+    if (!item.buyer_completed) {
+      actionBtns += `<button class="btn-icon" title="Mark as Complete" onclick="markBuyerComplete('${item.id}')" style="color:var(--success-text);">${ICONS.check}</button>`;
+    }
+    if (canReview) {
+      actionBtns += `<button class="btn-icon" title="${hasReview ? "Edit Review" : "Write a Review"}" onclick="openReviewModal('${item.id}')">${ICONS.edit}</button>`;
+    }
+    actionBtns += `<button class="btn-icon" title="Report Seller" onclick="reportClaimedItem('${item.id}')" style="color:var(--warning-text);">${ICONS.alert}</button>`;
+
+    const statusOrStars = hasReview
+      ? renderStars(item.userRating)
+      : `<span class="badge-status ${item.status}">${item.status}</span>`;
+
+    return `
+      <div class="item-row claimed-item-row" id="claimed-row-${item.id}">
+        <div class="item-thumb" style="cursor:pointer;" onclick="goToItem('${item.listing_id}')">${icon}</div>
+        <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem('${item.listing_id}')">
+          <p class="item-name">${item.name}</p>
+          <p class="item-meta">${item.price} · Qty: ${item.quantity ?? 1} · ${item.category} · ${item.seller || ""} · ${item.date}</p>
+          ${hasReview && item.userComment ? `<p class="item-review">"${item.userComment}"</p>` : ""}
         </div>
-      `;
-      } else {
-        const reviewBtn =
-          item.status === "completed"
-            ? `<button class="btn-icon" title="Write a Review" onclick="openReviewModal(${item.id})">${ICONS.edit}</button>`
-            : "";
-        return `
-        <div class="item-row claimed-item-row" id="claimed-row-${item.id}">
-          <div class="item-thumb" style="cursor:pointer;" onclick="goToItem(${item.id})">${icon}</div>
-          <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem(${item.id})">
-            <p class="item-name">${item.name}</p>
-            <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ""} · ${item.date}</p>
-          </div>
-          <span class="badge-status ${statusCls}">${item.status}</span>
-          <div style="display:flex;gap:3px;flex-shrink:0;">
-            ${reviewBtn}
-            <button class="btn-icon" title="Report" onclick="reportClaimedItem(${item.id})" style="color:var(--warning-text);">${ICONS.alert}</button>
-          </div>
-        </div>
-      `;
-      }
-    })
-    .join("");
+        ${statusOrStars}
+        <div style="display:flex;gap:3px;flex-shrink:0;">${actionBtns}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function markBuyerComplete(id) {
+  showConfirm(
+    "Confirm Receipt?",
+    "This confirms you received the item from the seller. This cannot be undone.",
+    () => {
+      markBuyerCompleteAPI(id).then(({ ok, data }) => {
+        if (!ok) { showToast("Error", "Could not update transaction.", "error"); return; }
+        claimedItems = claimedItems.map(c =>
+          c.id === id ? { ...c, buyer_completed: true, status: data.status } : c
+        );
+        renderClaimed();
+        showToast("Confirmed", "Transaction marked as received.", "success");
+      }).catch(() => showToast("Error", "Could not update transaction.", "error"));
+    },
+    "Confirm",
+    "check",
+  );
 }
 
 function openReviewModal(id) {
   const item = claimedItems.find((c) => c.id === id);
   if (!item) return;
   reviewingId = id;
-  pickedStar = item.userRating || 0;
+  pickedStar  = item.userRating || 0;
 
-  document.getElementById("review-modal-title").textContent = item.userRating
-    ? "Edit Review"
-    : "Rate & Review";
-  document.getElementById("review-modal-subtitle").textContent =
-    `"${item.name}" from ${item.seller}`;
-  document.getElementById("review-comment").value = item.userComment || "";
+  document.getElementById("review-modal-title").textContent    = item.userRating ? "Edit Review" : "Rate & Review";
+  document.getElementById("review-modal-subtitle").textContent = `"${item.name}" from ${item.seller}`;
+  document.getElementById("review-comment").value              = item.userComment || "";
   _highlightReviewStars(pickedStar);
   document.getElementById("review-modal").style.display = "flex";
 }
@@ -92,77 +96,92 @@ function openReviewModal(id) {
 function closeReviewModal() {
   document.getElementById("review-modal").style.display = "none";
   reviewingId = null;
-  pickedStar = 0;
+  pickedStar  = 0;
 }
 
 function saveReview() {
   if (!reviewingId) return;
-  const comment = document.getElementById("review-comment").value.trim();
-  const result = submitItemReview(
-    claimedItems,
-    reviewingId,
-    pickedStar,
-    comment,
-  );
-  if (!result.success) {
-    if (result.error === "no_rating")
-      showToast("Rating Required", "Please select a star rating.", "warning");
+  if (!pickedStar) {
+    showToast("Rating Required", "Please select a star rating.", "warning");
     return;
   }
-  claimedItems = result.items;
-  closeReviewModal();
-  renderClaimed();
-  showToast("Review Saved", "Your review has been submitted.", "success");
+  const item    = claimedItems.find((c) => c.id === reviewingId);
+  if (!item) return;
+  const comment = document.getElementById("review-comment").value.trim();
+
+  const apiCall = item.rating_id
+    ? updateRatingAPI(item.rating_id, pickedStar, comment)
+    : submitRatingAPI(item.listing_id, pickedStar, comment);
+
+  apiCall.then(({ ok, data }) => {
+    if (!ok) { showToast("Error", "Could not save review.", "error"); return; }
+    claimedItems = claimedItems.map((c) =>
+      c.id === reviewingId
+        ? { ...c, userRating: pickedStar, userComment: comment, rating_id: data.rating_id || c.rating_id }
+        : c
+    );
+    closeReviewModal();
+    renderClaimed();
+    showToast("Review Saved", "Your review has been submitted.", "success");
+  });
 }
+
+let reportingClaimedItem = null;
 
 function reportClaimedItem(id) {
   const item = claimedItems.find((c) => c.id === id);
   if (!item) return;
-  showConfirm(
-    "Report this Transaction?",
-    `Report your claim of "${item.name}" from ${item.seller}? Only report if there was an issue with this transaction.`,
-    () => {
-      showToast(
-        "Reported",
-        "Your report has been submitted for review.",
-        "info",
-      );
-    },
-    "Submit Report",
-    "ban",
-  );
+  reportingClaimedItem = item;
+  document.getElementById("report-claimed-subtitle").textContent = `"${item.name}" from ${item.seller}`;
+  document.getElementById("report-claimed-reason").value = "";
+  document.getElementById("report-claimed-modal").style.display = "flex";
+}
+
+function closeClaimedReportModal() {
+  document.getElementById("report-claimed-modal").style.display = "none";
+  reportingClaimedItem = null;
+}
+
+function submitClaimedReport() {
+  const reason = document.getElementById("report-claimed-reason").value.trim();
+  if (!reason) {
+    showToast("Missing Reason", "Please describe what went wrong.", "warning");
+    return;
+  }
+  submitReportAPI({
+    reported_user_id: reportingClaimedItem.seller_id,
+    reported_listing_id: reportingClaimedItem.listing_id,
+    reason,
+  }).then(({ ok }) => {
+    if (!ok) { showToast("Error", "Could not submit report.", "error"); return; }
+    closeClaimedReportModal();
+    showToast("Reported", "Your report has been submitted for admin review.", "info");
+  }).catch(() => showToast("Error", "Could not submit report.", "error"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".review-star").forEach((star) => {
-    star.addEventListener("mouseover", () =>
-      _highlightReviewStars(parseInt(star.dataset.val)),
-    );
-    star.addEventListener("mouseleave", () =>
-      _highlightReviewStars(pickedStar),
-    );
+    star.addEventListener("mouseover", () => _highlightReviewStars(parseInt(star.dataset.val)));
+    star.addEventListener("mouseleave", () => _highlightReviewStars(pickedStar));
     star.addEventListener("click", () => {
       pickedStar = parseInt(star.dataset.val);
       _highlightReviewStars(pickedStar);
     });
   });
 
-  document
-    .getElementById("review-modal")
-    .addEventListener("click", function (e) {
-      if (e.target === this) closeReviewModal();
-    });
+  document.getElementById("review-modal").addEventListener("click", function (e) {
+    if (e.target === this) closeReviewModal();
+  });
 
-  fetchClaimedItems()
+  document.getElementById("report-claimed-modal").addEventListener("click", function (e) {
+    if (e.target === this) closeClaimedReportModal();
+  });
+
+  fetchClaims()
     .then((items) => {
       claimedItems = items;
       renderClaimed();
-      showToast(
-        "Claimed Items",
-        `You have ${items.length} claimed items.`,
-        "info",
-        2500,
-      );
+      showToast("Claimed Items", `You have ${items.length} claimed items.`, "info", 2500);
     })
     .catch(() => {
       document.getElementById("claimed-list").innerHTML =

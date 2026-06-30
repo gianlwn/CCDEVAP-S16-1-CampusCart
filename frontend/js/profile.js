@@ -18,11 +18,11 @@ function handleEditImage() {
 }
 
 function handleSaveProfile() {
-  const name = document.getElementById("prof-name").value.trim();
+  const fullName = document.getElementById("prof-name").value.trim();
   const pw = document.getElementById("prof-pw").value;
   const pw2 = document.getElementById("prof-pw2").value;
 
-  if (!name) {
+  if (!fullName) {
     showToast("Missing Field", "Full name cannot be empty.", "warning");
     return;
   }
@@ -30,7 +30,32 @@ function handleSaveProfile() {
     showToast("Password Mismatch", "Passwords do not match.", "error");
     return;
   }
-  showToast("Profile Saved", "Your profile has been updated.", "success");
+
+  const parts = fullName.split(" ");
+  const last_name = parts.length > 1 ? parts.pop() : "";
+  const first_name = parts.join(" ");
+
+  const data = {
+    first_name,
+    last_name,
+    contact_number: document.getElementById("prof-phone").value.trim(),
+    bio: document.getElementById("prof-bio").value.trim(),
+    school: document.getElementById("prof-school").value,
+    course_code: document.getElementById("prof-course").value.trim(),
+  };
+  if (pw) data.password = pw;
+
+  updateProfileAPI(data)
+    .then(({ ok }) => {
+      if (!ok) {
+        showToast("Error", "Could not save profile.", "error");
+        return;
+      }
+      document.getElementById("prof-pw").value = "";
+      document.getElementById("prof-pw2").value = "";
+      showToast("Profile Saved", "Your profile has been updated.", "success");
+    })
+    .catch(() => showToast("Error", "Could not save profile.", "error"));
 }
 
 function handleDeleteAccount() {
@@ -71,4 +96,32 @@ function handleHelp() {
   );
 }
 
-document.addEventListener("DOMContentLoaded", checkVerified);
+document.addEventListener("DOMContentLoaded", () => {
+  fetchMyProfile()
+    .then((data) => {
+      const fullName = `${data.first_name} ${data.last_name}`.trim();
+
+      document.getElementById("prof-name").value = fullName;
+      document.getElementById("summary-name").textContent =
+        fullName || "Your Name";
+      document.getElementById("prof-phone").value = data.contact_number || "";
+      document.getElementById("prof-bio").value = data.bio || "";
+      document.getElementById("prof-email").value = data.email || "";
+      document.getElementById("prof-school").value = data.school || "";
+      document.getElementById("prof-course").value = data.course_code || "";
+
+      document.getElementById("summary-rating-val").textContent =
+        data.rating != null
+          ? `${Number(data.rating).toFixed(1)} / 5.0`
+          : "No ratings yet";
+      document.getElementById("stat-items-sold").textContent =
+        data.itemsSold ?? 0;
+      document.getElementById("stat-active-listings").textContent =
+        data.activeListings ?? 0;
+      document.getElementById("stat-member-since").textContent =
+        data.memberSince || "—";
+
+      checkVerified();
+    })
+    .catch(() => showToast("Error", "Failed to load profile.", "error"));
+});

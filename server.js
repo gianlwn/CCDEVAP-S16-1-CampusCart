@@ -9,17 +9,23 @@ app.use(express.json());
 
 connectDB();
 
-app.use('/api/auth',     require('./backend/routes/auth'));
-app.use('/api/listings', require('./backend/routes/listings'));
-app.use('/api/cart',     require('./backend/routes/cart'));
-app.use('/api/users',    require('./backend/routes/users'));
+app.use("/api/auth", require("./backend/routes/auth"));
+app.use("/api/listings", require("./backend/routes/listings"));
+app.use("/api/cart", require("./backend/routes/cart"));
+app.use("/api/users", require("./backend/routes/users"));
+app.use("/api/dashboard", require("./backend/routes/dashboard"));
+app.use("/api/ratings", require("./backend/routes/ratings"));
+app.use("/api/claims", require("./backend/routes/claims"));
+app.use("/api/reports", require("./backend/routes/reports"));
 
-app.use(express.static('frontend'));
-app.use('/backend', express.static('backend'));
-app.use('/data', express.static('data'));
-app.get("/", (req, res) => res.sendFile(__dirname + '/frontend/login-path/login.html'));
+app.use(express.static("frontend"));
+app.use("/backend", express.static("backend"));
+app.use("/data", express.static("data"));
+app.get("/", (req, res) =>
+  res.sendFile(__dirname + "/frontend/login-path/login.html"),
+);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, 'localhost', () =>
+app.listen(PORT, "localhost", () =>
   console.log(`Server running on http://localhost:${PORT}`),
 );

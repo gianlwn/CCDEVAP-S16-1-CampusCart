@@ -36,20 +36,49 @@ const ICONS = {
 
 function loadTopNav() {
   const notifItems = [
-    { icon: ICONS.check,   text: 'Listing <b>Casio FX-991EX</b> was approved.', time: 'Just now', unread: true },
-    { icon: ICONS.alert,   text: 'New report filed by <b>Andie Kirsten Woo</b>.', time: '5 min ago', unread: true },
-    { icon: ICONS.users,   text: 'New user <b>Christine Cote</b> registered.', time: '1 hour ago', unread: true },
-    { icon: ICONS.tag,     text: '<b>Alexa Pleyto</b> added your item to their cart.', time: '3 hours ago', unread: false },
-    { icon: ICONS.star,    text: 'You received a new 5-star rating from <b>Jay Ramos</b>.', time: 'Yesterday', unread: false },
-  ].map(n => `
-    <div class="notif-item${n.unread ? ' unread' : ''}">
+    {
+      icon: ICONS.check,
+      text: "Listing <b>Casio FX-991EX</b> was approved.",
+      time: "Just now",
+      unread: true,
+    },
+    {
+      icon: ICONS.alert,
+      text: "New report filed by <b>Andie Kirsten Woo</b>.",
+      time: "5 min ago",
+      unread: true,
+    },
+    {
+      icon: ICONS.users,
+      text: "New user <b>Christine Cote</b> registered.",
+      time: "1 hour ago",
+      unread: true,
+    },
+    {
+      icon: ICONS.tag,
+      text: "<b>Alexa Pleyto</b> added your item to their cart.",
+      time: "3 hours ago",
+      unread: false,
+    },
+    {
+      icon: ICONS.star,
+      text: "You received a new 5-star rating from <b>Jay Ramos</b>.",
+      time: "Yesterday",
+      unread: false,
+    },
+  ]
+    .map(
+      (n) => `
+    <div class="notif-item${n.unread ? " unread" : ""}">
       <span class="notif-icon">${n.icon}</span>
       <div class="notif-content">
         <p class="notif-text">${n.text}</p>
         <span class="notif-time">${n.time}</span>
       </div>
     </div>
-  `).join('');
+  `,
+    )
+    .join("");
 
   const html = `
     <nav class="top-nav">
@@ -77,50 +106,55 @@ function loadTopNav() {
       </div>
     </nav>
   `;
-  document.getElementById('top-nav').innerHTML = html;
+  document.getElementById("top-nav").innerHTML = html;
 }
 
 function toggleNotifs(e) {
   e.stopPropagation();
-  const panel = document.getElementById('notif-panel');
+  const panel = document.getElementById("notif-panel");
   if (!panel) return;
-  const isOpen = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
+  const isOpen = panel.classList.contains("open");
+  panel.classList.toggle("open", !isOpen);
   if (!isOpen) {
-    const close = () => { panel.classList.remove('open'); document.removeEventListener('click', close); };
-    setTimeout(() => document.addEventListener('click', close), 0);
+    const close = () => {
+      panel.classList.remove("open");
+      document.removeEventListener("click", close);
+    };
+    setTimeout(() => document.addEventListener("click", close), 0);
   }
 }
 
 function markAllNotifsRead() {
-  document.querySelectorAll('.notif-item.unread').forEach(el => el.classList.remove('unread'));
-  const badge = document.getElementById('notif-badge');
-  if (badge) badge.style.display = 'none';
+  document
+    .querySelectorAll(".notif-item.unread")
+    .forEach((el) => el.classList.remove("unread"));
+  const badge = document.getElementById("notif-badge");
+  if (badge) badge.style.display = "none";
 }
 
 function loadSideNav() {
   const cur = window.location.pathname;
-  const a = (p) => cur.includes(p) ? 'active' : '';
+  const a = (p) => (cur.includes(p) ? "active" : "");
 
   const html = `
     <aside class="side-nav">
       <ul>
-        <li class="${a('dashboard.html')}">
+        <li class="${a("dashboard.html")}">
           <a href="../user-profile-dashboard/dashboard.html">
             <span class="nav-item-icon">${ICONS.overview}</span>Overview
           </a>
         </li>
-        <li class="${a('userListings') || a('addListing')}">
+        <li class="${a("userListings") || a("addListing")}">
           <a href="../user-profile-dashboard/userListings.html">
             <span class="nav-item-icon">${ICONS.tag}</span>Listings
           </a>
         </li>
-        <li class="${a('claimed')}">
+        <li class="${a("claimed")}">
           <a href="../user-profile-dashboard/claimed.html">
             <span class="nav-item-icon">${ICONS.bag}</span>Claimed
           </a>
         </li>
-        <li class="${a('userProfile')}">
+        <li class="${a("userProfile")}">
           <a href="../user-profile-dashboard/userProfile.html">
             <span class="nav-item-icon">${ICONS.user}</span>Profile
           </a>
@@ -137,68 +171,70 @@ function loadSideNav() {
       </div>
     </aside>
   `;
-  document.getElementById('side-nav').innerHTML = html;
+  document.getElementById("side-nav").innerHTML = html;
 }
 
 function loadBottomNav() {
   const cur = window.location.pathname;
-  const a = (p) => cur.includes(p) ? 'active' : '';
+  const a = (p) => (cur.includes(p) ? "active" : "");
 
   const links = `
-    <a href="../user-profile-dashboard/dashboard.html" class="${a('dashboard.html')}">
+    <a href="../user-profile-dashboard/dashboard.html" class="${a("dashboard.html")}">
       <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
     </a>
-    <a href="../user-profile-dashboard/userListings.html" class="${a('userListings') || a('addListing')}">
+    <a href="../user-profile-dashboard/userListings.html" class="${a("userListings") || a("addListing")}">
       <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
     </a>
-    <a href="../user-profile-dashboard/claimed.html" class="${a('claimed')}">
+    <a href="../user-profile-dashboard/claimed.html" class="${a("claimed")}">
       <span class="nav-icon">${ICONS.bag}</span><span>Claimed</span>
     </a>
-    <a href="../user-profile-dashboard/userProfile.html" class="${a('userProfile')}">
+    <a href="../user-profile-dashboard/userProfile.html" class="${a("userProfile")}">
       <span class="nav-icon">${ICONS.user}</span><span>Profile</span>
     </a>
   `;
 
-  const nav = document.createElement('nav');
-  nav.className = 'bottom-nav';
+  const nav = document.createElement("nav");
+  nav.className = "bottom-nav";
   nav.innerHTML = links;
   document.body.appendChild(nav);
 }
 
 function getChartTheme() {
   const s = getComputedStyle(document.body);
-  const get = v => s.getPropertyValue(v).trim();
+  const get = (v) => s.getPropertyValue(v).trim();
   return {
-    accent:     get('--accent'),
-    text:       get('--text'),
-    grid:       get('--chart-grid'),
-    axisBorder: get('--chart-axis'),
-    barBg:      get('--chart-bar'),
-    cardBg:     get('--card-bg'),
-    barRgb:     get('--chart-bar-rgb'),
+    accent: get("--accent"),
+    text: get("--text"),
+    grid: get("--chart-grid"),
+    axisBorder: get("--chart-axis"),
+    barBg: get("--chart-bar"),
+    cardBg: get("--card-bg"),
+    barRgb: get("--chart-bar-rgb"),
   };
 }
 
 function renderStars(rating, max = 5) {
   let html = '<div class="stars">';
   for (let i = 1; i <= max; i++) {
-    html += `<span class="star${i <= rating ? ' filled' : ''}">★</span>`;
+    html += `<span class="star${i <= rating ? " filled" : ""}">★</span>`;
   }
-  return html + '</div>';
+  return html + "</div>";
 }
 
 function createClaimedRow(item) {
-  const cls = item.status === 'completed' ? 'completed' : 'pending';
+  const cls = item.status === "completed" ? "completed" : "pending";
   const CAT_ICON = {
-    Electronics: ICONS.laptop, Books: ICONS.book,
-    'Lab Tools': ICONS.flask, Clothing: ICONS.shirt,
+    Electronics: ICONS.laptop,
+    Books: ICONS.book,
+    "Lab Tools": ICONS.flask,
+    Clothing: ICONS.shirt,
   };
   return `
     <div class="item-row">
       <div class="item-thumb">${CAT_ICON[item.category] || ICONS.package}</div>
       <div class="item-info">
         <p class="item-name">${item.name}</p>
-        <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ''}</p>
+        <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ""}</p>
       </div>
       ${renderStars(item.rating)}
       <span class="badge-status ${cls}">${item.status}</span>
@@ -206,78 +242,28 @@ function createClaimedRow(item) {
   `;
 }
 
-function createRatingsRow(item) {
-  const CAT_ICON = {
-    Electronics: ICONS.laptop, Books: ICONS.book,
-    'Lab Tools': ICONS.flask, Clothing: ICONS.shirt,
-  };
-  return `
-    <div class="item-row" id="rating-row-${item.id}">
-      <div class="item-thumb">${CAT_ICON[item.category] || ICONS.package}</div>
-      <div class="item-info">
-        <p class="item-name">${item.name}</p>
-        <p class="item-meta">${item.price} · ${item.category}</p>
-        ${item.review ? `<p class="item-review">"${item.review}"</p>` : ''}
-      </div>
-      ${renderStars(item.rating)}
-      <div style="display:flex;gap:3px;flex-shrink:0;">
-        <button class="btn-icon"        title="Edit"   onclick="editRating(${item.id})">${ICONS.edit}</button>
-        <button class="btn-icon danger" title="Delete" onclick="deleteRating(${item.id})">${ICONS.trash}</button>
-      </div>
-    </div>
-  `;
-}
-
-function loadClaimedRows(containerId) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Loading…</p>';
-
-  fetchClaimedItems()
-    .then(items => {
-      if (!items.length) {
-        el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No claimed items yet.</p></div>`;
-        return;
-      }
-      el.innerHTML = items.map(createClaimedRow).join('');
-    })
-    .catch(() => {
-      el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Could not load items.</p>';
-    });
-}
-
-function loadRatingsRows(containerId) {
-  const el = document.getElementById(containerId);
-  el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Loading…</p>';
-
-  fetchRatings()
-    .then(items => {
-      if (!items.length) {
-        el.innerHTML = `<div class="empty-state"><div class="empty-icon">⭐</div><p>No ratings yet.</p></div>`;
-        return;
-      }
-      el.innerHTML = items.map(createRatingsRow).join('');
-    })
-    .catch(() => {
-      el.innerHTML = '<p style="color:var(--text-muted);padding:16px 0;">Could not load ratings.</p>';
-    });
-}
-
 const _CONFIRM_ICONS = {
-  trash:  `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
-  ban:    `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,
-  unban:  `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
+  trash: `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
+  ban: `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,
+  unban: `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
   revoke: `<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>`,
 };
 
 function handleSignOut() {
-  sessionStorage.setItem('cc_signout', '1');
-  window.location.href = '../login-path/login.html';
+  sessionStorage.setItem("cc_signout", "1");
+  window.location.href = "../login-path/login.html";
 }
 
-function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 'trash') {
+function showConfirm(
+  title,
+  message,
+  onConfirm,
+  okLabel = "Delete",
+  iconKey = "trash",
+) {
   const iconPath = _CONFIRM_ICONS[iconKey] || _CONFIRM_ICONS.trash;
-  const overlay = document.createElement('div');
-  overlay.className = 'confirm-overlay';
+  const overlay = document.createElement("div");
+  overlay.className = "confirm-overlay";
   overlay.innerHTML = `
     <div class="confirm-dialog" role="dialog" aria-modal="true">
       <div class="confirm-icon-wrap">
@@ -296,10 +282,15 @@ function showConfirm(title, message, onConfirm, okLabel = 'Delete', iconKey = 't
   `;
 
   const close = () => document.body.removeChild(overlay);
-  overlay.querySelector('.confirm-cancel').addEventListener('click', close);
-  overlay.querySelector('.confirm-ok').addEventListener('click', () => { close(); onConfirm(); });
-  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  overlay.querySelector(".confirm-cancel").addEventListener("click", close);
+  overlay.querySelector(".confirm-ok").addEventListener("click", () => {
+    close();
+    onConfirm();
+  });
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
 
   document.body.appendChild(overlay);
-  overlay.querySelector('.confirm-cancel').focus();
+  overlay.querySelector(".confirm-cancel").focus();
 }
