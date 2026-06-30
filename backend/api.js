@@ -14,10 +14,12 @@ function fetchListings() {
 function fetchCartItems() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);
-  return fetch(`${API}/api/cart?user_id=${encodeURIComponent(userId)}`).then((r) => {
-    if (!r.ok) throw new Error();
-    return r.json();
-  });
+  return fetch(`${API}/api/cart?user_id=${encodeURIComponent(userId)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
 }
 
 // Alias kept so existing callers don't break
@@ -48,6 +50,14 @@ function updateProfileAPI(data) {
   }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
+function deleteAccountAPI() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.reject(new Error("not_logged_in"));
+  return fetch(`${API}/api/users/${encodeURIComponent(userId)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function addToCartAPI(listing_id) {
   const user_id = getSessionUserId();
   if (!user_id) return Promise.reject(new Error("not_logged_in"));
@@ -55,7 +65,9 @@ function addToCartAPI(listing_id) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ user_id, listing_id }),
-  }).then((r) => r.json().then((data) => ({ ok: r.ok, status: r.status, data })));
+  }).then((r) =>
+    r.json().then((data) => ({ ok: r.ok, status: r.status, data })),
+  );
 }
 
 function removeFromCartAPI(cart_id) {
@@ -75,7 +87,9 @@ function claimCartItemAPI(cart_id, quantity) {
 function fetchDashboardData() {
   const userId = getSessionUserId();
   if (!userId) return Promise.reject(new Error("not_logged_in"));
-  return fetch(`${API}/api/dashboard?user_id=${encodeURIComponent(userId)}`).then((r) => {
+  return fetch(
+    `${API}/api/dashboard?user_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
     if (!r.ok) throw new Error();
     return r.json();
   });
@@ -84,31 +98,41 @@ function fetchDashboardData() {
 function fetchClaims() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);
-  return fetch(`${API}/api/claims?buyer_id=${encodeURIComponent(userId)}`).then((r) => {
-    if (!r.ok) throw new Error();
-    return r.json();
-  });
+  return fetch(`${API}/api/claims?buyer_id=${encodeURIComponent(userId)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
 }
 
 function fetchSellerClaims() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);
-  return fetch(`${API}/api/claims?seller_id=${encodeURIComponent(userId)}`).then((r) => {
+  return fetch(
+    `${API}/api/claims?seller_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
     if (!r.ok) throw new Error();
     return r.json();
   });
 }
 
 function markBuyerCompleteAPI(claim_id) {
-  return fetch(`${API}/api/claims/${encodeURIComponent(claim_id)}/buyer-complete`, {
-    method: "PATCH",
-  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+  return fetch(
+    `${API}/api/claims/${encodeURIComponent(claim_id)}/buyer-complete`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
 function markSellerCompleteAPI(claim_id) {
-  return fetch(`${API}/api/claims/${encodeURIComponent(claim_id)}/seller-complete`, {
-    method: "PATCH",
-  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+  return fetch(
+    `${API}/api/claims/${encodeURIComponent(claim_id)}/seller-complete`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
 function submitRatingAPI(listing_id, rating, review) {
@@ -131,7 +155,9 @@ function updateRatingAPI(rating_id, rating, review) {
 function fetchUserListings() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);
-  return fetch(`${API}/api/listings?seller_id=${encodeURIComponent(userId)}`).then((r) => {
+  return fetch(
+    `${API}/api/listings?seller_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
     if (!r.ok) throw new Error();
     return r.json();
   });
@@ -154,10 +180,43 @@ function deleteListingAPI(listing_id) {
 function fetchSellerReviews() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);
-  return fetch(`${API}/api/ratings/seller/${encodeURIComponent(userId)}`).then((r) => {
+  return fetch(`${API}/api/ratings/seller/${encodeURIComponent(userId)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
+}
+
+function fetchNotificationsAPI() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(
+    `${API}/api/notifications?user_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
     if (!r.ok) throw new Error();
     return r.json();
   });
+}
+
+function markAllNotificationsReadAPI() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve();
+  return fetch(
+    `${API}/api/notifications/read-all?user_id=${encodeURIComponent(userId)}`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json());
+}
+
+function markNotificationReadAPI(notification_id) {
+  return fetch(
+    `${API}/api/notifications/${encodeURIComponent(notification_id)}/read`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json());
 }
 
 function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
@@ -165,6 +224,11 @@ function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
   return fetch(`${API}/api/reports`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ reporter_id, reported_user_id, reported_listing_id: reported_listing_id || null, reason }),
+    body: JSON.stringify({
+      reporter_id,
+      reported_user_id,
+      reported_listing_id: reported_listing_id || null,
+      reason,
+    }),
   }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }

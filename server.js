@@ -17,6 +17,7 @@ app.use("/api/dashboard", require("./backend/routes/dashboard"));
 app.use("/api/ratings", require("./backend/routes/ratings"));
 app.use("/api/claims", require("./backend/routes/claims"));
 app.use("/api/reports", require("./backend/routes/reports"));
+app.use("/api/notifications", require("./backend/routes/notifications"));
 
 app.use(express.static("frontend"));
 app.use("/backend", express.static("backend"));

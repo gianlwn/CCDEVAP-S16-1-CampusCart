@@ -34,51 +34,74 @@ const ICONS = {
   help: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
 };
 
+function timeAgo(dateStr) {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hour${hrs > 1 ? "s" : ""} ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago`;
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+const NOTIF_ICON = {
+  claim_received: `tag`,
+  seller_ready: `check`,
+  transaction_complete: `check`,
+  new_review: `star`,
+};
+
+function refreshNotifs() {
+  if (typeof fetchNotificationsAPI !== "function") return;
+  fetchNotificationsAPI()
+    .then((notifications) => {
+      const list = document.getElementById("notif-list");
+      if (!list) return;
+
+      if (!notifications.length) {
+        list.innerHTML = '<p class="notif-empty">No notifications yet.</p>';
+      } else {
+        list.innerHTML = notifications
+          .map(
+            (n) => `
+          <div class="notif-item${n.is_read ? "" : " unread"}" data-id="${n.notification_id}">
+            <span class="notif-icon">${ICONS[NOTIF_ICON[n.type]] || ICONS.bell}</span>
+            <div class="notif-content">
+              <p class="notif-text">${n.message}</p>
+              <span class="notif-time">${timeAgo(n.created_at)}</span>
+            </div>
+          </div>`,
+          )
+          .join("");
+      }
+
+      const unread = notifications.filter((n) => !n.is_read).length;
+      const badge = document.getElementById("notif-badge");
+      if (badge) {
+        if (unread > 0) {
+          badge.textContent = unread > 99 ? "99+" : unread;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+      }
+    })
+    .catch(() => {
+      const list = document.getElementById("notif-list");
+      if (list)
+        list.innerHTML =
+          '<p class="notif-empty">Could not load notifications.</p>';
+    });
+}
+
 function loadTopNav() {
-  const notifItems = [
-    {
-      icon: ICONS.check,
-      text: "Listing <b>Casio FX-991EX</b> was approved.",
-      time: "Just now",
-      unread: true,
-    },
-    {
-      icon: ICONS.alert,
-      text: "New report filed by <b>Andie Kirsten Woo</b>.",
-      time: "5 min ago",
-      unread: true,
-    },
-    {
-      icon: ICONS.users,
-      text: "New user <b>Christine Cote</b> registered.",
-      time: "1 hour ago",
-      unread: true,
-    },
-    {
-      icon: ICONS.tag,
-      text: "<b>Alexa Pleyto</b> added your item to their cart.",
-      time: "3 hours ago",
-      unread: false,
-    },
-    {
-      icon: ICONS.star,
-      text: "You received a new 5-star rating from <b>Jay Ramos</b>.",
-      time: "Yesterday",
-      unread: false,
-    },
-  ]
-    .map(
-      (n) => `
-    <div class="notif-item${n.unread ? " unread" : ""}">
-      <span class="notif-icon">${n.icon}</span>
-      <div class="notif-content">
-        <p class="notif-text">${n.text}</p>
-        <span class="notif-time">${n.time}</span>
-      </div>
-    </div>
-  `,
-    )
-    .join("");
+  const isAdmin = localStorage.getItem("session_role") === "admin";
 
   const html = `
     <nav class="top-nav">
@@ -87,26 +110,45 @@ function loadTopNav() {
         <span>CampusCart</span>
       </div>
       <div class="nav-icons">
+        ${isAdmin ? `<button onclick="window.location.href='../admin-dashboard/adminDashboard.html'" title="Admin Dashboard">${ICONS.shield}</button>` : ""}
         <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">${ICONS.moon}</button>
         <div class="notif-wrapper">
           <button id="btn-notifications" title="Notifications" onclick="toggleNotifs(event)">
-            ${ICONS.bell}<span class="nav-badge" id="notif-badge">2</span>
+            ${ICONS.bell}<span class="nav-badge" id="notif-badge" style="display:none">0</span>
           </button>
           <div id="notif-panel" class="notif-panel">
             <div class="notif-panel-header">
               <span>Notifications</span>
               <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark all as read</button>
             </div>
-            <div class="notif-list">${notifItems}</div>
+            <div class="notif-list" id="notif-list"><p class="notif-empty">Loading...</p></div>
           </div>
         </div>
-        <button onclick="window.location.href='../homepage/cart.html'" title="Cart">${ICONS.cart}</button>
+        <button onclick="window.location.href='../homepage/cart.html'" title="Cart" style="position:relative">
+          ${ICONS.cart}<span class="nav-badge" id="cart-badge" style="display:none">0</span>
+        </button>
         <button onclick="window.location.href='../homepage/homepage.html'" title="Home">${ICONS.home}</button>
         <button onclick="window.location.href='../user-profile-dashboard/dashboard.html'" title="Profile">${ICONS.user}</button>
       </div>
     </nav>
   `;
   document.getElementById("top-nav").innerHTML = html;
+
+  refreshNotifs();
+  if (window._notifPollInterval) clearInterval(window._notifPollInterval);
+  window._notifPollInterval = setInterval(refreshNotifs, 30000);
+
+  fetchCartItems()
+    .then((items) => {
+      const badge = document.getElementById("cart-badge");
+      if (!badge) return;
+      const count = Array.isArray(items) ? items.length : 0;
+      if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : count;
+        badge.style.display = "";
+      }
+    })
+    .catch(() => {});
 }
 
 function toggleNotifs(e) {
@@ -116,6 +158,7 @@ function toggleNotifs(e) {
   const isOpen = panel.classList.contains("open");
   panel.classList.toggle("open", !isOpen);
   if (!isOpen) {
+    refreshNotifs();
     const close = () => {
       panel.classList.remove("open");
       document.removeEventListener("click", close);
@@ -125,6 +168,9 @@ function toggleNotifs(e) {
 }
 
 function markAllNotifsRead() {
+  if (typeof markAllNotificationsReadAPI === "function") {
+    markAllNotificationsReadAPI().catch(() => {});
+  }
   document
     .querySelectorAll(".notif-item.unread")
     .forEach((el) => el.classList.remove("unread"));
@@ -135,6 +181,7 @@ function markAllNotifsRead() {
 function loadSideNav() {
   const cur = window.location.pathname;
   const a = (p) => (cur.includes(p) ? "active" : "");
+  const isAdmin = localStorage.getItem("session_role") === "admin";
 
   const html = `
     <aside class="side-nav">
@@ -161,10 +208,14 @@ function loadSideNav() {
         </li>
       </ul>
       <div class="sidebar-bottom">
-        <button class="admin-dash-btn" onclick="window.location.href='../admin-dashboard/adminDashboard.html'">
+        ${
+          isAdmin
+            ? `<button class="admin-dash-btn" onclick="window.location.href='../admin-dashboard/adminDashboard.html'">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Admin Dashboard
-        </button>
+        </button>`
+            : ""
+        }
         <button class="signout-btn" onclick="handleSignOut()">
           ${ICONS.logout} Sign Out
         </button>

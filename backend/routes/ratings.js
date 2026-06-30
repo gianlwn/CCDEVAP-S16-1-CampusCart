@@ -6,6 +6,7 @@ const User = require("../models/User");
 const ListingCategory = require("../models/ListingCategory");
 const Category = require("../models/Category");
 const generateId = require("../utils/generateId");
+const createNotification = require("../utils/createNotification");
 
 // GET /api/ratings/seller/:user_id
 // Returns all ratings on the seller's listings, enriched with item name, category, and buyer info via rater_id.
@@ -82,7 +83,7 @@ router.post("/", async (req, res) => {
 
     const listing = await Listing.findOne(
       { listings_id: listing_id },
-      "seller_id",
+      "seller_id product_name",
     );
     const rated_user_id = listing ? listing.seller_id : null;
 
@@ -95,6 +96,25 @@ router.post("/", async (req, res) => {
       rating: Number(rating),
       review: review || "",
     }).save();
+
+    try {
+      if (listing?.seller_id) {
+        const rater = await User.findOne(
+          { user_id: rater_id },
+          "first_name last_name",
+        );
+        const raterName = rater
+          ? `${rater.first_name} ${rater.last_name}`.trim()
+          : "A buyer";
+        createNotification(
+          listing.seller_id,
+          "new_review",
+          `${raterName} left a review on "${listing.product_name}"`,
+          rating_id,
+        ).catch(() => {});
+      }
+    } catch (_) {}
+
     res.status(201).json({ rating_id });
   } catch (err) {
     console.error(err);

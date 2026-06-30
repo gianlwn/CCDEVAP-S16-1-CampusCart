@@ -62,17 +62,33 @@ function handleDeleteAccount() {
   showConfirm(
     "Delete Account?",
     "This will permanently delete your account and all associated data. This action cannot be undone.",
-    () => {
-      showToast(
-        "Account Deleted",
-        "Your account has been removed.",
-        "error",
-        0,
-      );
-      setTimeout(
-        () => (window.location.href = "../login-path/login.html"),
-        1200,
-      );
+    async () => {
+      try {
+        const { ok } = await deleteAccountAPI();
+        if (!ok) {
+          showToast(
+            "Error",
+            "Could not delete account. Please try again.",
+            "error",
+          );
+          return;
+        }
+        localStorage.removeItem("session_email");
+        localStorage.removeItem("session_role");
+        localStorage.removeItem("session_user_id");
+        showToast(
+          "Account Deleted",
+          "Your account has been removed.",
+          "error",
+          0,
+        );
+        setTimeout(
+          () => (window.location.href = "../login-path/login.html"),
+          1200,
+        );
+      } catch {
+        showToast("Error", "Could not reach the server.", "error");
+      }
     },
   );
 }

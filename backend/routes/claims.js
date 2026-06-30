@@ -6,6 +6,7 @@ const User = require("../models/User");
 const Rating = require("../models/Rating");
 const ListingCategory = require("../models/ListingCategory");
 const Category = require("../models/Category");
+const createNotification = require("../utils/createNotification");
 
 async function enrichWithListingAndCategory(claims, idField) {
   const listingIds = [...new Set(claims.map((c) => c.listing_id))];
@@ -144,6 +145,29 @@ router.patch("/:id/buyer-complete", async (req, res) => {
       );
     }
     await claim.save();
+
+    if (claim.status === "completed") {
+      try {
+        const listing = await Listing.findOne(
+          { listings_id: claim.listing_id },
+          "product_name",
+        );
+        const itemName = listing ? listing.product_name : "an item";
+        createNotification(
+          claim.buyer_id,
+          "transaction_complete",
+          `Transaction for "${itemName}" is now complete!`,
+          claim.claim_id,
+        ).catch(() => {});
+        createNotification(
+          claim.seller_id,
+          "transaction_complete",
+          `Transaction for "${itemName}" is now complete!`,
+          claim.claim_id,
+        ).catch(() => {});
+      } catch (_) {}
+    }
+
     res.json({
       claim_id: claim.claim_id,
       status: claim.status,
@@ -169,6 +193,36 @@ router.patch("/:id/seller-complete", async (req, res) => {
       );
     }
     await claim.save();
+
+    try {
+      const listing = await Listing.findOne(
+        { listings_id: claim.listing_id },
+        "product_name",
+      );
+      const itemName = listing ? listing.product_name : "an item";
+      if (claim.status === "completed") {
+        createNotification(
+          claim.buyer_id,
+          "transaction_complete",
+          `Transaction for "${itemName}" is now complete!`,
+          claim.claim_id,
+        ).catch(() => {});
+        createNotification(
+          claim.seller_id,
+          "transaction_complete",
+          `Transaction for "${itemName}" is now complete!`,
+          claim.claim_id,
+        ).catch(() => {});
+      } else {
+        createNotification(
+          claim.buyer_id,
+          "seller_ready",
+          `Your item "${itemName}" is ready for pickup!`,
+          claim.claim_id,
+        ).catch(() => {});
+      }
+    } catch (_) {}
+
     res.json({
       claim_id: claim.claim_id,
       status: claim.status,
