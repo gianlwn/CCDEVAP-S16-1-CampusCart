@@ -6,7 +6,7 @@ const listingSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["active", "pending_review", "claimed"],
+      enum: ["active", "pending_review", "rejected"],
       default: "pending_review",
     },
     condition: { type: String, enum: ["New", "Good", "Used"], required: true },

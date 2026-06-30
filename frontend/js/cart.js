@@ -44,16 +44,24 @@ function _renderCartPage() {
     .map(
       (item) => `
     <div class="cart-row" id="cart-row-${item.id}">
-      <div class="cart-thumb" style="background:${CATEGORY_BG[item.category] || CATEGORY_BG.Others};cursor:pointer;" onclick="viewCartItem(${item.id})">
+      <div class="cart-thumb" style="background:${CATEGORY_BG[item.category] || CATEGORY_BG.Others};cursor:pointer;" onclick="viewCartItem('${item.listing_id}')">
         ${CATEGORY_ICONS[item.category] || CATEGORY_ICONS.Others}
       </div>
-      <div class="cart-item-info" style="cursor:pointer;" onclick="viewCartItem(${item.id})">
+      <div class="cart-item-info" style="cursor:pointer;" onclick="viewCartItem('${item.listing_id}')">
         <p class="cart-item-name">${item.name}</p>
         <p class="cart-item-meta">${item.category}${item.seller ? " · " + item.seller : ""}</p>
       </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <label style="font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;">Qty</label>
+        <input id="qty-${item.id}" type="number" min="1" max="${item.maxQuantity}" value="1"
+          style="width:54px;padding:5px 7px;border:1px solid var(--border);border-radius:var(--radius-xs);
+          background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;text-align:center;"
+          onclick="event.stopPropagation()">
+        <span style="font-size:11px;color:var(--text-muted);">/ ${item.maxQuantity}</span>
+      </div>
       <p class="cart-item-price">₱${item.price.toLocaleString()}</p>
       <div class="cart-item-actions">
-        <button class="btn-claim-item" onclick="claimItem('${item.id}')">Claim</button>
+        <button class="btn-claim-item" onclick="claimItem('${item.id}', ${item.maxQuantity})">Claim</button>
         <button class="btn-cancel-item" onclick="cancelItem('${item.id}')">Cancel</button>
       </div>
     </div>
@@ -93,19 +101,33 @@ function viewCartItem(id) {
   window.location.href = "itempage.html?id=" + id;
 }
 
-async function claimItem(id) {
+async function claimItem(id, maxQuantity) {
   const item = cartItems.find((i) => String(i.id) === String(id));
   if (!item) return;
+  const qtyInput = document.getElementById("qty-" + id);
+  const quantity = Math.min(
+    Math.max(parseInt(qtyInput?.value) || 1, 1),
+    maxQuantity || item.maxQuantity || 1,
+  );
   try {
-    const { ok, data } = await claimCartItemAPI(id);
+    const { ok, data } = await claimCartItemAPI(id, quantity);
     if (ok) {
-      showToast("Claimed!", `"${item.name}" reserved. Coordinate with the seller to arrange pickup.`, "success", 4000);
+      showToast(
+        "Claimed!",
+        `${quantity}× "${item.name}" reserved. Coordinate with the seller to arrange pickup.`,
+        "success",
+        4000,
+      );
       cartItems = cartItems.filter((i) => String(i.id) !== String(id));
       if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
         _cartPage = Math.max(1, _cartPage - 1);
       _renderCartPage();
     } else if (data.error === "listing_unavailable") {
-      showToast("Unavailable", "This item has already been claimed by someone else.", "warning");
+      showToast(
+        "Unavailable",
+        "This item has already been claimed by someone else.",
+        "warning",
+      );
     } else {
       showToast("Error", "Could not complete the claim.", "error");
     }
@@ -120,7 +142,11 @@ async function cancelItem(id) {
   try {
     const { ok } = await removeFromCartAPI(id);
     if (ok) {
-      showToast("Cancelled", `"${item.name}" has been removed from your cart.`, "warning");
+      showToast(
+        "Cancelled",
+        `"${item.name}" has been removed from your cart.`,
+        "warning",
+      );
       cartItems = cartItems.filter((i) => String(i.id) !== String(id));
       if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
         _cartPage = Math.max(1, _cartPage - 1);

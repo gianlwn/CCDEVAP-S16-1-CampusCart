@@ -244,9 +244,9 @@
   background: var(--warning-bg);
   color: var(--warning-text);
 }
-.badge-status.claimed {
-  background: var(--pending-bg);
-  color: var(--pending-text);
+.badge-status.rejected {
+  background: var(--danger-bg);
+  color: var(--danger-text);
 }
 .badge-status.completed {
   background: var(--success-bg);
@@ -390,7 +390,11 @@
   align-items: center;
   gap: 7px;
   padding: 9px 18px;
-  background: linear-gradient(135deg, var(--accent-hover) 0%, var(--accent) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--accent-hover) 0%,
+    var(--accent) 100%
+  );
   color: #fff;
   border: none;
   border-radius: var(--radius-sm);
@@ -450,7 +454,9 @@
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(10px) saturate(1.12);
   -webkit-backdrop-filter: blur(10px) saturate(1.12);
-  transition: background-color var(--transition), border-color var(--transition);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition);
 }
 
 .claimed-item-row {
