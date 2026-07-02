@@ -122,6 +122,7 @@ async function claimItem(id, maxQuantity) {
       if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
         _cartPage = Math.max(1, _cartPage - 1);
       _renderCartPage();
+      bumpCartBadge(-1);
     } else if (data.error === "listing_unavailable") {
       showToast(
         "Unavailable",
@@ -151,6 +152,7 @@ async function cancelItem(id) {
       if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
         _cartPage = Math.max(1, _cartPage - 1);
       _renderCartPage();
+      bumpCartBadge(-1);
     } else {
       showToast("Error", "Could not remove item from cart.", "error");
     }

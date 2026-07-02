@@ -169,13 +169,35 @@ router.put("/:id", async (req, res) => {
       category,
       categories,
     } = req.body;
+
+    const existing = await Listing.findOne({ listings_id: req.params.id });
+    if (!existing) return res.status(404).json({ error: "not_found" });
+    if (existing.status === "rejected") {
+      return res.status(403).json({ error: "listing_rejected" });
+    }
+
     const update = {};
     if (product_name !== undefined) update.product_name = product_name;
     if (price !== undefined) update.price = parseFloat(price);
-    if (quantity !== undefined) update.quantity = parseInt(quantity) || 1;
+    if (quantity !== undefined) {
+      const parsedQty = parseInt(quantity);
+      update.quantity = Number.isNaN(parsedQty) ? 1 : parsedQty;
+    }
     if (condition !== undefined) update.condition = condition;
     if (description !== undefined) update.description = description;
     if (location !== undefined) update.location = location;
+
+    // Only price and text-box fields (name, description, location) require
+    // re-review; quantity/condition/category tweaks don't change the listing's
+    // substance so they're exempt.
+    const requiresReReview =
+      (update.product_name !== undefined &&
+        update.product_name !== existing.product_name) ||
+      (update.price !== undefined && update.price !== existing.price) ||
+      (update.description !== undefined &&
+        update.description !== existing.description) ||
+      (update.location !== undefined && update.location !== existing.location);
+    if (requiresReReview) update.status = "pending_review";
 
     const listing = await Listing.findOneAndUpdate(
       { listings_id: req.params.id },

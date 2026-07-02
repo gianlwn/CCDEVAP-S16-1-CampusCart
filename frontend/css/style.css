@@ -251,8 +251,8 @@ img {
 }
 
 .badge-status.pending {
-  background: var(--pending-bg);
-  color: var(--pending-text);
+  background: var(--warning-bg);
+  color: var(--warning-text);
 }
 
 .stars {

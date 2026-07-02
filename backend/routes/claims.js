@@ -39,7 +39,10 @@ router.get("/", async (req, res) => {
       return res.status(400).json({ error: "buyer_id or seller_id required" });
 
     if (seller_id) {
-      const claims = await Claim.find({ seller_id }).sort({ claim_date: -1 });
+      const claims = await Claim.find({
+        seller_id,
+        status: { $ne: "cancelled" },
+      }).sort({ claim_date: -1 });
       if (!claims.length) return res.json([]);
 
       const { listingById, listingCatMap } =
@@ -76,7 +79,10 @@ router.get("/", async (req, res) => {
     }
 
     // buyer_id path
-    const claims = await Claim.find({ buyer_id }).sort({ claim_date: -1 });
+    const claims = await Claim.find({
+      buyer_id,
+      status: { $ne: "cancelled" },
+    }).sort({ claim_date: -1 });
     if (!claims.length) return res.json([]);
 
     const { listingById, listingCatMap } =
@@ -162,13 +168,13 @@ router.patch("/:id/buyer-complete", async (req, res) => {
           "product_name",
         );
         const itemName = listing ? listing.product_name : "an item";
-        createNotification(
+        await createNotification(
           claim.buyer_id,
           "transaction_complete",
           `Transaction for "${itemName}" is now complete!`,
           claim.claim_id,
         ).catch(() => {});
-        createNotification(
+        await createNotification(
           claim.seller_id,
           "transaction_complete",
           `Transaction for "${itemName}" is now complete!`,
@@ -210,20 +216,20 @@ router.patch("/:id/seller-complete", async (req, res) => {
       );
       const itemName = listing ? listing.product_name : "an item";
       if (claim.status === "completed") {
-        createNotification(
+        await createNotification(
           claim.buyer_id,
           "transaction_complete",
           `Transaction for "${itemName}" is now complete!`,
           claim.claim_id,
         ).catch(() => {});
-        createNotification(
+        await createNotification(
           claim.seller_id,
           "transaction_complete",
           `Transaction for "${itemName}" is now complete!`,
           claim.claim_id,
         ).catch(() => {});
       } else {
-        createNotification(
+        await createNotification(
           claim.buyer_id,
           "seller_ready",
           `Your item "${itemName}" is ready for pickup!`,
@@ -237,6 +243,48 @@ router.patch("/:id/seller-complete", async (req, res) => {
       status: claim.status,
       seller_completed: claim.seller_completed,
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+// DELETE /api/claims/:id — cancel a claim (either party, only while not completed)
+router.delete("/:id", async (req, res) => {
+  try {
+    const claim = await Claim.findOne({ claim_id: req.params.id });
+    if (!claim) return res.status(404).json({ error: "not_found" });
+    if (claim.status === "completed") {
+      return res.status(403).json({ error: "already_completed" });
+    }
+    if (claim.seller_completed) {
+      return res.status(403).json({ error: "seller_confirmed" });
+    }
+
+    claim.status = "cancelled";
+    await claim.save();
+
+    try {
+      const listing = await Listing.findOne(
+        { listings_id: claim.listing_id },
+        "product_name",
+      );
+      const itemName = listing ? listing.product_name : "an item";
+      await createNotification(
+        claim.buyer_id,
+        "claim_cancelled",
+        `Claim for "${itemName}" was cancelled.`,
+        claim.claim_id,
+      ).catch(() => {});
+      await createNotification(
+        claim.seller_id,
+        "claim_cancelled",
+        `Claim for "${itemName}" was cancelled.`,
+        claim.claim_id,
+      ).catch(() => {});
+    } catch (_) {}
+
+    res.json({ success: true, claim_id: claim.claim_id, status: claim.status });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

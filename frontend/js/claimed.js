@@ -30,8 +30,8 @@ function renderClaimed() {
     const icon      = CLAIMED_CAT_ICONS[item.category] || ICONS.package;
     const hasReview = item.userRating != null;
 
-    // Review is only available once the seller has confirmed the handoff
-    const canReview = item.seller_completed;
+    // Review is only available once both sides have confirmed the handoff
+    const canReview = item.buyer_completed && item.seller_completed;
 
     let actionBtns = "";
     if (!item.buyer_completed) {
@@ -39,6 +39,9 @@ function renderClaimed() {
     }
     if (canReview) {
       actionBtns += `<button class="btn-icon" title="${hasReview ? "Edit Review" : "Write a Review"}" onclick="openReviewModal('${item.id}')">${ICONS.edit}</button>`;
+    }
+    if (!item.seller_completed) {
+      actionBtns += `<button class="btn-icon danger" title="Cancel Claim" onclick="cancelClaim('${item.id}')">${ICONS.trash}</button>`;
     }
     actionBtns += `<button class="btn-icon" title="Report Seller" onclick="reportClaimedItem('${item.id}')" style="color:var(--warning-text);">${ICONS.alert}</button>`;
 
@@ -78,6 +81,34 @@ function markBuyerComplete(id) {
     },
     "Confirm",
     "check",
+  );
+}
+
+function cancelClaim(id) {
+  const item = claimedItems.find((c) => c.id === id);
+  if (!item) return;
+  showConfirm(
+    "Cancel this Claim?",
+    `This will cancel your claim on "${item.name}". This action cannot be undone.`,
+    () => {
+      cancelClaimAPI(id).then(({ ok, data }) => {
+        if (!ok) {
+          const msg =
+            data.error === "already_completed"
+              ? "This transaction is already completed and can't be cancelled."
+              : data.error === "seller_confirmed"
+              ? "The seller already confirmed this handoff, so it can no longer be cancelled."
+              : "Could not cancel claim.";
+          showToast("Error", msg, "error");
+          return;
+        }
+        claimedItems = claimedItems.filter((c) => c.id !== id);
+        renderClaimed();
+        showToast("Cancelled", "Claim has been cancelled.", "success");
+      }).catch(() => showToast("Error", "Could not cancel claim.", "error"));
+    },
+    "Cancel Claim",
+    "trash",
   );
 }
 
