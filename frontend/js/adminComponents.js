@@ -662,12 +662,13 @@ function saveEditCategory(oldName) {
 }
 
 let _reportsPage = 1;
+let _reportsData = [];
 
 function renderReportsPage() {
   const container = document.getElementById('reports-stack-list');
   if (!container) return;
 
-  const reports = getReports();
+  const reports = _reportsData;
   const perPage = getItemsPerPage('reports');
   const start = (_reportsPage - 1) * perPage;
   const slice = reports.slice(start, start + perPage);
@@ -711,17 +712,32 @@ function renderReportsPage() {
 }
 
 function displayReports() {
-  renderReportsPage();
+  fetchPendingReports().then(reports => {
+    _reportsData = reports;
+    renderReportsPage();
+  }).catch(() => {
+    showToast('Failed to load reports', '', 'error');
+  });
   setupResizePagination('reports', () => { _reportsPage = 1; renderReportsPage(); });
 }
 
 function handleReportAction(action, reportId, btn) {
   const row = btn.closest('.report-row-card');
-  if (action === 'warning') {
-    showToast('Warning Issued', `Warning sent for report #${reportId}.`, 'warning');
-  } else {
-    showToast('Dismissed', `Report #${reportId} has been dismissed.`, 'info');
-  }
-  if (row) row.style.opacity = '0.4';
-  btn.closest('.report-action-group').querySelectorAll('button').forEach(b => b.disabled = true);
+  const group = btn.closest('.report-action-group');
+  group.querySelectorAll('button').forEach(b => b.disabled = true);
+
+  resolveReportAPI(reportId, action).then(({ ok }) => {
+    if (!ok) {
+      showToast('Error', 'Failed to update the report. Please try again.', 'error');
+      group.querySelectorAll('button').forEach(b => b.disabled = false);
+      return;
+    }
+    _reportsData = _reportsData.filter(r => r.reportId !== reportId);
+    if (action === 'warning') {
+      showToast('Warning Issued', `Warning sent for report #${reportId}.`, 'warning');
+    } else {
+      showToast('Dismissed', `Report #${reportId} has been dismissed.`, 'info');
+    }
+    if (row) row.style.opacity = '0.4';
+  });
 }

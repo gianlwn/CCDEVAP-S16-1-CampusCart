@@ -159,123 +159,6 @@ const _categoriesData = [
   { categoryName: "Instruments" },
   { categoryName: "Sports & Fitness" },
 ];
-const _reportsData = [
-  {
-    reportType: "User Report",
-    reportId: "RPT-3012",
-    reporter: "Andie Kirsten Woo",
-    status: "Pending Review",
-    reason: "Spam account repeatedly posting misleading listings.",
-    subject: "User: @marie_santos",
-    date: "Jun 14, 2026",
-  },
-  {
-    reportType: "Listing Report",
-    reportId: "RPT-3013",
-    reporter: "Alexa Nicole Pleyto",
-    status: "Pending Review",
-    reason: "Possible scam listing requesting payment outside the website.",
-    subject: "Listing: Casio FX-991EX",
-    date: "Jun 15, 2026",
-  },
-  {
-    reportType: "User Report",
-    reportId: "RPT-3014",
-    reporter: "Christine Cote",
-    status: "Pending Review",
-    reason: "Hate speech directed toward another user in listing comments.",
-    subject: "User: @jay_ramos",
-    date: "Jun 15, 2026",
-  },
-  {
-    reportType: "Review Report",
-    reportId: "RPT-3015",
-    reporter: "Mara R.",
-    status: "Pending Review",
-    reason:
-      "Review contains false information and is clearly from a competitor account.",
-    subject: "Review on: Scientific Calculator",
-    date: "Jun 16, 2026",
-  },
-  {
-    reportType: "Listing Report",
-    reportId: "RPT-3016",
-    reporter: "Sam V.",
-    status: "Pending Review",
-    reason: "Listing price is grossly inflated compared to market value.",
-    subject: "Listing: Arduino Uno Kit",
-    date: "Jun 17, 2026",
-  },
-  {
-    reportType: "User Report",
-    reportId: "RPT-3017",
-    reporter: "Eli Santos",
-    status: "Pending Review",
-    reason:
-      "User is sending unsolicited messages to buyers asking for payment via GCash only.",
-    subject: "User: @kai_a",
-    date: "Jun 18, 2026",
-  },
-  {
-    reportType: "Listing Report",
-    reportId: "RPT-3018",
-    reporter: "Janna Reyes",
-    status: "Pending Review",
-    reason: "Item listed is prohibited under campus marketplace rules.",
-    subject: "Listing: Chemistry Lab Kit",
-    date: "Jun 19, 2026",
-  },
-  {
-    reportType: "Listing Report",
-    reportId: "RPT-3019",
-    reporter: "Paolo Mendoza",
-    status: "Pending Review",
-    reason:
-      "Listing photos are stolen from another platform. Seller is not the original owner.",
-    subject: "Listing: DLSU PE Uniform Set",
-    date: "Jun 20, 2026",
-  },
-  {
-    reportType: "User Report",
-    reportId: "RPT-3020",
-    reporter: "Bianca Torres",
-    status: "Pending Review",
-    reason:
-      "User refused to complete a transaction after payment was sent outside the platform.",
-    subject: "User: @noel_garcia",
-    date: "Jun 21, 2026",
-  },
-  {
-    reportType: "Review Report",
-    reportId: "RPT-3021",
-    reporter: "Dana Flores",
-    status: "Pending Review",
-    reason:
-      "Review contains abusive language and is clearly targeted harassment toward the seller.",
-    subject: "Review on: Lab Goggles",
-    date: "Jun 22, 2026",
-  },
-  {
-    reportType: "Listing Report",
-    reportId: "RPT-3022",
-    reporter: "Kyle Reyes",
-    status: "Pending Review",
-    reason:
-      "Duplicate listing posted multiple times to push other sellers down the queue.",
-    subject: "Listing: Arduino Mega 2560",
-    date: "Jun 23, 2026",
-  },
-  {
-    reportType: "User Report",
-    reportId: "RPT-3023",
-    reporter: "Lia Castillo",
-    status: "Pending Review",
-    reason:
-      "Account appears to be a bot creating fake listings with no intention to sell.",
-    subject: "User: @bot_seller99",
-    date: "Jun 23, 2026",
-  },
-];
 function getAdmins() {
   return _adminsData;
 }
@@ -313,9 +196,6 @@ function editCategoryRecord(oldName, newName) {
 function deleteCategoryRecord(name) {
   const idx = _categoriesData.findIndex((c) => c.categoryName === name);
   if (idx !== -1) _categoriesData.splice(idx, 1);
-}
-function getReports() {
-  return _reportsData;
 }
 function createAdmin(name, email) {
   if (!name || !email) return { success: false, error: "missing_fields" };
