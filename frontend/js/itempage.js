@@ -80,6 +80,8 @@ function renderItemPage(item) {
 
   const cartSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
 
+  const flagSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`;
+
   const mainIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
 
   const images = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
@@ -171,11 +173,68 @@ function renderItemPage(item) {
               ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
               : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
           }
+          ${
+            isOwn
+              ? ""
+              : `<button class="ip-btn-report" onclick="openReportModal()">${flagSvg} Report Listing</button>`
+          }
         </div>
       </div>
 
     </div>
   `;
+}
+
+document
+  .getElementById("report-listing-modal")
+  .addEventListener("click", function (e) {
+    if (e.target === this) closeReportModal();
+  });
+
+function openReportModal() {
+  if (!_ipItem) return;
+  if (!getSessionUserId()) {
+    showToast("Not Logged In", "Please log in to report a listing.", "warning");
+    return;
+  }
+  document.getElementById("report-modal-subtitle").textContent =
+    `"${_ipItem.name}" by ${_ipItem.seller || "Campus Seller"}`;
+  document.getElementById("report-inp-reason").value = "";
+  document.getElementById("report-listing-modal").style.display = "flex";
+}
+
+function closeReportModal() {
+  document.getElementById("report-listing-modal").style.display = "none";
+}
+
+function submitReport() {
+  const reason = document.getElementById("report-inp-reason").value.trim();
+  if (!reason) {
+    showToast(
+      "Missing Reason",
+      "Please describe why this listing violates platform rules.",
+      "warning",
+    );
+    return;
+  }
+  submitReportAPI({
+    reported_listing_id: _ipItem.id,
+    reported_user_id: _ipItem.seller_id,
+    reason,
+  })
+    .then(({ ok }) => {
+      if (!ok) {
+        showToast("Error", "Could not submit report.", "error");
+        return;
+      }
+      closeReportModal();
+      showToast(
+        "Reported",
+        "Your report has been submitted for admin review.",
+        "info",
+      );
+    })
+    .catch(() => showToast("Error", "Could not submit report.", "error"));
 }
 
 document.addEventListener("DOMContentLoaded", function () {

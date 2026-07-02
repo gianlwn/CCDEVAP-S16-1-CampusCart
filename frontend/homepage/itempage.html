@@ -23,6 +23,64 @@
     </div>
   </div>
 
+  <div id="report-listing-modal" class="ip-report-modal-overlay" style="
+    display:none; position:fixed; inset:0; z-index:500;
+    background:rgba(0,0,0,0.45); backdrop-filter:blur(3px);
+    align-items:center; justify-content:center; padding:16px;
+  ">
+    <div class="ip-report-modal-card" style="
+      background:var(--card-bg); border:1px solid var(--border);
+      border-radius:var(--radius); padding:28px 24px 22px;
+      width:min(440px, calc(100vw - 32px));
+      box-shadow:0 8px 40px rgba(0,0,0,0.18);
+      transition:background-color var(--transition);
+      max-height:calc(100vh - 40px); overflow-y:auto;
+    ">
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:4px;color:var(--text);">Report Listing</h2>
+      <p id="report-modal-subtitle" style="font-size:12px;color:var(--text-muted);margin-bottom:16px;"></p>
+
+      <div style="
+        display:flex;align-items:flex-start;gap:10px;
+        background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.35);
+        border-radius:var(--radius-xs);padding:11px 13px;margin-bottom:18px;
+      ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ca8a04"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <p style="font-size:12px;color:#92400e;line-height:1.5;margin:0;">
+          <strong>Warning:</strong> Submitting false or troll reports may result in account penalties, including
+          suspension. Only report listings that genuinely violate platform rules.
+        </p>
+      </div>
+
+      <p
+        style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
+        Reason for Report</p>
+      <textarea id="report-inp-reason" rows="4" style="
+        width:100%;padding:9px 11px;border:1px solid var(--border);
+        border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+        font-size:13px;resize:none;outline:none;font-family:inherit;
+        transition:all var(--transition);box-sizing:border-box;margin-bottom:20px;
+      " maxlength="500" placeholder="Describe why this listing violates platform rules…"></textarea>
+
+      <div style="display:flex;gap:10px;">
+        <button onclick="submitReport()" style="
+          flex:1;padding:10px;background:#dc2626;color:#fff;
+          border:none;border-radius:var(--radius-sm);cursor:pointer;
+          font-weight:700;font-size:14px;transition:all var(--transition);
+        ">Submit Report</button>
+        <button onclick="closeReportModal()" style="
+          flex:1;padding:10px;background:var(--accent-light);color:var(--accent);
+          border:none;border-radius:var(--radius-sm);cursor:pointer;
+          font-weight:600;font-size:14px;transition:all var(--transition);
+        ">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="../../backend/api.js"></script>
   <script src="../js/components.js"></script>
   <script src="../js/toggleTheme.js"></script>

@@ -311,6 +311,29 @@
   box-shadow: 0 4px 18px rgba(14, 136, 120, 0.3);
 }
 
+.ip-btn-report {
+  width: 100%;
+  padding: 11px;
+  background: none;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ip-btn-report:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
 @media (max-width: 900px) {
   .ip-layout {
     grid-template-columns: 1fr;
@@ -368,5 +391,18 @@
   }
   .ip-info-panel {
     gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .ip-report-modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  .ip-report-modal-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
+    max-height: 90vh !important;
   }
 }
