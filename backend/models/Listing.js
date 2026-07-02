@@ -16,6 +16,7 @@ const listingSchema = new mongoose.Schema(
     images: [{ type: String }],
     quantity: { type: Number, default: 1 },
     created: { type: Date, default: Date.now },
+    is_deleted: { type: Boolean, default: false },
   },
   { versionKey: false },
 );

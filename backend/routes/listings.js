@@ -5,7 +5,7 @@ const User = require("../models/User");
 const ListingCategory = require("../models/ListingCategory");
 const Category = require("../models/Category");
 const generateId = require("../utils/generateId");
-const { saveListingImages, deleteListingImages } = require("../utils/imageStorage");
+const { saveListingImage, saveListingImages, deleteListingImages } = require("../utils/imageStorage");
 
 function toFrontendShape(listing, sellerName, sellerId, categoryNames) {
   const cats =
@@ -78,6 +78,7 @@ router.get("/", async (req, res) => {
     } else {
       filter = { status: "active" };
     }
+    filter.is_deleted = { $ne: true };
     const listings = await Listing.find(filter).sort({ created: -1 });
     const result = await enrichListings(listings);
     res.json(result);
@@ -90,7 +91,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const listing = await Listing.findOne({ listings_id: req.params.id });
-    if (!listing) return res.status(404).json({ error: "not_found" });
+    if (!listing || listing.is_deleted) {
+      return res.status(404).json({ error: "not_found" });
+    }
     const [enriched] = await enrichListings([listing]);
     res.json(enriched);
   } catch (err) {
@@ -168,10 +171,13 @@ router.put("/:id", async (req, res) => {
       location,
       category,
       categories,
+      images,
     } = req.body;
 
     const existing = await Listing.findOne({ listings_id: req.params.id });
-    if (!existing) return res.status(404).json({ error: "not_found" });
+    if (!existing || existing.is_deleted) {
+      return res.status(404).json({ error: "not_found" });
+    }
     if (existing.status === "rejected") {
       return res.status(403).json({ error: "listing_rejected" });
     }
@@ -187,13 +193,38 @@ router.put("/:id", async (req, res) => {
     if (description !== undefined) update.description = description;
     if (location !== undefined) update.location = location;
 
+    let imagesChanged = false;
+    if (Array.isArray(images)) {
+      const existingImages = existing.images || [];
+      const finalImages = images
+        .slice(0, 5)
+        .map((img) =>
+          typeof img === "string" && img.startsWith("data:")
+            ? saveListingImage(img, req.params.id)
+            : img,
+        )
+        .filter(Boolean);
+
+      const removedImages = existingImages.filter(
+        (img) => !finalImages.includes(img),
+      );
+      const addedImages = finalImages.filter(
+        (img) => !existingImages.includes(img),
+      );
+      if (removedImages.length) deleteListingImages(removedImages);
+      imagesChanged = removedImages.length > 0 || addedImages.length > 0;
+
+      update.images = finalImages;
+    }
+
     const requiresReReview =
       (update.product_name !== undefined &&
         update.product_name !== existing.product_name) ||
       (update.price !== undefined && update.price !== existing.price) ||
       (update.description !== undefined &&
         update.description !== existing.description) ||
-      (update.location !== undefined && update.location !== existing.location);
+      (update.location !== undefined && update.location !== existing.location) ||
+      imagesChanged;
     if (requiresReReview) update.status = "pending_review";
 
     const listing = await Listing.findOneAndUpdate(
@@ -246,12 +277,12 @@ router.patch("/:id/status", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const listing = await Listing.findOneAndDelete({
-      listings_id: req.params.id,
-    });
+    const listing = await Listing.findOneAndUpdate(
+      { listings_id: req.params.id },
+      { is_deleted: true },
+      { new: true },
+    );
     if (!listing) return res.status(404).json({ error: "not_found" });
-    await ListingCategory.deleteMany({ listing_id: req.params.id });
-    deleteListingImages(listing.images);
     res.json({ success: true });
   } catch (err) {
     console.error(err);

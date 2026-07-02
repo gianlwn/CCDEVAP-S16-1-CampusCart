@@ -112,15 +112,34 @@ function _hpThumbSwipe(e, itemId, dir) {
   const images = item && Array.isArray(item.images) ? item.images.filter(Boolean) : [];
   if (images.length < 2) return;
 
+  const img = thumb.querySelector(".hp-thumb-img");
+  if (!img || img.dataset.animating === "1") return;
+
   let idx = parseInt(thumb.dataset.idx || "0", 10);
   idx = (idx + dir + images.length) % images.length;
   thumb.dataset.idx = idx;
 
-  const img = thumb.querySelector(".hp-thumb-img");
-  if (img) img.src = images[idx];
   thumb
     .querySelectorAll(".hp-thumb-dot")
     .forEach((d, i) => d.classList.toggle("active", i === idx));
+
+  img.dataset.animating = "1";
+  const outClass = dir > 0 ? "hp-thumb-slide-out-left" : "hp-thumb-slide-out-right";
+  const inClass = dir > 0 ? "hp-thumb-slide-in-right" : "hp-thumb-slide-in-left";
+
+  img.addEventListener(
+    "transitionend",
+    () => {
+      img.src = images[idx];
+      img.classList.remove(outClass);
+      img.classList.add(inClass);
+      void img.offsetWidth; // reflow so the entry position applies before transitioning back
+      img.classList.remove(inClass);
+      img.dataset.animating = "";
+    },
+    { once: true }
+  );
+  img.classList.add(outClass);
 }
 
 function _renderHpPagination(pag) {
