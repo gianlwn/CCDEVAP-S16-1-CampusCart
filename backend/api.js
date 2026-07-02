@@ -163,6 +163,23 @@ function fetchUserListings() {
   });
 }
 
+function fetchCategories() {
+  return fetch(`${API}/api/categories`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function addListingAPI(data) {
+  const seller_id = getSessionUserId();
+  if (!seller_id) return Promise.reject(new Error("not_logged_in"));
+  return fetch(`${API}/api/listings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...data, seller_id }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function updateListingAPI(listing_id, data) {
   return fetch(`${API}/api/listings/${encodeURIComponent(listing_id)}`, {
     method: "PUT",

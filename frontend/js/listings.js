@@ -106,6 +106,7 @@ function saveEditListing() {
     category: document.getElementById("edit-inp-category").value,
     condition: document.getElementById("edit-inp-condition").value,
     description: document.getElementById("edit-inp-desc").value.trim(),
+    location: document.getElementById("edit-inp-location").value.trim(),
   }).then(({ ok, data }) => {
     if (!ok) {
       showToast("Error", "Could not update listing.", "error");

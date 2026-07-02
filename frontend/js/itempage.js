@@ -158,6 +158,10 @@ function renderItemPage(item) {
             <p class="ip-detail-label">Listed On</p>
             <p class="ip-detail-value">${createdDate}</p>
           </div>
+          <div class="ip-detail-item">
+            <p class="ip-detail-label">Pickup Location</p>
+            <p class="ip-detail-value">${item.location || "—"}</p>
+          </div>
         </div>
 
         <div class="ip-divider"></div>

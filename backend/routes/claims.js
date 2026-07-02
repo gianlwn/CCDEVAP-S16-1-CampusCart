@@ -88,6 +88,12 @@ router.get("/", async (req, res) => {
     const sellerNameById = Object.fromEntries(
       sellers.map((u) => [u.user_id, `${u.first_name} ${u.last_name}`.trim()]),
     );
+    const sellerContactById = Object.fromEntries(
+      sellers.map((u) => [
+        u.user_id,
+        { email: u.email || "", contact_number: u.contact_number || "" },
+      ]),
+    );
 
     const listingIds = claims.map((c) => c.listing_id);
     const ratings = await Rating.find({
@@ -111,6 +117,9 @@ router.get("/", async (req, res) => {
           category: listingCatMap[c.listing_id] || "Others",
           seller: sellerNameById[listing?.seller_id] || "Campus Seller",
           seller_id: listing?.seller_id || "",
+          seller_email: sellerContactById[listing?.seller_id]?.email || "",
+          seller_contact: sellerContactById[listing?.seller_id]?.contact_number || "",
+          location: listing?.location || "",
           date: new Date(c.claim_date).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",

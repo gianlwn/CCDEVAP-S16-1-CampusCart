@@ -93,13 +93,8 @@
 
           <div class="form-group">
             <label class="form-label">Primary Category</label>
-            <select class="form-select" id="inp-category" onchange="updateSecondaryCategories()">
+            <select class="form-select" id="inp-category">
               <option value="">Select…</option>
-              <option>Electronics</option>
-              <option>Books</option>
-              <option>Lab Tools</option>
-              <option>Clothing</option>
-              <option>Others</option>
             </select>
           </div>
 
@@ -130,11 +125,11 @@
 
           <div class="form-group">
             <label class="form-label">Pickup Location</label>
-            <input type="text" class="form-input" id="inp-location" placeholder="e.g. Henry Sy Hall Lobby, Gate 1">
+            <input type="text" class="form-input" id="inp-location" placeholder="e.g. Manila, Quezon City">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Images <span style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.75;">(max 5)</span></label>
+            <label class="form-label">Images <span style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.75;">(at least 1, max 5)</span></label>
             <div class="img-upload-area" id="img-upload-area"
               onclick="document.getElementById('img-file-input').click()">
               <div class="img-upload-inner">
@@ -166,33 +161,21 @@
   <script src="../js/main.js"></script>
   <script src="../js/addListing.js"></script>
   <script>
-    const CATEGORY_SUBS = {
-      Electronics: ['Calculators', 'Laptops', 'Peripherals', 'Cables & Chargers', 'Audio', 'Others'],
-      Books: ['Textbooks', 'References', 'Novels', 'Workbooks', 'Others'],
-      'Lab Tools': ['Chemistry', 'Physics', 'Biology', 'Engineering', 'Others'],
-      Clothing: ['Uniform', 'Org Shirt', 'PE Uniform', 'Casual', 'Others'],
-      Others: ['Stationery', 'Bags', 'Food', 'Accessories', 'Misc'],
-    };
-
-    function populateSelect(sel, options) {
-      sel.innerHTML = '<option value="">None</option>' +
-        options.map(o => `<option>${o}</option>`).join('');
-    }
-
-    function updateSecondaryCategories() {
-      const primary = document.getElementById('inp-category').value;
-      const sec = document.getElementById('inp-category-2');
-      const ter = document.getElementById('inp-category-3');
-      const subs = CATEGORY_SUBS[primary] || [];
-      if (subs.length) {
-        populateSelect(sec, subs);
-        populateSelect(ter, subs);
-      } else {
-        populateSelect(sec, []);
-        populateSelect(ter, []);
-      }
-      updatePreview();
-    }
+    document.addEventListener('DOMContentLoaded', function () {
+      fetchCategories().then(categories => {
+        const names = categories.map(c => c.category_name);
+        const primary = document.getElementById('inp-category');
+        const secondary = document.getElementById('inp-category-2');
+        const tertiary = document.getElementById('inp-category-3');
+        names.forEach(name => {
+          primary.insertAdjacentHTML('beforeend', `<option>${name}</option>`);
+          secondary.insertAdjacentHTML('beforeend', `<option>${name}</option>`);
+          tertiary.insertAdjacentHTML('beforeend', `<option>${name}</option>`);
+        });
+      }).catch(() => {
+        showToast('Error', 'Could not load categories.', 'error');
+      });
+    });
   </script>
 
 </body>

@@ -12,6 +12,7 @@ const listingSchema = new mongoose.Schema(
     condition: { type: String, enum: ["New", "Good", "Used"], required: true },
     seller_id: { type: String, required: true },
     description: { type: String },
+    location: { type: String },
     images: [{ type: String }],
     quantity: { type: Number, default: 1 },
     created: { type: Date, default: Date.now },
