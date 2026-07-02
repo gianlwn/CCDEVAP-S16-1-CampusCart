@@ -21,6 +21,7 @@ app.use("/api/ratings", require("./backend/routes/ratings"));
 app.use("/api/claims", require("./backend/routes/claims"));
 app.use("/api/reports", require("./backend/routes/reports"));
 app.use("/api/notifications", require("./backend/routes/notifications"));
+app.use("/api/admin", require("./backend/routes/admin"));
 
 app.use(express.static("frontend"));
 app.use("/backend", express.static("backend"));

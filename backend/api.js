@@ -242,6 +242,13 @@ function markNotificationReadAPI(notification_id) {
   ).then((r) => r.json());
 }
 
+function fetchAdminDashboardData() {
+  return fetch(`${API}/api/admin/dashboard`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
 function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
   const reporter_id = getSessionUserId();
   return fetch(`${API}/api/reports`, {

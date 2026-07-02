@@ -94,119 +94,125 @@
     document.addEventListener('DOMContentLoaded', function () {
       var t = getChartTheme();
 
-      new Chart(document.getElementById('userStatusChart'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Active', 'Suspended', 'Banned'],
-          datasets: [{
-            data: [678, 24, 8],
-            backgroundColor: ['rgba(14,136,120,0.85)', 'rgba(72,130,210,0.82)', 'rgba(192,57,43,0.82)'],
-            borderColor: t.cardBg, borderWidth: 3
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false, cutout: '60%',
-          plugins: { legend: { position: 'bottom', labels: { color: t.text, font: { size: 11 }, padding: 12 } } }
-        }
-      });
+      fetchAdminDashboardData().then(function (stats) {
+        var months = stats.months;
 
-      new Chart(document.getElementById('reportsMonthlyChart'), {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          datasets: [{
-            label: 'Reports', data: [12, 18, 9, 24, 31, 28, 19, 22, 15, 30, 26, 20],
-            borderColor: t.accent, backgroundColor: t.barBg, borderWidth: 2,
-            tension: 0.4, fill: true, pointRadius: 3
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+        new Chart(document.getElementById('userStatusChart'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Active', 'Suspended', 'Banned'],
+            datasets: [{
+              data: [stats.userStatus.active, stats.userStatus.suspended, stats.userStatus.banned],
+              backgroundColor: ['rgba(14,136,120,0.85)', 'rgba(72,130,210,0.82)', 'rgba(192,57,43,0.82)'],
+              borderColor: t.cardBg, borderWidth: 3
+            }]
           },
-          plugins: { legend: { display: false } }
-        }
-      });
+          options: {
+            responsive: true, maintainAspectRatio: false, cutout: '60%',
+            plugins: { legend: { position: 'bottom', labels: { color: t.text, font: { size: 11 }, padding: 12 } } }
+          }
+        });
 
-      new Chart(document.getElementById('popularCategoriesChart'), {
-        type: 'bar',
-        data: {
-          labels: ['Electronics', 'Books', 'Lab Tools', 'Clothing', 'Others'],
-          datasets: [{
-            label: 'Items', data: [80, 60, 55, 30, 20],
-            backgroundColor: t.barBg, borderColor: t.accent, borderWidth: 1, borderRadius: 5
-          }]
-        },
-        options: {
-          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { color: t.text }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text }, grid: { color: t.grid } }
+        new Chart(document.getElementById('reportsMonthlyChart'), {
+          type: 'line',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'Reports', data: stats.reportsMonthly,
+              borderColor: t.accent, backgroundColor: t.barBg, borderWidth: 2,
+              tension: 0.4, fill: true, pointRadius: 3
+            }]
           },
-          plugins: { legend: { display: false } }
-        }
-      });
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+              x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
+              y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
 
-      new Chart(document.getElementById('listingsStatusChart'), {
-        type: 'bar',
-        data: {
-          labels: ['Approved', 'Pending', 'Rejected'],
-          datasets: [{
-            label: 'Listings',
-            data: [320, 45, 12],
-            backgroundColor: ['rgba(14,136,120,0.82)', 'rgba(201,138,46,0.82)', 'rgba(192,57,43,0.82)'],
-            borderRadius: 5
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { color: t.text }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+        new Chart(document.getElementById('popularCategoriesChart'), {
+          type: 'bar',
+          data: {
+            labels: stats.popularCategories.map(function (c) { return c.label; }),
+            datasets: [{
+              label: 'Items', data: stats.popularCategories.map(function (c) { return c.value; }),
+              backgroundColor: t.barBg, borderColor: t.accent, borderWidth: 1, borderRadius: 5
+            }]
           },
-          plugins: { legend: { display: false } }
-        }
-      });
+          options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            scales: {
+              x: { ticks: { color: t.text }, grid: { color: t.grid } },
+              y: { ticks: { color: t.text }, grid: { color: t.grid } }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
 
-      new Chart(document.getElementById('registrationsChart'), {
-        type: 'bar',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          datasets: [{
-            label: 'New Users', data: [34, 52, 48, 61, 79, 90, 55, 68, 43, 72, 88, 64],
-            backgroundColor: 'rgba(72,130,210,0.78)', borderRadius: 5, borderColor: 'transparent'
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+        new Chart(document.getElementById('listingsStatusChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Approved', 'Pending', 'Rejected'],
+            datasets: [{
+              label: 'Listings',
+              data: [stats.listingsStatus.approved, stats.listingsStatus.pending, stats.listingsStatus.rejected],
+              backgroundColor: ['rgba(14,136,120,0.82)', 'rgba(201,138,46,0.82)', 'rgba(192,57,43,0.82)'],
+              borderRadius: 5
+            }]
           },
-          plugins: { legend: { display: false } }
-        }
-      });
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+              x: { ticks: { color: t.text }, grid: { color: t.grid } },
+              y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
 
-      new Chart(document.getElementById('soldSitewideChart'), {
-        type: 'line',
-        data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-          datasets: [{
-            label: 'Items Sold', data: [42, 58, 35, 71, 95, 110, 88, 76, 50, 103, 119, 89],
-            borderColor: 'rgba(14,136,120,0.9)', backgroundColor: 'rgba(14,136,120,0.08)',
-            borderWidth: 2, tension: 0.4, fill: true, pointRadius: 3
-          }]
-        },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
-            y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+        new Chart(document.getElementById('registrationsChart'), {
+          type: 'bar',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'New Users', data: stats.registrationsMonthly,
+              backgroundColor: 'rgba(72,130,210,0.78)', borderRadius: 5, borderColor: 'transparent'
+            }]
           },
-          plugins: { legend: { display: false } }
-        }
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+              x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
+              y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
+
+        new Chart(document.getElementById('soldSitewideChart'), {
+          type: 'line',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'Items Sold', data: stats.soldMonthly,
+              borderColor: 'rgba(14,136,120,0.9)', backgroundColor: 'rgba(14,136,120,0.08)',
+              borderWidth: 2, tension: 0.4, fill: true, pointRadius: 3
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: {
+              x: { ticks: { color: t.text, font: { size: 11 } }, grid: { color: t.grid } },
+              y: { ticks: { color: t.text }, grid: { color: t.grid }, min: 0 }
+            },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }).catch(function () {
+        showToast('Failed to load dashboard data', '', 'error');
       });
     });
   </script>
