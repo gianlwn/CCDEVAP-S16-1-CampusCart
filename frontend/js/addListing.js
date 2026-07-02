@@ -46,32 +46,66 @@ function handleAddListing() {
   const name = document.getElementById('inp-name').value.trim();
   const price = document.getElementById('inp-price').value.trim();
   const cat = document.getElementById('inp-category').value;
+  const cat2 = document.getElementById('inp-category-2').value;
+  const cat3 = document.getElementById('inp-category-3').value;
   const condition = document.getElementById('inp-condition').value;
   const desc = document.getElementById('inp-desc').value.trim();
   const qty = parseInt(document.getElementById('inp-qty').value) || 1;
   const location = document.getElementById('inp-location').value.trim();
 
-  if (!name || !price || !cat) {
-    showToast('Missing Fields', 'Please fill in Name, Price, and Category.', 'warning');
+  if (!name || !price || !cat || !condition) {
+    showToast('Missing Fields', 'Please fill in Name, Price, Category, and Condition.', 'warning');
     return;
   }
 
-  showToast('Listing Submitted', 'Your listing is pending admin review.', 'success');
+  if (uploadedImages.length < 1) {
+    showToast('Missing Image', 'Please upload at least 1 photo of your item.', 'warning');
+    return;
+  }
 
-  ['inp-name', 'inp-price', 'inp-desc', 'inp-location'].forEach(id => {
-    document.getElementById(id).value = '';
+  const categories = [...new Set([cat, cat2, cat3].filter(Boolean))];
+
+  const submitBtn = document.querySelector('.btn-add-listing');
+  submitBtn.disabled = true;
+
+  addListingAPI({
+    product_name: name,
+    price: parseFloat(price),
+    quantity: qty,
+    condition,
+    description: desc,
+    location,
+    images: uploadedImages,
+    categories,
+  }).then(({ ok }) => {
+    submitBtn.disabled = false;
+    if (!ok) {
+      showToast('Error', 'Could not submit listing. Please try again.', 'error');
+      return;
+    }
+
+    showToast('Listing Submitted', 'Your listing is pending admin review.', 'success');
+
+    ['inp-name', 'inp-price', 'inp-desc', 'inp-location'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('inp-category').value = '';
+    document.getElementById('inp-category-2').value = '';
+    document.getElementById('inp-category-3').value = '';
+    document.getElementById('inp-condition').value = '';
+    document.getElementById('inp-qty').value = '1';
+    document.getElementById('desc-counter').textContent = '0 / 500';
+    uploadedImages = [];
+    renderThumbs();
+    updatePreview();
+
+    setTimeout(() => {
+      window.location.href = '../user-profile-dashboard/userListings.html';
+    }, 1400);
+  }).catch(() => {
+    submitBtn.disabled = false;
+    showToast('Error', 'You must be logged in to add a listing.', 'error');
   });
-  document.getElementById('inp-category').value = '';
-  document.getElementById('inp-condition').value = '';
-  document.getElementById('inp-qty').value = '1';
-  document.getElementById('desc-counter').textContent = '0 / 500';
-  uploadedImages = [];
-  renderThumbs();
-  updatePreview();
-
-  setTimeout(() => {
-    window.location.href = '../user-profile-dashboard/userListings.html';
-  }, 1400);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
