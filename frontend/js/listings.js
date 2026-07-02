@@ -77,6 +77,26 @@ function renderSellerReviews(reviews) {
 }
 
 let editingListingId = null;
+let editingImages = [];
+
+function renderEditThumbs() {
+  const el = document.getElementById("edit-img-thumbs");
+  el.innerHTML = editingImages
+    .map(
+      (src, i) => `
+    <div class="img-thumb-item">
+      <img src="${src}" alt="img ${i + 1}">
+      <button class="img-thumb-remove" title="Remove" onclick="removeEditImage(${i})">×</button>
+    </div>
+  `,
+    )
+    .join("");
+}
+
+function removeEditImage(i) {
+  editingImages.splice(i, 1);
+  renderEditThumbs();
+}
 
 function editListing(id) {
   const item = allListings.find((l) => l.id === id);
@@ -97,12 +117,15 @@ function editListing(id) {
   document.getElementById("edit-inp-condition").value = item.condition || "";
   document.getElementById("edit-inp-location").value = item.location || "";
   document.getElementById("edit-inp-desc").value = item.description || "";
+  editingImages = Array.isArray(item.images) ? [...item.images] : [];
+  renderEditThumbs();
   document.getElementById("edit-listing-modal").style.display = "flex";
 }
 
 function closeEditListing() {
   document.getElementById("edit-listing-modal").style.display = "none";
   editingListingId = null;
+  editingImages = [];
 }
 
 function saveEditListing() {
@@ -110,6 +133,10 @@ function saveEditListing() {
   const price = document.getElementById("edit-inp-price").value.trim();
   if (!name || !price) {
     showToast("Missing Fields", "Name and Price are required.", "warning");
+    return;
+  }
+  if (editingImages.length < 1) {
+    showToast("Missing Image", "Please keep at least 1 photo of your item.", "warning");
     return;
   }
   const prevStatus = allListings.find(
@@ -126,6 +153,7 @@ function saveEditListing() {
     condition: document.getElementById("edit-inp-condition").value,
     description: document.getElementById("edit-inp-desc").value.trim(),
     location: document.getElementById("edit-inp-location").value.trim(),
+    images: editingImages,
   }).then(({ ok, data }) => {
     if (!ok) {
       showToast("Error", "Could not update listing.", "error");
@@ -147,6 +175,21 @@ function saveEditListing() {
     );
   });
 }
+
+document.getElementById("edit-img-file-input").addEventListener("change", function (e) {
+  const remaining = 5 - editingImages.length;
+  Array.from(e.target.files)
+    .slice(0, remaining)
+    .forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        editingImages.push(ev.target.result);
+        renderEditThumbs();
+      };
+      reader.readAsDataURL(file);
+    });
+  this.value = "";
+});
 
 document
   .getElementById("edit-listing-modal")

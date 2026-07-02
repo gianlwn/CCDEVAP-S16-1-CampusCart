@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"claim_id":{"$numberInt":"1"}},"name":"claim_id_1","unique":true}],"uuid":"cb63603fec7e448288e5db0ddd02556f","collectionName":"claims","type":"collection"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"claim_id":{"$numberInt":"1"}},"name":"claim_id_1","unique":true}],"uuid":"99cc32606a184b3d8a2e7b18bfe01e1c","collectionName":"claims","type":"collection"}

@@ -105,7 +105,7 @@ function loadTopNav() {
 
   const html = `
     <nav class="top-nav">
-      <div class="nav-brand">
+      <div class="nav-brand" onclick="window.location.href='../homepage/homepage.html'" style="cursor:pointer">
         ${ICONS.logo}
         <span>CampusCart</span>
       </div>
