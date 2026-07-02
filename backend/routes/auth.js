@@ -24,7 +24,6 @@ async function sendOTPEmail(toEmail, otpCode) {
     },
   );
 }
-// POST /api/auth/send-code
 router.post("/send-code", async (req, res) => {
   try {
     const { email } = req.body;
@@ -45,7 +44,6 @@ router.post("/send-code", async (req, res) => {
     res.status(500).json({ error: "server_error" });
   }
 });
-// POST /api/auth/verify-code
 router.post("/verify-code", (req, res) => {
   const { email, code } = req.body;
   const record = otpStore.get(email.toLowerCase());
@@ -59,7 +57,6 @@ router.post("/verify-code", (req, res) => {
   otpStore.delete(email.toLowerCase());
   res.json({ verified: true });
 });
-// POST /api/auth/register
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, school, course_code, phone } = req.body;
@@ -91,7 +88,6 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ error: "server_error" });
   }
 });
-// POST /api/auth/login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -117,7 +113,6 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "server_error" });
   }
 });
-// POST /api/auth/send-recovery
 router.post("/send-recovery", async (req, res) => {
   try {
     const { email } = req.body;
@@ -135,7 +130,6 @@ router.post("/send-recovery", async (req, res) => {
     res.status(500).json({ error: "server_error" });
   }
 });
-// POST /api/auth/verify-recovery
 router.post("/verify-recovery", (req, res) => {
   const { email, code } = req.body;
   const record = otpStore.get(`rec_${email.toLowerCase()}`);
@@ -150,7 +144,6 @@ router.post("/verify-recovery", (req, res) => {
   recoveryVerified.add(email.toLowerCase());
   res.json({ verified: true });
 });
-// POST /api/auth/reset-password
 router.post("/reset-password", async (req, res) => {
   try {
     const { email, password } = req.body;

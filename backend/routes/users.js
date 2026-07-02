@@ -7,7 +7,6 @@ const Claim = require("../models/Claim");
 const Rating = require("../models/Rating");
 const Cart = require("../models/Cart");
 
-// GET /api/users/:user_id
 router.get("/:user_id", async (req, res) => {
   try {
     const user = await User.findOne({ user_id: req.params.user_id });
@@ -57,7 +56,6 @@ router.get("/:user_id", async (req, res) => {
   }
 });
 
-// PUT /api/users/:user_id
 router.put("/:user_id", async (req, res) => {
   try {
     const {
@@ -91,7 +89,6 @@ router.put("/:user_id", async (req, res) => {
   }
 });
 
-// DELETE /api/users/:user_id
 router.delete("/:user_id", async (req, res) => {
   try {
     const { user_id } = req.params;

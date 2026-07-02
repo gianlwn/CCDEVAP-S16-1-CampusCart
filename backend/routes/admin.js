@@ -31,7 +31,6 @@ function monthlyCounts(dates, year) {
   return counts;
 }
 
-// GET /api/admin/dashboard
 router.get("/dashboard", async (req, res) => {
   try {
     const year = new Date().getFullYear();
@@ -46,7 +45,6 @@ router.get("/dashboard", async (req, res) => {
         ListingCategory.find({}, "category_id"),
       ]);
 
-    // --- User Accounts Status ---
     const userStatus = { active: 0, suspended: 0, banned: 0 };
     users.forEach((u) => {
       if (u.is_banned) userStatus.banned++;
@@ -54,13 +52,11 @@ router.get("/dashboard", async (req, res) => {
       else userStatus.active++;
     });
 
-    // --- Submitted Reports Per Month ---
     const reportsMonthly = monthlyCounts(
       reports.map((r) => r.created_at),
       year,
     );
 
-    // --- Popular Categories ---
     const catNameById = Object.fromEntries(
       categories.map((c) => [c.category_id, c.category_name]),
     );
@@ -75,7 +71,6 @@ router.get("/dashboard", async (req, res) => {
       .slice(0, 5)
       .map(([label, value]) => ({ label, value }));
 
-    // --- Listings Status Report ---
     const listingsStatus = { approved: 0, pending: 0, rejected: 0 };
     listings.forEach((l) => {
       if (l.status === "active") listingsStatus.approved++;
@@ -83,13 +78,11 @@ router.get("/dashboard", async (req, res) => {
       else if (l.status === "rejected") listingsStatus.rejected++;
     });
 
-    // --- New Registrations Per Month ---
     const registrationsMonthly = monthlyCounts(
       users.map((u) => u.created_at),
       year,
     );
 
-    // --- Items Sold Sitewide Per Month ---
     const soldMonthly = new Array(12).fill(0);
     completedClaims.forEach((c) => {
       const date = new Date(c.claim_date);

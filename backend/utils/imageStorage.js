@@ -12,8 +12,6 @@ const EXT_BY_MIME = {
   "image/webp": "webp",
 };
 
-// Decodes a base64 data URL and saves it to disk as listing_<listingsId>_<unique>.<ext>.
-// Returns the public URL path to store on the Listing document.
 function saveListingImage(dataUrl, listingsId) {
   const match = /^data:(image\/[a-zA-Z+]+);base64,(.+)$/.exec(dataUrl);
   if (!match) return null;
@@ -35,7 +33,6 @@ function saveListingImages(dataUrls, listingsId) {
     .filter(Boolean);
 }
 
-// Removes files previously saved via saveListingImage, given their stored /uploads/listings/... paths.
 function deleteListingImages(imagePaths) {
   (imagePaths || []).forEach((imagePath) => {
     const filename = path.basename(imagePath);

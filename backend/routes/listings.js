@@ -50,7 +50,6 @@ async function enrichListings(listings) {
     catMap[c.category_id] = c.category_name;
   });
 
-  // Collect ALL categories per listing (not just the first)
   const listingCatMap = {};
   lcLinks.forEach((lc) => {
     if (!listingCatMap[lc.listing_id]) listingCatMap[lc.listing_id] = [];
@@ -68,9 +67,6 @@ async function enrichListings(listings) {
   );
 }
 
-// GET /api/listings                    → all active listings
-// GET /api/listings?seller_id=xxx       → all listings by that seller (any status)
-// GET /api/listings?status=xxx          → all listings with that status (e.g. pending_review, for admin review queues)
 router.get("/", async (req, res) => {
   try {
     let filter;
@@ -91,7 +87,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/listings/:id
 router.get("/:id", async (req, res) => {
   try {
     const listing = await Listing.findOne({ listings_id: req.params.id });
@@ -104,7 +99,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/listings
 router.post("/", async (req, res) => {
   try {
     const {
@@ -163,7 +157,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /api/listings/:id
 router.put("/:id", async (req, res) => {
   try {
     const {
@@ -194,9 +187,6 @@ router.put("/:id", async (req, res) => {
     if (description !== undefined) update.description = description;
     if (location !== undefined) update.location = location;
 
-    // Only price and text-box fields (name, description, location) require
-    // re-review; quantity/condition/category tweaks don't change the listing's
-    // substance so they're exempt.
     const requiresReReview =
       (update.product_name !== undefined &&
         update.product_name !== existing.product_name) ||
@@ -235,7 +225,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// PATCH /api/listings/:id/status  → admin approve/reject a pending listing
 router.patch("/:id/status", async (req, res) => {
   try {
     const { status } = req.body;
@@ -255,7 +244,6 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
-// DELETE /api/listings/:id
 router.delete("/:id", async (req, res) => {
   try {
     const listing = await Listing.findOneAndDelete({

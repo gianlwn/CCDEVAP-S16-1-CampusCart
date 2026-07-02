@@ -22,7 +22,6 @@ function fetchCartItems() {
   );
 }
 
-// Alias kept so existing callers don't break
 function fetchClaimedItems() {
   return fetchCartItems();
 }

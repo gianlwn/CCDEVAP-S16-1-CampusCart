@@ -149,161 +149,6 @@ const _usersData = [
     status: "active",
   },
 ];
-const _listingApprovalsData = [
-  {
-    productName: "Casio FX-991EX",
-    listingId: "LST-1001",
-    price: 250,
-    seller: "Kathryn Bernardo",
-    category: "Electronics",
-    condition: "Good",
-    description:
-      "Scientific calculator in great condition. Minor scratches on the back. Comes with the original case.",
-    images: ["Photo 1", "Photo 2", "Photo 3"],
-  },
-  {
-    productName: "Chemistry Lab Kit",
-    listingId: "LST-1002",
-    price: 950,
-    seller: "Kimi Antonelli",
-    category: "Lab Tools",
-    condition: "New",
-    description:
-      "Brand new lab kit, never opened. Bought for CHEM1 but ended up not using it.",
-    images: ["Photo 1", "Photo 2"],
-  },
-  {
-    productName: "Engineering Mechanics Textbook",
-    listingId: "LST-1003",
-    price: 500,
-    seller: "Garrett Graham",
-    category: "Books",
-    condition: "Used",
-    description:
-      "Meriam & Kraige, 7th edition. Pages are highlighted but still very readable.",
-    images: ["Photo 1"],
-  },
-  {
-    productName: "DLSU PE Uniform Set",
-    listingId: "LST-1004",
-    price: 310,
-    seller: "Jeron Teng",
-    category: "Clothing",
-    condition: "Good",
-    description: "XL size, worn only a few times. Washed and clean.",
-    images: ["Photo 1", "Photo 2", "Photo 3", "Photo 4"],
-  },
-  {
-    productName: "Arduino Mega 2560",
-    listingId: "LST-1005",
-    price: 480,
-    seller: "Ria Magpantay",
-    category: "Electronics",
-    condition: "Used",
-    description:
-      "Fully functional Arduino Mega. Tested before listing. No shields included.",
-    images: ["Photo 1", "Photo 2"],
-  },
-  {
-    productName: "Fluid Mechanics Textbook",
-    listingId: "LST-1006",
-    price: 380,
-    seller: "Marco Dela Cruz",
-    category: "Books",
-    condition: "Good",
-    description:
-      "Cengel & Cimbala, 3rd edition. Some annotations in pencil, easy to erase.",
-    images: ["Photo 1"],
-  },
-  {
-    productName: "Lab Goggles (Pack of 2)",
-    listingId: "LST-1007",
-    price: 120,
-    seller: "Dana Flores",
-    category: "Lab Tools",
-    condition: "New",
-    description:
-      "Never used, sealed pack. Safety goggles required for CHEM lab.",
-    images: ["Photo 1", "Photo 2"],
-  },
-  {
-    productName: "DLSU Lanyard + ID Holder",
-    listingId: "LST-1008",
-    price: 80,
-    seller: "Janna Reyes",
-    category: "Others",
-    condition: "Good",
-    description:
-      "Official DLSU lanyard, slightly used. ID holder is still clear and intact.",
-    images: ["Photo 1"],
-  },
-  {
-    productName: "Organic Chemistry Textbook",
-    listingId: "LST-1009",
-    price: 420,
-    seller: "Paolo Mendoza",
-    category: "Books",
-    condition: "Good",
-    description:
-      "Wade 8th edition. Some highlighting throughout but text is clear and readable.",
-    images: ["Photo 1", "Photo 2"],
-  },
-  {
-    productName: "Graph Paper Pads (3 packs)",
-    listingId: "LST-1010",
-    price: 75,
-    seller: "Bianca Torres",
-    category: "School Supplies",
-    condition: "New",
-    description:
-      "Sealed packs, never opened. Bought extras by mistake for MATH class.",
-    images: ["Photo 1"],
-  },
-  {
-    productName: "TI-84 Plus Graphing Calculator",
-    listingId: "LST-1011",
-    price: 1200,
-    seller: "Kyle Reyes",
-    category: "Electronics",
-    condition: "Good",
-    description:
-      "Fully functional. Battery replaced last month. Comes with protective cover and manual.",
-    images: ["Photo 1", "Photo 2", "Photo 3"],
-  },
-  {
-    productName: "DLSU Engineering Uniform",
-    listingId: "LST-1012",
-    price: 450,
-    seller: "Lia Castillo",
-    category: "Clothing",
-    condition: "Used",
-    description:
-      "Medium size, worn for one term only. Washed and in good condition.",
-    images: ["Photo 1", "Photo 2"],
-  },
-  {
-    productName: "Breadboard + Jumper Wires Kit",
-    listingId: "LST-1013",
-    price: 180,
-    seller: "Noel Garcia",
-    category: "Electronics",
-    condition: "Good",
-    description:
-      "830-point breadboard with 65-piece jumper wire set. Used for one project only.",
-    images: ["Photo 1"],
-  },
-  {
-    productName: "Data Structures and Algorithms Book",
-    listingId: "LST-1014",
-    price: 560,
-    seller: "Sofia Aquino",
-    category: "Books",
-    condition: "Used",
-    description:
-      "Cormen et al., 3rd edition. Annotations in pencil on a few pages, otherwise clean.",
-    images: ["Photo 1", "Photo 2"],
-  },
-];
 const _categoriesData = [
   { categoryName: "Electronics" },
   { categoryName: "Clothing" },
@@ -431,7 +276,6 @@ const _reportsData = [
     date: "Jun 23, 2026",
   },
 ];
-// --- Low-level accessors ---
 function getAdmins() {
   return _adminsData;
 }
@@ -456,13 +300,6 @@ function updateUserStatus(email, newStatus) {
   const user = _usersData.find((u) => u.email === email);
   if (user) user.status = newStatus;
 }
-function getListingApprovals() {
-  return _listingApprovalsData;
-}
-function processApprovalRecord(listingId) {
-  const idx = _listingApprovalsData.findIndex((l) => l.listingId === listingId);
-  if (idx !== -1) _listingApprovalsData.splice(idx, 1);
-}
 function getCategories() {
   return _categoriesData;
 }
@@ -480,7 +317,6 @@ function deleteCategoryRecord(name) {
 function getReports() {
   return _reportsData;
 }
-// --- High-level CRUD handlers (validate + mutate + return result) ---
 function createAdmin(name, email) {
   if (!name || !email) return { success: false, error: "missing_fields" };
   addAdminRecord(name, email);
@@ -503,18 +339,6 @@ function setUserStatus(email, newStatus) {
   if (!newStatus) return { success: false, error: "missing_fields" };
   updateUserStatus(email, newStatus);
   return { success: true };
-}
-function toggleUserBan(email) {
-  const user = getUsers().find((u) => u.email === email);
-  if (!user) return { success: false, error: "not_found" };
-  const wasBanned = user.status === "banned";
-  const newStatus = wasBanned ? "active" : "banned";
-  updateUserStatus(email, newStatus);
-  return { success: true, newStatus, wasBanned };
-}
-function processApproval(listingId, action) {
-  processApprovalRecord(listingId);
-  return { success: true, action };
 }
 function createCategory(name) {
   if (!name) return { success: false, error: "missing_fields" };

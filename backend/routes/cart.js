@@ -40,7 +40,6 @@ async function cartDocToFrontend(cartDoc) {
   };
 }
 
-// GET /api/cart?user_id=X
 router.get("/", async (req, res) => {
   try {
     const { user_id } = req.query;
@@ -57,7 +56,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /api/cart
 router.post("/", async (req, res) => {
   try {
     const { user_id, listing_id } = req.body;
@@ -85,7 +83,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// DELETE /api/cart/:cart_id
 router.delete("/:cart_id", async (req, res) => {
   try {
     const result = await Cart.findOneAndUpdate(
@@ -100,7 +97,6 @@ router.delete("/:cart_id", async (req, res) => {
   }
 });
 
-// POST /api/cart/:cart_id/claim
 router.post("/:cart_id/claim", async (req, res) => {
   try {
     const cartDoc = await Cart.findOne({
