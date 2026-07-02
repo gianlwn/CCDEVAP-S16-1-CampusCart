@@ -1,7 +1,105 @@
 const express = require("express");
 const router = express.Router();
 const Report = require("../models/Report");
+const User = require("../models/User");
+const Listing = require("../models/Listing");
 const generateId = require("../utils/generateId");
+
+function toFrontendShape(report, reporterName, subjectText) {
+  return {
+    reportId: report.report_id,
+    reportType: report.reported_listing_id ? "Listing Report" : "User Report",
+    reporter: reporterName || "Unknown",
+    status: report.status === "resolved" ? "Resolved" : "Pending Review",
+    reason: report.reason,
+    subject: subjectText,
+    date: new Date(report.created_at).toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }),
+  };
+}
+
+async function enrichReports(reports) {
+  if (!reports.length) return [];
+
+  const reporterIds = [...new Set(reports.map((r) => r.reporter_id))];
+  const userIds = [
+    ...new Set(reports.filter((r) => r.reported_user_id).map((r) => r.reported_user_id)),
+  ];
+  const listingIds = [
+    ...new Set(
+      reports.filter((r) => r.reported_listing_id).map((r) => r.reported_listing_id),
+    ),
+  ];
+
+  const reporters = await User.find({ user_id: { $in: reporterIds } });
+  const reporterMap = {};
+  reporters.forEach((u) => {
+    reporterMap[u.user_id] = `${u.first_name} ${u.last_name}`.trim();
+  });
+
+  const reportedUsers = await User.find({ user_id: { $in: userIds } });
+  const userMap = {};
+  reportedUsers.forEach((u) => {
+    userMap[u.user_id] = `${u.first_name} ${u.last_name}`.trim();
+  });
+
+  const listings = await Listing.find({ listings_id: { $in: listingIds } });
+  const listingMap = {};
+  listings.forEach((l) => {
+    listingMap[l.listings_id] = l.product_name;
+  });
+
+  return reports.map((r) => {
+    const subject = r.reported_listing_id
+      ? `Listing: ${listingMap[r.reported_listing_id] || "Unknown Listing"}`
+      : `User: ${userMap[r.reported_user_id] || "Unknown User"}`;
+    return toFrontendShape(r, reporterMap[r.reporter_id], subject);
+  });
+}
+
+router.get("/", async (req, res) => {
+  try {
+    const filter = req.query.status ? { status: req.query.status } : {};
+    const reports = await Report.find(filter).sort({ created_at: -1 });
+    const result = await enrichReports(reports);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+router.patch("/:id/resolve", async (req, res) => {
+  try {
+    const { action } = req.body;
+    if (!["warning", "dismiss"].includes(action)) {
+      return res.status(400).json({ error: "invalid_action" });
+    }
+
+    const report = await Report.findOne({ report_id: req.params.id });
+    if (!report) return res.status(404).json({ error: "not_found" });
+
+    if (action === "warning" && report.reported_user_id) {
+      await User.findOneAndUpdate(
+        { user_id: report.reported_user_id },
+        { $inc: { warning_count: 1 } },
+      );
+    }
+
+    report.status = "resolved";
+    report.action_taken = action;
+    report.resolved_at = new Date();
+    await report.save();
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
 
 router.post("/", async (req, res) => {
   try {

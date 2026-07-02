@@ -266,6 +266,21 @@ function updateListingStatusAPI(listing_id, status) {
   ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
+function fetchPendingReports() {
+  return fetch(`${API}/api/reports?status=pending`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function resolveReportAPI(report_id, action) {
+  return fetch(`${API}/api/reports/${encodeURIComponent(report_id)}/resolve`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
   const reporter_id = getSessionUserId();
   return fetch(`${API}/api/reports`, {
