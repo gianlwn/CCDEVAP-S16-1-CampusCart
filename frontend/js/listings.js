@@ -25,22 +25,27 @@ function renderListings() {
     return;
   }
   el.innerHTML = allListings
-    .map(
-      (item) => `
+    .map((item) => {
+      const isRejected = item.status === "rejected";
+      const editBtn = isRejected
+        ? ""
+        : `<button class="btn-icon" title="Edit" onclick="editListing('${item.id}')">${ICONS.edit}</button>`;
+      return `
     <div class="listing-row" id="listing-${item.id}">
       <div class="listing-thumb" style="cursor:pointer;" onclick="goToItem('${item.id}')">${CAT_ICONS[item.category] || ICONS.package}</div>
       <div class="item-info" style="cursor:pointer;" onclick="goToItem('${item.id}')">
         <p class="item-name">${item.name}</p>
         <p class="item-meta">₱${Number(item.price).toLocaleString()} · ${item.category}${item.condition ? " · " + item.condition : ""} · ${item.quantity ?? 1} left</p>
+        ${isRejected ? `<p class="item-meta" style="color:var(--danger-text, #dc2626);">This listing was rejected by an admin and can no longer be edited. Remove it to list a new item.</p>` : ""}
       </div>
       <span class="badge-status ${item.status}">${STATUS_LABEL[item.status] || item.status}</span>
       <div style="display:flex;gap:3px;flex-shrink:0;">
-        <button class="btn-icon" title="Edit" onclick="editListing('${item.id}')">${ICONS.edit}</button>
-        <button class="btn-icon danger" title="Delete" onclick="deleteListing('${item.id}')">${ICONS.trash}</button>
+        ${editBtn}
+        <button class="btn-icon danger" title="Remove" onclick="deleteListing('${item.id}')">${ICONS.trash}</button>
       </div>
     </div>
-  `,
-    )
+  `;
+    })
     .join("");
 }
 
@@ -76,10 +81,18 @@ let editingListingId = null;
 function editListing(id) {
   const item = allListings.find((l) => l.id === id);
   if (!item) return;
+  if (item.status === "rejected") {
+    showToast(
+      "Not Allowed",
+      "This listing was rejected and can no longer be edited. Remove it instead.",
+      "warning",
+    );
+    return;
+  }
   editingListingId = id;
   document.getElementById("edit-inp-name").value = item.name || "";
   document.getElementById("edit-inp-price").value = item.price || "";
-  document.getElementById("edit-inp-qty").value = item.quantity || 1;
+  document.getElementById("edit-inp-qty").value = item.quantity ?? 1;
   document.getElementById("edit-inp-category").value = item.category || "";
   document.getElementById("edit-inp-condition").value = item.condition || "";
   document.getElementById("edit-inp-location").value = item.location || "";
@@ -99,10 +112,16 @@ function saveEditListing() {
     showToast("Missing Fields", "Name and Price are required.", "warning");
     return;
   }
+  const prevStatus = allListings.find(
+    (l) => l.id === editingListingId,
+  )?.status;
+
+  const parsedQty = parseInt(document.getElementById("edit-inp-qty").value);
+
   updateListingAPI(editingListingId, {
     product_name: name,
     price: parseFloat(price),
-    quantity: parseInt(document.getElementById("edit-inp-qty").value) || 1,
+    quantity: Number.isNaN(parsedQty) ? 1 : parsedQty,
     category: document.getElementById("edit-inp-category").value,
     condition: document.getElementById("edit-inp-condition").value,
     description: document.getElementById("edit-inp-desc").value.trim(),
@@ -117,7 +136,15 @@ function saveEditListing() {
     );
     renderListings();
     closeEditListing();
-    showToast("Updated", "Listing has been updated.", "success");
+    const sentForReReview =
+      data.status === "pending_review" && prevStatus !== "pending_review";
+    showToast(
+      "Updated",
+      sentForReReview
+        ? "Listing has been updated and sent for re-review."
+        : "Listing has been updated.",
+      "success",
+    );
   });
 }
 

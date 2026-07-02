@@ -117,6 +117,12 @@ function fetchSellerClaims() {
   });
 }
 
+function cancelClaimAPI(claim_id) {
+  return fetch(`${API}/api/claims/${encodeURIComponent(claim_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function markBuyerCompleteAPI(claim_id) {
   return fetch(
     `${API}/api/claims/${encodeURIComponent(claim_id)}/buyer-complete`,

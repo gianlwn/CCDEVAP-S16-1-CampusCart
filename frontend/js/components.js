@@ -140,15 +140,28 @@ function loadTopNav() {
 
   fetchCartItems()
     .then((items) => {
-      const badge = document.getElementById("cart-badge");
-      if (!badge) return;
-      const count = Array.isArray(items) ? items.length : 0;
-      if (count > 0) {
-        badge.textContent = count > 99 ? "99+" : count;
-        badge.style.display = "";
-      }
+      setCartBadgeCount(Array.isArray(items) ? items.length : 0);
     })
     .catch(() => {});
+}
+
+function setCartBadgeCount(count) {
+  const badge = document.getElementById("cart-badge");
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count > 99 ? "99+" : count;
+    badge.style.display = "";
+  } else {
+    badge.textContent = "0";
+    badge.style.display = "none";
+  }
+}
+
+function bumpCartBadge(delta) {
+  const badge = document.getElementById("cart-badge");
+  if (!badge) return;
+  const current = badge.style.display === "none" ? 0 : parseInt(badge.textContent, 10) || 0;
+  setCartBadgeCount(Math.max(0, current + delta));
 }
 
 function toggleNotifs(e) {

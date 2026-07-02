@@ -8,7 +8,7 @@ const claimSchema = new mongoose.Schema(
     quantity: { type: Number, default: 1 },
     status: {
       type: String,
-      enum: ["pending", "completed"],
+      enum: ["pending", "completed", "cancelled"],
       default: "pending",
     },
     claim_date: { type: Date, default: Date.now },
