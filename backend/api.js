@@ -281,6 +281,21 @@ function resolveReportAPI(report_id, action) {
   }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
+function fetchUsers() {
+  return fetch(`${API}/api/users`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function updateUserStatusAPI(user_id, status) {
+  return fetch(`${API}/api/users/${encodeURIComponent(user_id)}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
   const reporter_id = getSessionUserId();
   return fetch(`${API}/api/reports`, {

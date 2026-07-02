@@ -7,6 +7,55 @@ const Claim = require("../models/Claim");
 const Rating = require("../models/Rating");
 const Cart = require("../models/Cart");
 
+function statusOf(user) {
+  if (user.is_banned) return "banned";
+  if (user.is_suspended) return "suspended";
+  return "active";
+}
+
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find({ role: "student" }).sort({ created_at: -1 });
+    res.json(
+      users.map((u) => ({
+        user_id: u.user_id,
+        username: `${u.first_name} ${u.last_name}`.trim(),
+        email: u.email,
+        dateJoined: u.created_at
+          ? new Date(u.created_at).toLocaleDateString("en-US", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            })
+          : "—",
+        status: statusOf(u),
+      })),
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+router.patch("/:user_id/status", async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["active", "suspended", "banned"].includes(status)) {
+      return res.status(400).json({ error: "invalid_status" });
+    }
+    const updated = await User.findOneAndUpdate(
+      { user_id: req.params.user_id },
+      { is_suspended: status === "suspended", is_banned: status === "banned" },
+      { new: true },
+    );
+    if (!updated) return res.status(404).json({ error: "not_found" });
+    res.json({ user_id: updated.user_id, status: statusOf(updated) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
 router.get("/:user_id", async (req, res) => {
   try {
     const user = await User.findOne({ user_id: req.params.user_id });
