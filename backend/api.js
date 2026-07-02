@@ -273,11 +273,11 @@ function fetchPendingReports() {
   });
 }
 
-function resolveReportAPI(report_id, action) {
+function resolveReportAPI(report_id, action, note) {
   return fetch(`${API}/api/reports/${encodeURIComponent(report_id)}/resolve`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action }),
+    body: JSON.stringify({ action, note, reviewed_by: getSessionUserId() }),
   }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
