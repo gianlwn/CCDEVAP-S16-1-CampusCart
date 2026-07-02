@@ -43,7 +43,6 @@ function monthKey(date) {
   return `${d.getFullYear()}-${d.getMonth()}`;
 }
 
-// GET /api/dashboard?user_id=xxx
 router.get("/", async (req, res) => {
   try {
     const user_id = req.query.user_id;
@@ -54,20 +53,17 @@ router.get("/", async (req, res) => {
       months.map((m) => [`${m.year}-${m.month}`, m.label]),
     );
 
-    // --- seller's listings ---
     const myListings = await Listing.find({ seller_id: user_id });
     const myListingIds = myListings.map((l) => l.listings_id);
     const priceById = Object.fromEntries(
       myListings.map((l) => [l.listings_id, l.price]),
     );
 
-    // --- completed claims as seller ---
     const soldClaims = await Claim.find({
       seller_id: user_id,
       status: "completed",
     });
 
-    // --- KPIs ---
     const totalListings = myListings.length;
     const itemsSold = soldClaims.reduce((s, c) => s + (c.quantity || 1), 0);
     const totalEarnings = soldClaims.reduce(
@@ -89,7 +85,6 @@ router.get("/", async (req, res) => {
       status: "pending",
     });
 
-    // --- sellerRatingHistory: monthly avg rating of listings sold that month ---
     const ratingByListing = {};
     myRatings.forEach((r) => {
       (ratingByListing[r.listing_id] ??= []).push(r.rating);
@@ -119,7 +114,6 @@ router.get("/", async (req, res) => {
       };
     });
 
-    // --- itemsSoldMonthly & earningsMonthly ---
     const soldByMonth = Object.fromEntries(
       months.map((m) => [`${m.year}-${m.month}`, 0]),
     );
@@ -143,7 +137,6 @@ router.get("/", async (req, res) => {
       amount: earnByMonth[`${m.year}-${m.month}`],
     }));
 
-    // --- listingStatus: breakdown of seller's listings by status ---
     const statusCount = {};
     myListings.forEach((l) => {
       const label =
@@ -161,7 +154,6 @@ router.get("/", async (req, res) => {
       value,
     }));
 
-    // --- reportsOnListing: seller's listing reports grouped by reason ---
     const myReports = await Report.find({
       reported_listing_id: { $in: myListingIds },
     });
@@ -173,7 +165,6 @@ router.get("/", async (req, res) => {
       ([label, value]) => ({ label, value }),
     );
 
-    // --- itemsByCategory: items the user bought (as buyer), grouped by category ---
     const boughtClaims = await Claim.find({
       buyer_id: user_id,
       status: "completed",
@@ -199,7 +190,6 @@ router.get("/", async (req, res) => {
       .sort((a, b) => b[1] - a[1])
       .map(([category, count]) => ({ category, count }));
 
-    // --- cartAddsByDay: cart adds on seller's listings, by day of week ---
     const cartItems = await Cart.find({ listing_id: { $in: myListingIds } });
     const dayCount = Object.fromEntries(DAY_NAMES.map((d) => [d, 0]));
     cartItems.forEach((c) => {

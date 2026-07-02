@@ -30,8 +30,6 @@ async function enrichWithListingAndCategory(claims, idField) {
   return { listingById, listingCatMap };
 }
 
-// GET /api/claims?buyer_id=xxx  — buyer's claimed items
-// GET /api/claims?seller_id=xxx — seller's claimed listings
 router.get("/", async (req, res) => {
   try {
     const { buyer_id, seller_id } = req.query;
@@ -78,7 +76,6 @@ router.get("/", async (req, res) => {
       );
     }
 
-    // buyer_id path
     const claims = await Claim.find({
       buyer_id,
       status: { $ne: "cancelled" },
@@ -146,7 +143,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// PATCH /api/claims/:id/buyer-complete
 router.patch("/:id/buyer-complete", async (req, res) => {
   try {
     const claim = await Claim.findOne({ claim_id: req.params.id });
@@ -194,7 +190,6 @@ router.patch("/:id/buyer-complete", async (req, res) => {
   }
 });
 
-// PATCH /api/claims/:id/seller-complete
 router.patch("/:id/seller-complete", async (req, res) => {
   try {
     const claim = await Claim.findOne({ claim_id: req.params.id });
@@ -249,7 +244,6 @@ router.patch("/:id/seller-complete", async (req, res) => {
   }
 });
 
-// DELETE /api/claims/:id — cancel a claim (either party, only while not completed)
 router.delete("/:id", async (req, res) => {
   try {
     const claim = await Claim.findOne({ claim_id: req.params.id });

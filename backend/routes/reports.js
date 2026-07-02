@@ -3,7 +3,6 @@ const router = express.Router();
 const Report = require("../models/Report");
 const generateId = require("../utils/generateId");
 
-// POST /api/reports
 router.post("/", async (req, res) => {
   try {
     const { reporter_id, reported_listing_id, reported_user_id, reason } =

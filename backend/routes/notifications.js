@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Notification = require("../models/Notification");
 
-// GET /api/notifications?user_id=xxx
 router.get("/", async (req, res) => {
   try {
     const { user_id } = req.query;
@@ -17,7 +16,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// PATCH /api/notifications/read-all?user_id=xxx  (must be before /:id)
 router.patch("/read-all", async (req, res) => {
   try {
     const { user_id } = req.query;
@@ -33,7 +31,6 @@ router.patch("/read-all", async (req, res) => {
   }
 });
 
-// PATCH /api/notifications/:id/read
 router.patch("/:id/read", async (req, res) => {
   try {
     const updated = await Notification.findOneAndUpdate(

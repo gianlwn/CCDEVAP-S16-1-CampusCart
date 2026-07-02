@@ -30,7 +30,6 @@ function renderClaimed() {
     const icon      = CLAIMED_CAT_ICONS[item.category] || ICONS.package;
     const hasReview = item.userRating != null;
 
-    // Review is only available once both sides have confirmed the handoff
     const canReview = item.buyer_completed && item.seller_completed;
 
     let actionBtns = "";

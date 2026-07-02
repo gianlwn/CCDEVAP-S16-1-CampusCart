@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Category = require("../models/Category");
 
-// GET /api/categories → all active categories
 router.get("/", async (req, res) => {
   try {
     const categories = await Category.find({ is_removed: false }).sort({

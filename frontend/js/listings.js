@@ -221,8 +221,6 @@ function submitReport() {
     .catch(() => showToast("Error", "Could not submit report.", "error"));
 }
 
-// ── Tab switching ─────────────────────────────────────────────────────────────
-
 function switchTab(tab) {
   const isListings = tab === "listings";
   document.getElementById("pane-listings").style.display = isListings
@@ -245,8 +243,6 @@ function switchTab(tab) {
     : "var(--accent)";
   btnClaimed.style.fontWeight = isListings ? "600" : "700";
 }
-
-// ── Seller claimed listings ───────────────────────────────────────────────────
 
 let allSellerClaims = [];
 
@@ -309,8 +305,6 @@ function markSellerComplete(id) {
     "check",
   );
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", function () {
   fetchUserListings()

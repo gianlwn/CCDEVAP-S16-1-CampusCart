@@ -8,8 +8,6 @@ const Category = require("../models/Category");
 const generateId = require("../utils/generateId");
 const createNotification = require("../utils/createNotification");
 
-// GET /api/ratings/seller/:user_id
-// Returns all ratings on the seller's listings, enriched with item name, category, and buyer info via rater_id.
 router.get("/seller/:user_id", async (req, res) => {
   try {
     const myListings = await Listing.find({ seller_id: req.params.user_id });
@@ -23,7 +21,6 @@ router.get("/seller/:user_id", async (req, res) => {
     const ratings = await Rating.find({ listing_id: { $in: myListingIds } });
     if (!ratings.length) return res.json([]);
 
-    // Category per listing
     const lcLinks = await ListingCategory.find({
       listing_id: { $in: myListingIds },
     });
@@ -38,7 +35,6 @@ router.get("/seller/:user_id", async (req, res) => {
         listingCatMap[lc.listing_id] = catNameById[lc.category_id] || "Others";
     });
 
-    // Buyer name via rater_id
     const raterIds = [
       ...new Set(ratings.map((r) => r.rater_id).filter(Boolean)),
     ];
@@ -74,7 +70,6 @@ router.get("/seller/:user_id", async (req, res) => {
   }
 });
 
-// POST /api/ratings
 router.post("/", async (req, res) => {
   try {
     const { listing_id, rater_id, rating, review } = req.body;
@@ -122,7 +117,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /api/ratings/:id
 router.put("/:id", async (req, res) => {
   try {
     const { rating, review } = req.body;
