@@ -707,7 +707,6 @@ function renderReportsPage() {
       <div class="avatar-wireframe-box"></div>
       <div class="report-text-details">
         <span class="report-type">${report.reportType}</span>
-        <span class="report-id">#${report.reportId}</span>
         <span class="report-reporter">${report.reporter}</span>
       </div>
       <div class="report-status-zone">
@@ -758,9 +757,9 @@ function handleReportAction(action, reportId, btn) {
     }
     _reportsData = _reportsData.filter(r => r.reportId !== reportId);
     if (action === 'warning') {
-      showToast('Warning Issued', `Warning sent for report #${reportId}.`, 'warning');
+      showToast('Warning Issued', 'Warning sent to the reported user.', 'warning');
     } else {
-      showToast('Dismissed', `Report #${reportId} has been dismissed.`, 'info');
+      showToast('Dismissed', 'Report has been dismissed.', 'info');
     }
     if (row) row.style.opacity = '0.4';
   });
