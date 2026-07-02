@@ -72,25 +72,47 @@ router.get("/", async (req, res) => {
   }
 });
 
+const RESOLVE_ACTION_LABELS = {
+  warning: "Warning issued",
+  suspend: "User suspended",
+  ban: "User banned",
+  dismiss: "Dismissed",
+};
+
 router.patch("/:id/resolve", async (req, res) => {
   try {
-    const { action } = req.body;
-    if (!["warning", "dismiss"].includes(action)) {
+    const { action, note, reviewed_by } = req.body;
+    if (!Object.keys(RESOLVE_ACTION_LABELS).includes(action)) {
       return res.status(400).json({ error: "invalid_action" });
     }
 
     const report = await Report.findOne({ report_id: req.params.id });
     if (!report) return res.status(404).json({ error: "not_found" });
 
-    if (action === "warning" && report.reported_user_id) {
-      await User.findOneAndUpdate(
-        { user_id: report.reported_user_id },
-        { $inc: { warning_count: 1 } },
-      );
+    if (report.reported_user_id) {
+      if (action === "warning") {
+        await User.findOneAndUpdate(
+          { user_id: report.reported_user_id },
+          { $inc: { warning_count: 1 } },
+        );
+      } else if (action === "suspend") {
+        await User.findOneAndUpdate(
+          { user_id: report.reported_user_id },
+          { is_suspended: true },
+        );
+      } else if (action === "ban") {
+        await User.findOneAndUpdate(
+          { user_id: report.reported_user_id },
+          { is_banned: true },
+        );
+      }
     }
 
     report.status = "resolved";
-    report.action_taken = action;
+    report.action_taken = note
+      ? `${RESOLVE_ACTION_LABELS[action]}: ${note}`
+      : RESOLVE_ACTION_LABELS[action];
+    report.reviewed_by = reviewed_by || null;
     report.resolved_at = new Date();
     await report.save();
 

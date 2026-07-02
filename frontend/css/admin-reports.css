@@ -145,7 +145,7 @@
   flex-shrink: 0;
 }
 
-.warning-btn,
+.resolve-btn,
 .dismiss-btn {
   border: none;
   border-radius: 999px;
@@ -162,7 +162,7 @@
   transition: opacity var(--transition);
 }
 
-.warning-btn {
+.resolve-btn {
   background: var(--warning-bg);
   color: var(--warning-text);
 }

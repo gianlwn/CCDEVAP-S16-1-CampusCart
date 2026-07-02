@@ -703,7 +703,7 @@ function renderReportsPage() {
   }
 
   container.innerHTML = slice.map(report => `
-    <div class="report-row-card">
+    <div class="report-row-card" data-report-id="${report.reportId}">
       <div class="avatar-wireframe-box"></div>
       <div class="report-text-details">
         <span class="report-type">${report.reportType}</span>
@@ -723,7 +723,7 @@ function renderReportsPage() {
         <span class="info-value">${report.date}</span>
       </div>
       <div class="report-action-group">
-        <button class="warning-btn" onclick="handleReportAction('warning','${report.reportId}',this)">${ICONS.shield} Warning</button>
+        <button class="resolve-btn" onclick="openResolveReportModal('${report.reportId}')">${ICONS.shield} Resolve</button>
         <button class="dismiss-btn" onclick="handleReportAction('dismiss','${report.reportId}',this)">${ICONS.close} Dismiss</button>
       </div>
     </div>
@@ -756,11 +756,63 @@ function handleReportAction(action, reportId, btn) {
       return;
     }
     _reportsData = _reportsData.filter(r => r.reportId !== reportId);
-    if (action === 'warning') {
-      showToast('Warning Issued', 'Warning sent to the reported user.', 'warning');
-    } else {
-      showToast('Dismissed', 'Report has been dismissed.', 'info');
-    }
+    showToast('Dismissed', 'Report has been dismissed.', 'info');
     if (row) row.style.opacity = '0.4';
   });
+}
+
+function openResolveReportModal(reportId) {
+  const report = _reportsData.find(r => r.reportId === reportId);
+  if (!report) return;
+  openModal(`
+    <h3 style="${MS.title}">Resolve Report</h3>
+    <div style="${MS.body}">
+      <div style="${MS.row}">
+        <span style="font-size:13px;color:var(--text);font-weight:600;">${report.subject}</span>
+        <span style="font-size:12px;color:var(--text-muted);">Reported by ${report.reporter}</span>
+      </div>
+      <div style="${MS.row}">
+        <label style="${MS.label}">Action</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
+            <input type="radio" name="modal-resolve-action" value="warning" checked> Issue Warning
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
+            <input type="radio" name="modal-resolve-action" value="suspend"> Suspend User
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
+            <input type="radio" name="modal-resolve-action" value="ban"> Ban User
+          </label>
+        </div>
+      </div>
+      <div style="${MS.row}">
+        <label style="${MS.label}">Action Taken</label>
+        <textarea id="modal-resolve-note" rows="3" style="${MS.input}resize:none;" placeholder="Describe the action taken for this report..."></textarea>
+      </div>
+    </div>
+    <div style="${MS.footer}">
+      <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
+      <button onclick="submitResolveReport('${reportId}')" style="${MS.primary}">Resolve Report</button>
+    </div>
+  `);
+}
+
+function submitResolveReport(reportId) {
+  const selected = document.querySelector('input[name="modal-resolve-action"]:checked');
+  const action = selected ? selected.value : 'warning';
+  const note = document.getElementById('modal-resolve-note').value.trim();
+
+  resolveReportAPI(reportId, action, note).then(({ ok }) => {
+    if (!ok) {
+      showToast('Error', 'Failed to update the report. Please try again.', 'error');
+      return;
+    }
+    _reportsData = _reportsData.filter(r => r.reportId !== reportId);
+    closeModal();
+    const labelMap = { warning: 'Warning issued', suspend: 'User suspended', ban: 'User banned' };
+    const typeMap = { warning: 'warning', suspend: 'warning', ban: 'error' };
+    showToast('Resolved', `${labelMap[action]} for this report.`, typeMap[action]);
+    const row = document.querySelector(`.report-row-card[data-report-id="${reportId}"]`);
+    if (row) row.style.opacity = '0.4';
+  }).catch(() => showToast('Error', 'Failed to update the report. Please try again.', 'error'));
 }
