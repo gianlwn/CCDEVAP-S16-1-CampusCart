@@ -455,85 +455,105 @@ function saveUserEdit(username, email) {
 }
 
 let _approvalPage = 1;
+let _approvalListings = [];
 
 function renderApprovalPage() {
   const container = document.getElementById('approval-grid');
   if (!container) return;
-  const approvals = getListingApprovals();
   const perPage = getItemsPerPage('listings');
   const start = (_approvalPage - 1) * perPage;
-  const slice = approvals.slice(start, start + perPage);
+  const slice = _approvalListings.slice(start, start + perPage);
 
   if (!slice.length) {
     container.innerHTML = `<div class="empty-msg">No listings needed for approval.</div>`;
+    updateCounter('.pending-count', 'Pending Approval', _approvalListings.length);
     return;
   }
-  container.innerHTML = slice.map(listing => `
-    <div class="listing-card" id="listing-card-${listing.listingId}">
+  container.innerHTML = slice.map(listing => {
+    const thumb = listing.images[0];
+    return `
+    <div class="listing-card" id="listing-card-${listing.id}">
       <div class="card-top">
-        <div class="listing-image"></div>
+        <div class="listing-image${thumb ? ' has-image' : ''}"${thumb ? ` style="background-image:url('${thumb}');background-size:cover;background-position:center;"` : ''}></div>
         <div class="listing-info">
-          <h2>${listing.productName}</h2>
-          <p>${listing.listingId}</p>
+          <h2>${listing.name}</h2>
           <p>PHP ${listing.price.toFixed(2)}</p>
           <p>${listing.seller}</p>
           <span class="status-badge">Pending Approval</span>
         </div>
       </div>
-      <button class="view-details-btn" onclick="viewListingDetails('${listing.listingId}')">${ICONS.eye} View Details</button>
+      <button class="view-details-btn" onclick="viewListingDetails('${listing.id}')">${ICONS.eye} View Details</button>
       <div class="listing-actions">
-        <button class="approve-btn" onclick="handleApproval('approve','${listing.listingId}',this)">${ICONS.check} Approve</button>
-        <button class="reject-btn"  onclick="handleApproval('reject', '${listing.listingId}',this)">${ICONS.close} Reject</button>
+        <button class="approve-btn" onclick="handleApproval('approve','${listing.id}',this)">${ICONS.check} Approve</button>
+        <button class="reject-btn"  onclick="handleApproval('reject', '${listing.id}',this)">${ICONS.close} Reject</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
-  updateCounter('.pending-count', 'Pending Approval', approvals.length);
-  renderPagination('approval-grid', approvals.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); }, perPage);
+  updateCounter('.pending-count', 'Pending Approval', _approvalListings.length);
+  renderPagination('approval-grid', _approvalListings.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); }, perPage);
 }
 
 function displayListingApprovals() {
-  renderApprovalPage();
+  fetchPendingListings().then(listings => {
+    _approvalListings = listings;
+    renderApprovalPage();
+  }).catch(() => {
+    showToast('Failed to load listings', '', 'error');
+  });
   setupResizePagination('listings', () => { _approvalPage = 1; renderApprovalPage(); });
 }
 
 function viewListingDetails(listingId) {
-  const listing = getListingApprovals().find(l => l.listingId === listingId);
+  const listing = _approvalListings.find(l => l.id === listingId);
   if (!listing) return;
-  const photosHtml = listing.images.map((_, i) =>
-    `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">Photo ${i + 1}</div>`
-  ).join('');
+  const photosHtml = listing.images.length
+    ? listing.images.map((src, i) =>
+        `<img src="${src}" alt="Photo ${i + 1}" style="width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);">`
+      ).join('')
+    : `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">No Photo</div>`;
   openModal(`
     <h3 style="${MS.title}">Listing Details</h3>
     <div style="${MS.body}">
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">${photosHtml}</div>
-      <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.productName}</span></div>
+      <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.name}</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div style="${MS.row}"><span style="${MS.label}">Listing ID</span><span style="font-size:13px;color:var(--text-muted);">${listing.listingId}</span></div>
         <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
         <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${listing.category}</span></div>
         <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
         <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
-        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description}</span></div>
+        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description || 'No description provided.'}</span></div>
       </div>
     </div>
     <div style="${MS.footer}">
       <button onclick="closeModal()" style="${MS.cancel}">Close</button>
-      <button onclick="closeModal();handleApproval('approve','${listing.listingId}',document.querySelector('#listing-card-${listing.listingId} .approve-btn'))" style="${MS.primary}">Approve</button>
+      <button onclick="closeModal();handleApproval('approve','${listing.id}',document.querySelector('#listing-card-${listing.id} .approve-btn'))" style="${MS.primary}">Approve</button>
     </div>
   `);
 }
 
 function handleApproval(action, listingId, btn) {
   const card = btn.closest('.listing-card');
-  processApproval(listingId, action);
-  if (action === 'approve') {
-    showToast('Approved', `Listing ${listingId} has been approved.`, 'success');
-  } else {
-    showToast('Rejected', `Listing ${listingId} has been rejected.`, 'error');
-  }
-  if (card) card.style.opacity = '0.4';
-  btn.closest('.listing-actions').querySelectorAll('button').forEach(b => b.disabled = true);
+  const status = action === 'approve' ? 'active' : 'rejected';
+  const actionButtons = btn.closest('.listing-actions').querySelectorAll('button');
+  actionButtons.forEach(b => b.disabled = true);
+
+  const listingName = (_approvalListings.find(l => l.id === listingId) || {}).name || 'Listing';
+
+  updateListingStatusAPI(listingId, status).then(({ ok }) => {
+    if (!ok) {
+      showToast('Error', 'Failed to update the listing. Please try again.', 'error');
+      actionButtons.forEach(b => b.disabled = false);
+      return;
+    }
+    _approvalListings = _approvalListings.filter(l => l.id !== listingId);
+    if (action === 'approve') {
+      showToast('Approved', `${listingName} has been approved.`, 'success');
+    } else {
+      showToast('Rejected', `${listingName} has been rejected.`, 'error');
+    }
+    if (card) card.style.opacity = '0.4';
+  });
 }
 
 let _catPage = 1;

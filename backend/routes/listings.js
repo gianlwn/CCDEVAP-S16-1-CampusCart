@@ -68,13 +68,20 @@ async function enrichListings(listings) {
   );
 }
 
-// GET /api/listings          → all active listings
-// GET /api/listings?seller_id=xxx → all listings by that seller (any status)
+// GET /api/listings                    → all active listings
+// GET /api/listings?seller_id=xxx       → all listings by that seller (any status)
+// GET /api/listings?status=xxx          → all listings with that status (e.g. pending_review, for admin review queues)
 router.get("/", async (req, res) => {
   try {
-    const filter = req.query.seller_id
-      ? { seller_id: req.query.seller_id }
-      : { status: "active" };
+    let filter;
+    if (req.query.status) {
+      filter = { status: req.query.status };
+      if (req.query.seller_id) filter.seller_id = req.query.seller_id;
+    } else if (req.query.seller_id) {
+      filter = { seller_id: req.query.seller_id };
+    } else {
+      filter = { status: "active" };
+    }
     const listings = await Listing.find(filter).sort({ created: -1 });
     const result = await enrichListings(listings);
     res.json(result);
@@ -222,6 +229,26 @@ router.put("/:id", async (req, res) => {
 
     const [enriched] = await enrichListings([listing]);
     res.json(enriched);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+// PATCH /api/listings/:id/status  → admin approve/reject a pending listing
+router.patch("/:id/status", async (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!["active", "rejected"].includes(status)) {
+      return res.status(400).json({ error: "invalid_status" });
+    }
+    const listing = await Listing.findOneAndUpdate(
+      { listings_id: req.params.id },
+      { status },
+      { new: true },
+    );
+    if (!listing) return res.status(404).json({ error: "not_found" });
+    res.json({ success: true, listing });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

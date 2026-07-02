@@ -62,15 +62,24 @@ function _renderHpPage() {
       const seller = item.seller || "Campus Seller";
       const icon = CATEGORY_ICONS[item.category] || ICONS.package;
       const isOwn = item.seller_id && item.seller_id === getSessionUserId();
+      const images = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
 
       return `
       <div class="hp-item-card" onclick="viewItem('${item.id}')">
-        <div class="hp-item-thumb" style="background:${bg}">
+        <div class="hp-item-thumb" style="background:${bg}" data-idx="0">
           <span class="hp-condition-badge">
             <span class="hp-condition-dot" style="background:${dotColor}"></span>
             ${cond}
           </span>
-          ${icon}
+          ${images.length
+            ? `<img class="hp-thumb-img" src="${images[0]}" alt="${item.name}">`
+            : icon}
+          ${images.length > 1
+            ? `
+          <button class="hp-thumb-arrow hp-thumb-arrow-left" onclick="event.stopPropagation();_hpThumbSwipe(event,'${item.id}',-1)">&#8249;</button>
+          <button class="hp-thumb-arrow hp-thumb-arrow-right" onclick="event.stopPropagation();_hpThumbSwipe(event,'${item.id}',1)">&#8250;</button>
+          <div class="hp-thumb-dots">${images.map((_, i) => `<span class="hp-thumb-dot${i === 0 ? " active" : ""}"></span>`).join("")}</div>`
+            : ""}
         </div>
         <div class="hp-item-info">
           <div class="hp-cat-pills">
@@ -94,6 +103,24 @@ function _renderHpPage() {
     .join("");
 
   if (pag) _renderHpPagination(pag);
+}
+
+function _hpThumbSwipe(e, itemId, dir) {
+  const thumb = e.currentTarget.closest(".hp-item-thumb");
+  if (!thumb) return;
+  const item = allItems.find((i) => i.id === itemId);
+  const images = item && Array.isArray(item.images) ? item.images.filter(Boolean) : [];
+  if (images.length < 2) return;
+
+  let idx = parseInt(thumb.dataset.idx || "0", 10);
+  idx = (idx + dir + images.length) % images.length;
+  thumb.dataset.idx = idx;
+
+  const img = thumb.querySelector(".hp-thumb-img");
+  if (img) img.src = images[idx];
+  thumb
+    .querySelectorAll(".hp-thumb-dot")
+    .forEach((d, i) => d.classList.toggle("active", i === idx));
 }
 
 function _renderHpPagination(pag) {

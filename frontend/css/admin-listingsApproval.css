@@ -97,6 +97,11 @@
   transform: rotate(-45deg);
 }
 
+.listing-image.has-image::before,
+.listing-image.has-image::after {
+  display: none;
+}
+
 .listing-info {
   flex: 1;
   display: flex;

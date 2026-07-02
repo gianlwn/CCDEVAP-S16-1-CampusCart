@@ -12,9 +12,6 @@ const IP_CONDITION_CLASS = {
   Used: "ip-condition-used",
 };
 
-const IP_THUMB_OPACITIES = [1, 0.72, 0.52];
-const IP_THUMB_SCALES = [1, 0.75, 0.55];
-
 let _ipItem = null;
 let _activeThumb = 0;
 
@@ -23,19 +20,16 @@ function _getItemId() {
 }
 
 function _setActiveThumb(idx) {
+  const images = (_ipItem && _ipItem.images) || [];
+  if (!images.length) return;
   _activeThumb = idx;
   document.querySelectorAll(".ip-thumb").forEach((t, i) => {
     t.classList.toggle("active", i === idx);
   });
-  const main = document.getElementById("ip-main-img-inner");
-  if (main) {
-    const bg = IP_CATEGORY_BG[_ipItem.category] || IP_CATEGORY_BG.Others;
-    const op = IP_THUMB_OPACITIES[idx] || 0.45;
-    main.style.opacity = op;
-    main.parentElement.style.background = bg;
-  }
+  const mainPhoto = document.getElementById("ip-main-photo");
+  if (mainPhoto) mainPhoto.src = images[idx];
   const label = document.getElementById("ip-img-label");
-  if (label) label.textContent = `Photo ${idx + 1} of 3`;
+  if (label) label.textContent = `Photo ${idx + 1} of ${images.length}`;
 }
 
 async function _addToCartFromPage() {
@@ -86,31 +80,33 @@ function renderItemPage(item) {
 
   const cartSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`;
 
-  const thumbIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
-
   const mainIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+
+  const images = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
 
   wrap.innerHTML = `
     <div class="ip-layout">
 
       <div class="ip-gallery">
         <div class="ip-main-img" style="background:${bg}">
-          <div id="ip-main-img-inner" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;transition:opacity 0.2s ease;">
-            ${mainIcon}
-          </div>
-          <span class="ip-img-label" id="ip-img-label">Photo 1 of 3</span>
+          ${images.length
+            ? `<img id="ip-main-photo" class="ip-main-photo" src="${images[0]}" alt="${item.name}">`
+            : `<div id="ip-main-img-inner" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">${mainIcon}</div>`}
+          ${images.length > 1 ? `<span class="ip-img-label" id="ip-img-label">Photo 1 of ${images.length}</span>` : ""}
         </div>
-        <div class="ip-thumbs">
-          ${[0, 1, 2]
+        ${images.length > 1
+          ? `<div class="ip-thumbs">
+          ${images
             .map(
-              (i) => `
-            <div class="ip-thumb${i === 0 ? " active" : ""}" style="background:${bg};opacity:${IP_THUMB_OPACITIES[i]};" onclick="_setActiveThumb(${i})">
-              ${thumbIcon}
+              (src, i) => `
+            <div class="ip-thumb${i === 0 ? " active" : ""}" onclick="_setActiveThumb(${i})">
+              <img src="${src}" alt="Photo ${i + 1}">
             </div>
           `,
             )
             .join("")}
-        </div>
+        </div>`
+          : ""}
       </div>
 
       <div class="ip-info-panel">

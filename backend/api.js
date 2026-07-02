@@ -249,6 +249,24 @@ function fetchAdminDashboardData() {
   });
 }
 
+function fetchPendingListings() {
+  return fetch(`${API}/api/listings?status=pending_review`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function updateListingStatusAPI(listing_id, status) {
+  return fetch(
+    `${API}/api/listings/${encodeURIComponent(listing_id)}/status`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
   const reporter_id = getSessionUserId();
   return fetch(`${API}/api/reports`, {
