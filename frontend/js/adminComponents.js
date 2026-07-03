@@ -594,17 +594,17 @@ function handleApproval(action, listingId, btn) {
 }
 
 let _catPage = 1;
+let _categoriesData = [];
 
 function renderCategoryPage() {
   const container = document.getElementById('category-grid');
   if (!container) return;
 
-  const categories = getCategories();
   const perPage = getItemsPerPage('categories');
   const start = (_catPage - 1) * perPage;
-  const slice = categories.slice(start, start + perPage);
+  const slice = _categoriesData.slice(start, start + perPage);
 
-  if (!categories.length) {
+  if (!_categoriesData.length) {
     container.innerHTML = `<div class="empty-msg">No categories found. Click "+ Add New Category" to create one.</div>`;
     return;
   }
@@ -612,24 +612,30 @@ function renderCategoryPage() {
   container.innerHTML = slice.map(category => `
     <div class="category-card">
       <div class="category-info">
-        <h2>${category.categoryName}</h2>
+        <h2>${category.category_name}</h2>
       </div>
       <div class="category-actions">
-        <button class="edit-btn"   onclick="handleCategory('edit',  '${category.categoryName}',this)">${ICONS.edit}  Edit</button>
-        <button class="delete-btn" onclick="handleCategory('delete','${category.categoryName}',this)">${ICONS.trash} Delete</button>
+        <button class="edit-btn"   onclick="handleCategory('edit',  '${category.category_id}')">${ICONS.edit}  Edit</button>
+        <button class="delete-btn" onclick="handleCategory('delete','${category.category_id}')">${ICONS.trash} Delete</button>
       </div>
     </div>
   `).join('');
 
-  renderPagination('category-grid', categories.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
+  renderPagination('category-grid', _categoriesData.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
   initSearch('.category-card');
 }
 
 function displayCategories() {
-  renderCategoryPage();
+  fetchCategories().then(categories => {
+    _categoriesData = categories;
+    renderCategoryPage();
+  }).catch(() => {
+    showToast('Failed to load categories', '', 'error');
+  });
 
   const addBtn = document.querySelector('.add-category-btn');
   if (addBtn) addBtn.onclick = () => openAddCategoryModal();
+  setupResizePagination('categories', () => { _catPage = 1; renderCategoryPage(); });
 }
 
 function openAddCategoryModal() {
@@ -650,52 +656,69 @@ function openAddCategoryModal() {
 
 function saveNewCategory() {
   const name = document.getElementById('modal-cat-name')?.value.trim();
-  const result = createCategory(name);
-  if (!result.success) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
-  closeModal();
-  renderCategoryPage();
-  showToast('Added', `Category "${name}" created.`, 'success');
+  if (!name) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
+  createCategoryAPI(name).then(({ ok, status, data }) => {
+    if (!ok) {
+      const msg = status === 409 ? 'A category with that name already exists.' : 'Could not create category.';
+      showToast('Error', msg, 'error');
+      return;
+    }
+    closeModal();
+    _categoriesData.push(data);
+    renderCategoryPage();
+    showToast('Added', `Category "${name}" created.`, 'success');
+  });
 }
 
-function handleCategory(action, categoryName, btn) {
-  const card = btn.closest('.category-card');
-  const nameEl = card?.querySelector('h2');
+function handleCategory(action, categoryId) {
+  const category = _categoriesData.find(c => c.category_id === categoryId);
+  if (!category) return;
 
   if (action === 'edit') {
-    const current = nameEl?.textContent.trim() || categoryName;
     openModal(`
       <h3 style="${MS.title}">Edit Category</h3>
       <div style="${MS.body}">
         <div style="${MS.row}">
           <label style="${MS.label}">Category Name</label>
-          <input id="modal-edit-cat-name" type="text" value="${current}" style="${MS.input}">
+          <input id="modal-edit-cat-name" type="text" value="${category.category_name}" style="${MS.input}">
         </div>
       </div>
       <div style="${MS.footer}">
         <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
-        <button onclick="saveEditCategory('${current}')" style="${MS.primary}">Save</button>
+        <button onclick="saveEditCategory('${categoryId}')" style="${MS.primary}">Save</button>
       </div>
     `);
   } else {
     showConfirm(
       'Delete this Category?',
-      `Remove "${categoryName}"? This action cannot be undone.`,
+      `Remove "${category.category_name}"? This action cannot be undone.`,
       () => {
-        removeCategory(categoryName);
-        showToast('Deleted', `"${categoryName}" removed.`, 'success');
-        renderCategoryPage();
+        deleteCategoryAPI(categoryId).then(({ ok }) => {
+          if (!ok) { showToast('Error', 'Could not delete category.', 'error'); return; }
+          _categoriesData = _categoriesData.filter(c => c.category_id !== categoryId);
+          showToast('Deleted', `"${category.category_name}" removed.`, 'success');
+          renderCategoryPage();
+        });
       }
     );
   }
 }
 
-function saveEditCategory(oldName) {
+function saveEditCategory(categoryId) {
   const newName = document.getElementById('modal-edit-cat-name')?.value.trim();
-  const result = updateCategory(oldName, newName);
-  if (!result.success) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
-  closeModal();
-  renderCategoryPage();
-  showToast('Updated', `Category renamed to "${newName}".`, 'success');
+  if (!newName) { showToast('Error', 'Category name cannot be empty.', 'error'); return; }
+  updateCategoryAPI(categoryId, newName).then(({ ok, status, data }) => {
+    if (!ok) {
+      const msg = status === 409 ? 'A category with that name already exists.' : 'Could not update category.';
+      showToast('Error', msg, 'error');
+      return;
+    }
+    closeModal();
+    const category = _categoriesData.find(c => c.category_id === categoryId);
+    if (category) category.category_name = data.category_name;
+    renderCategoryPage();
+    showToast('Updated', `Category renamed to "${newName}".`, 'success');
+  });
 }
 
 let _reportsPage = 1;

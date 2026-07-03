@@ -57,16 +57,6 @@ const _adminsData = [
     status: "inactive",
   },
 ];
-const _categoriesData = [
-  { categoryName: "Electronics" },
-  { categoryName: "Clothing" },
-  { categoryName: "School Supplies" },
-  { categoryName: "Books" },
-  { categoryName: "Lab Tools" },
-  { categoryName: "Others" },
-  { categoryName: "Instruments" },
-  { categoryName: "Sports & Fitness" },
-];
 function getAdmins() {
   return _adminsData;
 }
@@ -84,20 +74,6 @@ function revokeAdminAccess(name) {
   const admin = _adminsData.find((a) => a.username === name);
   if (admin) admin.status = "inactive";
 }
-function getCategories() {
-  return _categoriesData;
-}
-function addCategoryRecord(name) {
-  _categoriesData.push({ categoryName: name });
-}
-function editCategoryRecord(oldName, newName) {
-  const cat = _categoriesData.find((c) => c.categoryName === oldName);
-  if (cat) cat.categoryName = newName;
-}
-function deleteCategoryRecord(name) {
-  const idx = _categoriesData.findIndex((c) => c.categoryName === name);
-  if (idx !== -1) _categoriesData.splice(idx, 1);
-}
 function createAdmin(name, email) {
   if (!name || !email) return { success: false, error: "missing_fields" };
   addAdminRecord(name, email);
@@ -114,19 +90,5 @@ function revokeAdmin(name) {
   if (admin.status === "inactive")
     return { success: false, error: "already_revoked" };
   revokeAdminAccess(name);
-  return { success: true };
-}
-function createCategory(name) {
-  if (!name) return { success: false, error: "missing_fields" };
-  addCategoryRecord(name);
-  return { success: true };
-}
-function updateCategory(oldName, newName) {
-  if (!newName) return { success: false, error: "missing_fields" };
-  editCategoryRecord(oldName, newName);
-  return { success: true };
-}
-function removeCategory(name) {
-  deleteCategoryRecord(name);
   return { success: true };
 }

@@ -175,6 +175,28 @@ function fetchCategories() {
   });
 }
 
+function createCategoryAPI(category_name) {
+  return fetch(`${API}/api/categories`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ category_name }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })));
+}
+
+function updateCategoryAPI(category_id, category_name) {
+  return fetch(`${API}/api/categories/${encodeURIComponent(category_id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ category_name }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })));
+}
+
+function deleteCategoryAPI(category_id) {
+  return fetch(`${API}/api/categories/${encodeURIComponent(category_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function addListingAPI(data) {
   const seller_id = getSessionUserId();
   if (!seller_id) return Promise.reject(new Error("not_logged_in"));
