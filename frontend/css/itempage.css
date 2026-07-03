@@ -334,6 +334,34 @@
   color: #dc2626;
 }
 
+.ip-reviews-section {
+  margin-top: 32px;
+}
+
+.ip-reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ip-reviews-header h3 {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.ip-reviews-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
 @media (max-width: 900px) {
   .ip-layout {
     grid-template-columns: 1fr;

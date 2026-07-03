@@ -233,7 +233,12 @@ function deleteListingAPI(listing_id) {
 function fetchSellerReviews() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);
-  return fetch(`${API}/api/ratings/seller/${encodeURIComponent(userId)}`).then(
+  return fetchSellerReviewsByUserId(userId);
+}
+
+function fetchSellerReviewsByUserId(seller_id) {
+  if (!seller_id) return Promise.resolve([]);
+  return fetch(`${API}/api/ratings/seller/${encodeURIComponent(seller_id)}`).then(
     (r) => {
       if (!r.ok) throw new Error();
       return r.json();

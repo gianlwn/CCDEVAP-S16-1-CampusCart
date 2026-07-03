@@ -183,6 +183,53 @@ function renderItemPage(item) {
 
     </div>
   `;
+
+  loadSellerReviews(item.seller_id);
+}
+
+function renderSellerReviews(reviews) {
+  const section = document.getElementById("ip-reviews-section");
+  const summaryEl = document.getElementById("ip-reviews-summary");
+  const listEl = document.getElementById("ip-reviews-list");
+  if (!section || !listEl) return;
+  section.style.display = "block";
+
+  if (!reviews.length) {
+    summaryEl.innerHTML = "";
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon-svg">${ICONS.star}</div><p>No reviews yet for this seller.</p></div>`;
+    return;
+  }
+
+  const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+  summaryEl.innerHTML = `${renderStars(Math.round(avg))}<span>${avg.toFixed(1)} · ${reviews.length} review${reviews.length > 1 ? "s" : ""}</span>`;
+
+  listEl.innerHTML = reviews
+    .map(
+      (r) => `
+    <div class="item-row">
+      <div class="item-thumb">${ICONS.package}</div>
+      <div class="item-info">
+        <p class="item-name">${r.item}</p>
+        <p class="item-meta">by <strong>${r.buyer}</strong> · ${r.date}</p>
+        ${r.review ? `<p class="item-review">"${r.review}"</p>` : ""}
+      </div>
+      ${renderStars(r.rating)}
+    </div>
+  `,
+    )
+    .join("");
+}
+
+function loadSellerReviews(sellerId) {
+  const section = document.getElementById("ip-reviews-section");
+  if (!sellerId || !section) return;
+  fetchSellerReviewsByUserId(sellerId)
+    .then((reviews) => renderSellerReviews(reviews))
+    .catch(() => {
+      section.style.display = "block";
+      document.getElementById("ip-reviews-list").innerHTML =
+        `<p style="color:var(--text-muted);font-size:13px;">Could not load reviews.</p>`;
+    });
 }
 
 document
