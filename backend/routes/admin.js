@@ -127,9 +127,8 @@ router.get("/admins", async (req, res) => {
 
 router.post("/admins", async (req, res) => {
   try {
-    const name = (req.body.name || "").trim();
     const email = (req.body.email || "").trim().toLowerCase();
-    if (!name || !email) return res.status(400).json({ error: "missing_fields" });
+    if (!email) return res.status(400).json({ error: "missing_fields" });
 
     const user = await User.findOne({ email, is_deleted: { $ne: true } });
     if (!user) return res.status(404).json({ error: "not_found" });

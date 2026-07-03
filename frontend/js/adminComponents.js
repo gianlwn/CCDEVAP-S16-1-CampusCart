@@ -203,10 +203,6 @@ function openAddAdminModal() {
     <h3 style="${MS.title}">Add Administrator</h3>
     <div style="${MS.body}">
       <div style="${MS.row}">
-        <label style="${MS.label}">Full Name</label>
-        <input id="modal-new-admin-name" type="text" placeholder="e.g. Juan dela Cruz" style="${MS.input}">
-      </div>
-      <div style="${MS.row}">
         <label style="${MS.label}">School Email</label>
         <input id="modal-new-admin-email" type="email" placeholder="account@dlsu.edu.ph" style="${MS.input}">
       </div>
@@ -219,10 +215,9 @@ function openAddAdminModal() {
 }
 
 function saveNewAdmin() {
-  const name = document.getElementById('modal-new-admin-name')?.value.trim();
   const email = document.getElementById('modal-new-admin-email')?.value.trim();
-  if (!name || !email) { showToast('Error', 'Name and email are required.', 'error'); return; }
-  promoteAdminAPI(name, email).then(({ ok, status, data }) => {
+  if (!email) { showToast('Error', 'Email is required.', 'error'); return; }
+  promoteAdminAPI(email).then(({ ok, status, data }) => {
     if (!ok) {
       const msg = status === 404
         ? 'No account found with that email. The user must sign up first.'

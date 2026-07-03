@@ -342,11 +342,11 @@ function fetchAdmins() {
   });
 }
 
-function promoteAdminAPI(name, email) {
+function promoteAdminAPI(email) {
   return fetch(`${API}/api/admin/admins`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email }),
+    body: JSON.stringify({ email }),
   }).then((r) =>
     r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })),
   );
