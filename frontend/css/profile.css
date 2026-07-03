@@ -85,21 +85,6 @@
   color: var(--text-muted);
 }
 
-.char-counter {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  margin-left: auto;
-}
-.char-counter.near-limit {
-  color: var(--warning-text);
-}
-.char-counter.at-limit {
-  color: var(--danger-text);
-}
-
 .profile-rating-row {
   color: var(--star-fill);
   font-weight: 600;

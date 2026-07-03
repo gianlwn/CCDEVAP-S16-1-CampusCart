@@ -1,19 +1,3 @@
-const VU_CAT_ICONS = {
-  Electronics: ICONS.laptop,
-  Books: ICONS.book,
-  "Lab Tools": ICONS.flask,
-  Clothing: ICONS.shirt,
-  Others: ICONS.package,
-};
-
-const VU_CATEGORY_BG = {
-  Electronics: "rgba(122,171,138,0.18)",
-  Books: "rgba(212,184,150,0.28)",
-  "Lab Tools": "rgba(122,171,215,0.18)",
-  Clothing: "rgba(210,160,60,0.14)",
-  Others: "rgba(158,144,132,0.18)",
-};
-
 function _getSellerId() {
   return new URLSearchParams(window.location.search).get("seller_id") || "";
 }
@@ -53,8 +37,8 @@ function renderSellerProfile(user, listings, reviews) {
   const listingsHtml = activeListings.length
     ? activeListings
         .map((item) => {
-          const bg = VU_CATEGORY_BG[item.category] || VU_CATEGORY_BG.Others;
-          const icon = VU_CAT_ICONS[item.category] || ICONS.package;
+          const bg = CATEGORY_BG[item.category] || CATEGORY_BG.Others;
+          const icon = CATEGORY_ICONS[item.category] || ICONS.package;
           return `
           <div class="item-row" style="cursor:pointer;" onclick="window.location.href='itempage.html?id=${item.id}'">
             <div class="item-thumb" style="background:${bg};color:var(--accent);">${icon}</div>

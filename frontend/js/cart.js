@@ -1,19 +1,3 @@
-const CATEGORY_ICONS = {
-  Electronics: ICONS.laptop,
-  Books: ICONS.book,
-  "Lab Tools": ICONS.flask,
-  Clothing: ICONS.shirt,
-  Others: ICONS.package,
-};
-
-const CATEGORY_BG = {
-  Electronics: "rgba(122,171,138,0.18)",
-  Books: "rgba(212,184,150,0.28)",
-  "Lab Tools": "rgba(122,171,215,0.18)",
-  Clothing: "rgba(210,160,60,0.14)",
-  Others: "rgba(158,144,132,0.18)",
-};
-
 const CART_PER_PAGE = 5;
 let cartItems = [];
 let _cartPage = 1;

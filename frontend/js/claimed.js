@@ -1,10 +1,3 @@
-const CLAIMED_CAT_ICONS = {
-  Electronics: ICONS.laptop,
-  Books: ICONS.book,
-  "Lab Tools": ICONS.flask,
-  Clothing: ICONS.shirt,
-};
-
 let claimedItems = [];
 let reviewingId  = null;
 let pickedStar   = 0;
@@ -27,7 +20,7 @@ function renderClaimed() {
     return;
   }
   el.innerHTML = claimedItems.map((item) => {
-    const icon      = CLAIMED_CAT_ICONS[item.category] || ICONS.package;
+    const icon      = CATEGORY_ICONS[item.category] || ICONS.package;
     const hasReview = item.userRating != null;
 
     const canReview = item.buyer_completed && item.seller_completed;

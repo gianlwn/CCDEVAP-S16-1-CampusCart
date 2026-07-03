@@ -34,6 +34,22 @@ const ICONS = {
   help: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
 };
 
+const CATEGORY_BG = {
+  Electronics: "rgba(122,171,138,0.18)",
+  Books: "rgba(212,184,150,0.28)",
+  "Lab Tools": "rgba(122,171,215,0.18)",
+  Clothing: "rgba(210,160,60,0.14)",
+  Others: "rgba(158,144,132,0.18)",
+};
+
+const CATEGORY_ICONS = {
+  Electronics: ICONS.laptop,
+  Books: ICONS.book,
+  "Lab Tools": ICONS.flask,
+  Clothing: ICONS.shirt,
+  Others: ICONS.package,
+};
+
 function timeAgo(dateStr) {
   if (!dateStr) return "";
   const diff = Date.now() - new Date(dateStr).getTime();

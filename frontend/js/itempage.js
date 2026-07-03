@@ -1,11 +1,3 @@
-const IP_CATEGORY_BG = {
-  Electronics: "rgba(122,171,138,0.18)",
-  Books: "rgba(212,184,150,0.28)",
-  "Lab Tools": "rgba(122,171,215,0.18)",
-  Clothing: "rgba(210,160,60,0.14)",
-  Others: "rgba(158,144,132,0.18)",
-};
-
 const IP_CONDITION_CLASS = {
   New: "ip-condition-new",
   Good: "ip-condition-good",
@@ -66,7 +58,7 @@ function renderItemPage(item) {
 
   document.title = `CampusCart | ${item.name}`;
 
-  const bg = IP_CATEGORY_BG[item.category] || IP_CATEGORY_BG.Others;
+  const bg = CATEGORY_BG[item.category] || CATEGORY_BG.Others;
   const condClass = IP_CONDITION_CLASS[item.condition] || "ip-condition-used";
   const sellerInitial = (item.seller || "S").charAt(0).toUpperCase();
   const isOwn = item.seller_id && item.seller_id === getSessionUserId();

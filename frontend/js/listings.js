@@ -1,11 +1,3 @@
-const CAT_ICONS = {
-  Electronics: ICONS.laptop,
-  Books: ICONS.book,
-  "Lab Tools": ICONS.flask,
-  Clothing: ICONS.shirt,
-  Others: ICONS.package,
-};
-
 let allListings = [];
 
 const STATUS_LABEL = {
@@ -32,7 +24,7 @@ function renderListings() {
         : `<button class="btn-icon" title="Edit" onclick="editListing('${item.id}')">${ICONS.edit}</button>`;
       return `
     <div class="listing-row" id="listing-${item.id}">
-      <div class="listing-thumb" style="cursor:pointer;" onclick="goToItem('${item.id}')">${CAT_ICONS[item.category] || ICONS.package}</div>
+      <div class="listing-thumb" style="cursor:pointer;" onclick="goToItem('${item.id}')">${CATEGORY_ICONS[item.category] || ICONS.package}</div>
       <div class="item-info" style="cursor:pointer;" onclick="goToItem('${item.id}')">
         <p class="item-name">${item.name}</p>
         <p class="item-meta">₱${Number(item.price).toLocaleString()} · ${item.category}${item.condition ? " · " + item.condition : ""} · ${item.quantity ?? 1} left</p>
@@ -62,7 +54,7 @@ function renderSellerReviews(reviews) {
     .map(
       (r) => `
     <div class="item-row">
-      <div class="item-thumb">${CAT_ICONS[r.category] || ICONS.package}</div>
+      <div class="item-thumb">${CATEGORY_ICONS[r.category] || ICONS.package}</div>
       <div class="item-info">
         <p class="item-name">${r.item}</p>
         <p class="item-meta">from <strong>${r.buyer}</strong> · ${r.date}</p>
@@ -297,7 +289,7 @@ function renderSellerClaims() {
   }
   el.innerHTML = allSellerClaims
     .map((item) => {
-      const icon = CAT_ICONS[item.category] || ICONS.package;
+      const icon = CATEGORY_ICONS[item.category] || ICONS.package;
       const markBtn = !item.seller_completed
         ? `<button class="btn-icon" title="Mark as Delivered" onclick="markSellerComplete('${item.id}')" style="color:var(--success-text);">${ICONS.check}</button>`
         : `<span title="Delivered" style="display:inline-flex;align-items:center;padding:4px;color:var(--success-text);opacity:.6;">${ICONS.check}</span>`;

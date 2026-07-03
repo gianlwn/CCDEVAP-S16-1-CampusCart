@@ -57,21 +57,6 @@
   padding-left: 26px;
 }
 
-.char-counter {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  margin-left: auto;
-}
-.char-counter.near-limit {
-  color: var(--warning-text);
-}
-.char-counter.at-limit {
-  color: var(--danger-text);
-}
-
 .img-upload-area {
   border: 2px dashed var(--border);
   border-radius: var(--radius-sm);
@@ -227,15 +212,6 @@
   flex-shrink: 0;
 }
 
-.badge-status {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 9px;
-  border-radius: 20px;
-  text-transform: capitalize;
-  flex-shrink: 0;
-}
-
 .badge-status.active {
   background: var(--success-bg);
   color: var(--success-text);
@@ -247,14 +223,6 @@
 .badge-status.rejected {
   background: var(--danger-bg);
   color: var(--danger-text);
-}
-.badge-status.completed {
-  background: var(--success-bg);
-  color: var(--success-text);
-}
-.badge-status.pending {
-  background: var(--warning-bg);
-  color: var(--warning-text);
 }
 
 .preview-card {
