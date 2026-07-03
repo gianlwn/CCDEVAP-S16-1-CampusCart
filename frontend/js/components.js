@@ -57,6 +57,8 @@ const NOTIF_ICON = {
   new_review: `star`,
   warning: `alert`,
   suspension: `userSlash`,
+  ban: `ban`,
+  reactivated: `check`,
 };
 
 function refreshNotifs() {

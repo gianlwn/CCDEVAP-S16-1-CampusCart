@@ -112,7 +112,7 @@ function applyUserFilters() {
 
   document.querySelectorAll('.user-identity-row-card').forEach(card => {
     const textMatch = !q || card.textContent.toLowerCase().includes(q);
-    const badge = card.querySelector('.badge-pill');
+    const badge = card.querySelector('.user-status-pill');
     const status = badge?.textContent.trim().toLowerCase() || '';
     const statusMatch = statusVal === 'all' || status === statusVal;
     card.style.display = (textMatch && statusMatch) ? '' : 'none';
@@ -301,6 +301,12 @@ function saveAdminEdit() {
 let _usersPage = 1;
 let _usersData = [];
 
+const _USER_STATUS_META = {
+  active: { pill: 'pill-status-active', label: 'Active' },
+  suspended: { pill: 'pill-status-suspended', label: 'Suspended' },
+  banned: { pill: 'pill-status-banned', label: 'Banned' },
+};
+
 function renderUsersPage() {
   const container = document.getElementById('users-stack-list');
   if (!container) return;
@@ -313,15 +319,16 @@ function renderUsersPage() {
     container.innerHTML = `<div class="empty-msg">No users found.</div>`;
   } else {
     container.innerHTML = usersSlice.map(user => {
-      const isActive = user.status?.toLowerCase() === 'active';
-      const isSuspended = user.status?.toLowerCase() === 'suspended';
-      const pillClass = isActive ? 'pill-status-active' : (isSuspended ? 'pill-status-suspended' : 'pill-status-banned');
-      const statusText = isActive ? 'Active' : (isSuspended ? 'Suspended' : 'Banned');
+      const meta = _USER_STATUS_META[user.status] || _USER_STATUS_META.active;
+      const warningCount = user.warning_count || 0;
       return `
-        <div class="user-identity-row-card responsive-row-card">
+        <div class="user-identity-row-card responsive-row-card" data-user-id="${user.user_id}">
           <div class="avatar-wireframe-box"></div>
           <div class="user-text-details">
-            <span class="user-display-name">${user.username}</span>
+            <div class="user-name-row">
+              <span class="user-display-name">${user.username}</span>
+              ${user.role === 'admin' ? `<span class="badge-pill pill-role-admin">Admin</span>` : ''}
+            </div>
             <span class="user-display-email">${user.email}</span>
           </div>
           <div class="user-info-extra">
@@ -329,7 +336,10 @@ function renderUsersPage() {
             <span class="info-value">${user.dateJoined}</span>
           </div>
           <div class="user-right-controls">
-            <span class="badge-pill ${pillClass}">${statusText}</span>
+            <div class="user-status-group">
+              <span class="badge-pill user-status-pill ${meta.pill}">${meta.label}</span>
+              ${warningCount > 0 ? `<span class="badge-pill pill-warning-count">${warningCount} Warning${warningCount > 1 ? 's' : ''}</span>` : ''}
+            </div>
             <div class="action-button-group">
               <button class="action-trigger edit-trigger-btn"
                 onclick="handleUser('edit','${user.user_id}',this)">
@@ -339,11 +349,6 @@ function renderUsersPage() {
               <button class="action-trigger view-trigger-btn"
                 onclick="handleUser('view','${user.user_id}',this)">
                 ${ICONS.eye} View
-              </button>
-              <div class="button-inner-divider"></div>
-              <button class="action-trigger ban-trigger-btn"
-                onclick="handleUser('ban','${user.user_id}',this)">
-                ${ICONS.ban} Ban
               </button>
             </div>
           </div>
@@ -368,25 +373,25 @@ function displayUsers() {
 }
 
 function handleUser(action, userId, btn) {
-  const card = btn.closest('.user-identity-row-card');
-  const badge = card?.querySelector('.badge-pill');
   const user = _usersData.find(u => u.user_id === userId);
   if (!user) return;
 
   if (action === 'view') {
+    const warningCount = user.warning_count || 0;
     openModal(`
       <h3 style="${MS.title}">User Profile</h3>
       <div style="${MS.body}">
         <div style="display:flex;align-items:center;gap:14px;">
           <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:var(--accent);flex-shrink:0;">${user.username.charAt(0).toUpperCase()}</div>
           <div>
-            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;">${user.username}</div>
+            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;">${user.username}${user.role === 'admin' ? ' <span class="badge-pill pill-role-admin">Admin</span>' : ''}</div>
             <div style="font-size:12px;color:var(--text-muted);">${user.email}</div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:4px;">
           <div style="${MS.row}"><span style="${MS.label}">Joined</span><span style="font-size:13px;color:var(--text);font-weight:600;">${user.dateJoined}</span></div>
-          <div style="${MS.row}"><span style="${MS.label}">Status</span><span style="font-size:13px;color:var(--text);font-weight:600;">${user.status}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Status</span><span style="font-size:13px;color:var(--text);font-weight:600;">${(_USER_STATUS_META[user.status] || _USER_STATUS_META.active).label}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Warnings</span><span style="font-size:13px;font-weight:600;color:${warningCount > 0 ? 'var(--warning-text)' : 'var(--text)'};">${warningCount}</span></div>
         </div>
       </div>
       <div style="${MS.footer}">
@@ -395,87 +400,95 @@ function handleUser(action, userId, btn) {
     `);
 
   } else if (action === 'edit') {
-    _editTargetCard = card;
-    openModal(`
-      <h3 style="${MS.title}">Edit User</h3>
-      <div style="${MS.body}">
-        <div style="${MS.row}">
-          <label style="${MS.label}">User</label>
-          <div style="font-size:13px;color:var(--text);font-weight:600;">${user.username}</div>
-          <div style="font-size:11px;color:var(--text-muted);">${user.email}</div>
-        </div>
-        <div style="${MS.row}">
-          <label style="${MS.label}">Account Status</label>
-          <select id="modal-user-status" style="${MS.select}">
-            <option value="active"    ${user.status === 'active' ? 'selected' : ''}>Active</option>
-            <option value="suspended" ${user.status === 'suspended' ? 'selected' : ''}>Suspended</option>
-            <option value="banned"    ${user.status === 'banned' ? 'selected' : ''}>Banned</option>
-          </select>
-        </div>
-      </div>
-      <div style="${MS.footer}">
-        <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
-        <button onclick="saveUserEdit('${userId}')" style="${MS.primary}">Save</button>
-      </div>
-    `);
-
-  } else if (action === 'ban') {
-    if (user.status === 'banned') {
-      showConfirm(
-        `Unban ${user.username}?`,
-        `This will restore their account and allow them to use CampusCart again.`,
-        () => applyUserStatus(userId, 'active', badge, `${user.username} has been unbanned.`, 'success'),
-        'Unban', 'unban'
-      );
-    } else {
-      showConfirm(
-        `Ban ${user.username}?`,
-        `This will restrict their account and prevent them from using CampusCart.`,
-        () => applyUserStatus(userId, 'banned', badge, `${user.username} has been banned.`, 'error'),
-        'Ban', 'ban'
-      );
-    }
+    renderUserEditModal(userId);
   }
 }
 
-function applyUserStatus(userId, newStatus, badge, successMessage, toastType) {
-  const pillMap = { active: 'pill-status-active', suspended: 'pill-status-suspended', banned: 'pill-status-banned' };
-  const labelMap = { active: 'Active', suspended: 'Suspended', banned: 'Banned' };
+function renderUserEditModal(userId) {
+  const user = _usersData.find(u => u.user_id === userId);
+  if (!user) return;
+  const meta = _USER_STATUS_META[user.status] || _USER_STATUS_META.active;
+  const warningCount = user.warning_count || 0;
 
-  updateUserStatusAPI(userId, newStatus).then(({ ok }) => {
-    if (!ok) {
-      showToast('Error', 'Failed to update the user. Please try again.', 'error');
-      return;
-    }
-    const user = _usersData.find(u => u.user_id === userId);
-    if (user) user.status = newStatus;
-    if (badge) { badge.className = `badge-pill ${pillMap[newStatus]}`; badge.textContent = labelMap[newStatus]; }
-    showToast(newStatus === 'active' ? 'Unbanned' : 'Banned', successMessage, toastType);
-  }).catch(() => showToast('Error', 'Failed to update the user. Please try again.', 'error'));
+  openModal(`
+    <h3 style="${MS.title}">Edit User</h3>
+    <div style="${MS.body}">
+      <div style="${MS.row}">
+        <label style="${MS.label}">User</label>
+        <div style="font-size:13px;color:var(--text);font-weight:600;">${user.username}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${user.email}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div style="${MS.row}">
+          <span style="${MS.label}">Status</span>
+          <span class="badge-pill ${meta.pill}" style="width:fit-content;">${meta.label}</span>
+        </div>
+        <div style="${MS.row}">
+          <span style="${MS.label}">Warnings</span>
+          <span style="font-size:14px;font-weight:700;color:${warningCount > 0 ? 'var(--warning-text)' : 'var(--text)'};">${warningCount}</span>
+        </div>
+      </div>
+      <div style="${MS.row}">
+        <label style="${MS.label}">Take Action</label>
+        <div class="user-action-choices">
+          <button type="button" class="user-action-btn action-warn" onclick="handleUserAction('warning','${userId}')">${ICONS.alert}<span>Add Warning</span></button>
+          <button type="button" class="user-action-btn action-suspend" onclick="handleUserAction('suspend','${userId}')" ${user.status === 'suspended' ? 'disabled' : ''}>${ICONS.userSlash}<span>Issue Suspension</span></button>
+          <button type="button" class="user-action-btn action-ban" onclick="handleUserAction('ban','${userId}')" ${user.status === 'banned' ? 'disabled' : ''}>${ICONS.ban}<span>Issue Ban</span></button>
+          ${user.status !== 'active' ? `<button type="button" class="user-action-btn action-reactivate" onclick="handleUserAction('active','${userId}')">${ICONS.check}<span>Reactivate</span></button>` : ''}
+        </div>
+      </div>
+    </div>
+    <div style="${MS.footer}">
+      <button onclick="closeModal()" style="${MS.cancel}">Close</button>
+    </div>
+  `);
 }
 
-function saveUserEdit(userId) {
-  const select = document.getElementById('modal-user-status');
-  if (!select || !_editTargetCard) return;
-  const newStatus = select.value;
-  const badge = _editTargetCard.querySelector('.badge-pill');
-  const pillMap = { active: 'pill-status-active', suspended: 'pill-status-suspended', banned: 'pill-status-banned' };
-  const labelMap = { active: 'Active', suspended: 'Suspended', banned: 'Banned' };
+function handleUserAction(action, userId) {
+  const user = _usersData.find(u => u.user_id === userId);
+  if (!user) return;
 
-  updateUserStatusAPI(userId, newStatus).then(({ ok }) => {
-    if (!ok) {
-      showToast('Error', 'Failed to update the user. Please try again.', 'error');
-      return;
-    }
-    const user = _usersData.find(u => u.user_id === userId);
-    if (user) user.status = newStatus;
-    if (badge) {
-      badge.className = `badge-pill ${pillMap[newStatus]}`;
-      badge.textContent = labelMap[newStatus];
-    }
-    closeModal();
-    showToast('Updated', `${user ? user.username + "'s" : "User's"} status has been updated.`, 'success');
-  }).catch(() => showToast('Error', 'Failed to update the user. Please try again.', 'error'));
+  if (action === 'warning') {
+    issueUserWarningAPI(userId).then(({ ok, data }) => {
+      if (!ok) {
+        showToast('Error', 'Failed to issue warning. Please try again.', 'error');
+        return;
+      }
+      user.warning_count = data.warning_count;
+      if (data.autoSuspended) user.status = 'suspended';
+      renderUsersPage();
+      renderUserEditModal(userId);
+      showToast(
+        data.autoSuspended ? 'Auto-Suspended' : 'Warning Issued',
+        data.autoSuspended
+          ? `${user.username} has been automatically suspended after 3 warnings.`
+          : `A warning has been added to ${user.username}'s account.`,
+        data.autoSuspended ? 'error' : 'warning',
+      );
+    }).catch(() => showToast('Error', 'Failed to issue warning. Please try again.', 'error'));
+    return;
+  }
+
+  const confirmMap = {
+    suspend: { title: `Suspend ${user.username}?`, msg: 'This will temporarily restrict their account.', ok: 'Suspend', icon: 'ban', status: 'suspended', toastType: 'warning' },
+    ban: { title: `Ban ${user.username}?`, msg: 'This will restrict their account and prevent them from using CampusCart.', ok: 'Ban', icon: 'ban', status: 'banned', toastType: 'error' },
+    active: { title: `Reactivate ${user.username}?`, msg: 'This will restore full access to their account.', ok: 'Reactivate', icon: 'unban', status: 'active', toastType: 'success' },
+  };
+  const cfg = confirmMap[action];
+  if (!cfg) return;
+
+  showConfirm(cfg.title, cfg.msg, () => {
+    updateUserStatusAPI(userId, cfg.status).then(({ ok }) => {
+      if (!ok) {
+        showToast('Error', 'Failed to update the user. Please try again.', 'error');
+        return;
+      }
+      user.status = cfg.status;
+      renderUsersPage();
+      renderUserEditModal(userId);
+      showToast('Updated', `${user.username}'s account has been ${cfg.status === 'active' ? 'reactivated' : cfg.status}.`, cfg.toastType);
+    }).catch(() => showToast('Error', 'Failed to update the user. Please try again.', 'error'));
+  }, cfg.ok, cfg.icon);
 }
 
 let _approvalPage = 1;

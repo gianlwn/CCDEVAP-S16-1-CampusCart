@@ -6,6 +6,8 @@ const Listing = require("../models/Listing");
 const Claim = require("../models/Claim");
 const Rating = require("../models/Rating");
 const Cart = require("../models/Cart");
+const createNotification = require("../utils/createNotification");
+const issueWarning = require("../utils/issueWarning");
 
 function statusOf(user) {
   if (user.is_banned) return "banned";
@@ -15,15 +17,16 @@ function statusOf(user) {
 
 router.get("/", async (req, res) => {
   try {
-    const users = await User.find({
-      role: "student",
-      is_deleted: { $ne: true },
-    }).sort({ created_at: -1 });
+    const users = await User.find({ is_deleted: { $ne: true } }).sort({
+      created_at: -1,
+    });
+    users.sort((a, b) => (a.role === "admin") - (b.role === "admin"));
     res.json(
       users.map((u) => ({
         user_id: u.user_id,
         username: `${u.first_name} ${u.last_name}`.trim(),
         email: u.email,
+        role: u.role,
         dateJoined: u.created_at
           ? new Date(u.created_at).toLocaleDateString("en-US", {
               month: "short",
@@ -32,6 +35,7 @@ router.get("/", async (req, res) => {
             })
           : "—",
         status: statusOf(u),
+        warning_count: u.warning_count || 0,
       })),
     );
   } catch (err) {
@@ -52,7 +56,40 @@ router.patch("/:user_id/status", async (req, res) => {
       { new: true },
     );
     if (!updated) return res.status(404).json({ error: "not_found" });
+
+    if (status === "suspended") {
+      await createNotification(
+        updated.user_id,
+        "suspension",
+        "Your account has been suspended by an administrator.",
+      ).catch(() => {});
+    } else if (status === "banned") {
+      await createNotification(
+        updated.user_id,
+        "ban",
+        "Your account has been banned by an administrator.",
+      ).catch(() => {});
+    } else if (status === "active") {
+      await createNotification(
+        updated.user_id,
+        "reactivated",
+        "Your account has been reactivated. Welcome back!",
+      ).catch(() => {});
+    }
+
     res.json({ user_id: updated.user_id, status: statusOf(updated) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+router.patch("/:user_id/warn", async (req, res) => {
+  try {
+    const { note } = req.body;
+    const result = await issueWarning(req.params.user_id, note);
+    if (!result) return res.status(404).json({ error: "not_found" });
+    res.json({ success: true, ...result });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

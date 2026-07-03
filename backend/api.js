@@ -297,6 +297,14 @@ function fetchUsers() {
   });
 }
 
+function issueUserWarningAPI(user_id, note) {
+  return fetch(`${API}/api/users/${encodeURIComponent(user_id)}/warn`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ note }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function updateUserStatusAPI(user_id, status) {
   return fetch(`${API}/api/users/${encodeURIComponent(user_id)}/status`, {
     method: "PATCH",

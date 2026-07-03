@@ -5,6 +5,7 @@ const User = require("../models/User");
 const Listing = require("../models/Listing");
 const generateId = require("../utils/generateId");
 const createNotification = require("../utils/createNotification");
+const issueWarning = require("../utils/issueWarning");
 
 function toFrontendShape(report, reporterName, subjectText) {
   return {
@@ -109,38 +110,12 @@ router.patch("/:id/resolve", async (req, res) => {
 
     if (report.reported_user_id) {
       if (action === "warning") {
-        const updatedUser = await User.findOneAndUpdate(
-          { user_id: report.reported_user_id },
-          { $inc: { warning_count: 1 } },
-          { new: true },
-        );
-        await createNotification(
+        const result = await issueWarning(
           report.reported_user_id,
-          "warning",
-          note
-            ? `You have received a warning: ${note}`
-            : "You have received a warning for violating our platform policies.",
+          note,
           report.report_id,
-        ).catch(() => {});
-
-        if (
-          updatedUser &&
-          updatedUser.warning_count >= 3 &&
-          !updatedUser.is_suspended &&
-          !updatedUser.is_banned
-        ) {
-          autoSuspended = true;
-          await User.findOneAndUpdate(
-            { user_id: report.reported_user_id },
-            { is_suspended: true },
-          );
-          await createNotification(
-            report.reported_user_id,
-            "suspension",
-            "Your account has been automatically suspended after receiving 3 warnings.",
-            report.report_id,
-          ).catch(() => {});
-        }
+        );
+        autoSuspended = result ? result.autoSuspended : false;
       } else if (action === "suspend") {
         await User.findOneAndUpdate(
           { user_id: report.reported_user_id },

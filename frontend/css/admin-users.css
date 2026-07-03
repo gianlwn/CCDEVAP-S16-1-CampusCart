@@ -58,11 +58,22 @@
   flex-shrink: 0;
 }
 
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .user-display-name {
   font-weight: 700;
   font-size: 14px;
   color: var(--text);
   letter-spacing: -0.1px;
+}
+
+.pill-role-admin {
+  background: var(--accent-light);
+  color: var(--accent);
 }
 
 .user-display-email {
@@ -99,4 +110,96 @@
   align-items: center;
   gap: 14px;
   flex-shrink: 0;
+}
+
+.user-status-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pill-warning-count {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.user-action-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.user-action-btn {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.user-action-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.user-action-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.user-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.user-action-btn.action-warn {
+  color: var(--warning-text);
+  border-color: var(--warning-bg);
+}
+
+.user-action-btn.action-warn:hover:not(:disabled) {
+  background: var(--warning-bg);
+  border-color: var(--warning-text);
+}
+
+.user-action-btn.action-suspend {
+  color: var(--danger-text);
+  border-color: var(--danger-bg);
+}
+
+.user-action-btn.action-suspend:hover:not(:disabled) {
+  background: var(--danger-bg);
+  border-color: var(--danger-text);
+}
+
+.user-action-btn.action-ban {
+  background: var(--danger-text);
+  color: #fff;
+  border-color: var(--danger-text);
+}
+
+.user-action-btn.action-ban:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.user-action-btn.action-reactivate {
+  color: var(--success-text);
+  border-color: var(--success-bg);
+}
+
+.user-action-btn.action-reactivate:hover:not(:disabled) {
+  background: var(--success-bg);
+  border-color: var(--success-text);
 }
