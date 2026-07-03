@@ -15,14 +15,15 @@ function toggleOtherSchool(value) {
     value === "Other" ? "block" : "none";
 }
 
-function checkVerified() {
-  const email = document.getElementById("prof-email").value;
-  const badge = document.getElementById("verified-badge");
-  if (email && email.includes(".edu.ph")) {
-    badge.classList.add("visible");
-  } else {
-    badge.classList.remove("visible");
-  }
+const BIO_MAX = 300;
+
+function updateBioCounter() {
+  const n = document.getElementById("prof-bio").value.length;
+  const counter = document.getElementById("bio-counter");
+  counter.textContent = `${n} / ${BIO_MAX}`;
+  counter.className =
+    "char-counter" +
+    (n >= BIO_MAX ? " at-limit" : n >= BIO_MAX * 0.9 ? " near-limit" : "");
 }
 
 let _pendingProfilePicture = null;
@@ -94,6 +95,8 @@ function handleSaveProfile() {
       }
       document.getElementById("prof-pw").value = "";
       document.getElementById("prof-pw2").value = "";
+      document.getElementById("summary-school").textContent =
+        school || "CampusCart Member";
       if (_pendingProfilePicture) {
         renderAvatar(resData.profile_picture);
         _pendingProfilePicture = null;
@@ -167,8 +170,11 @@ document.addEventListener("DOMContentLoaded", () => {
         fullName || "Your Name";
       document.getElementById("prof-phone").value = data.contact_number || "";
       document.getElementById("prof-bio").value = data.bio || "";
+      updateBioCounter();
       document.getElementById("prof-email").value = data.email || "";
       const school = data.school || "";
+      document.getElementById("summary-school").textContent =
+        school || "CampusCart Member";
       if (school && !SCHOOL_PRESETS.includes(school)) {
         document.getElementById("prof-school").value = "Other";
         document.getElementById("prof-school-other").value = school;
@@ -190,7 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
         data.memberSince || "—";
 
       renderAvatar(data.profile_picture);
-      checkVerified();
     })
     .catch(() => showToast("Error", "Failed to load profile.", "error"));
 

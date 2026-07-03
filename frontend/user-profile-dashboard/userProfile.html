@@ -50,7 +50,7 @@
 
           <div class="profile-display-name" id="summary-name">—</div>
 
-          <span class="verified-badge" id="verified-badge">✓ Verified</span>
+          <p class="profile-school" id="summary-school">CampusCart Member</p>
 
           <div class="profile-rating-row">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"
@@ -92,8 +92,12 @@
                 <input type="tel" class="form-input" id="prof-phone" placeholder="+63 000 000 0000" maxlength="13">
               </div>
               <div class="form-group full">
-                <label class="form-label">Bio</label>
-                <textarea class="form-input" id="prof-bio" rows="3" placeholder="Tell buyers a bit about yourself..."
+                <label class="form-label">
+                  Bio
+                  <span class="char-counter" id="bio-counter">0 / 300</span>
+                </label>
+                <textarea class="form-input" id="prof-bio" rows="3" maxlength="300" oninput="updateBioCounter()"
+                  placeholder="Tell buyers a bit about yourself..."
                   style="resize:vertical;min-height:72px;font-family:inherit;"></textarea>
               </div>
             </div>
