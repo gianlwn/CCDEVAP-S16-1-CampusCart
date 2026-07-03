@@ -95,6 +95,8 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ error: "missing_fields" });
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(401).json({ error: "invalid_credentials" });
+    if (user.is_deleted)
+      return res.status(401).json({ error: "invalid_credentials" });
     if (user.is_banned)
       return res.status(403).json({ error: "account_banned" });
     if (user.is_suspended)

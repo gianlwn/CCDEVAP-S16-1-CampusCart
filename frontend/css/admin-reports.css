@@ -92,10 +92,18 @@
   justify-content: center;
   padding: 5px 14px;
   border-radius: 999px;
-  background: var(--pending-bg);
-  color: var(--pending-text);
   font-size: 12px;
   font-weight: 700;
+}
+
+.report-status-badge.status-pending {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.report-status-badge.status-resolved {
+  background: var(--success-bg);
+  color: var(--success-text);
 }
 
 .report-status-zone {
@@ -146,7 +154,7 @@
 }
 
 .resolve-btn,
-.dismiss-btn {
+.view-item-btn {
   border: none;
   border-radius: 999px;
   width: 160px;
@@ -167,14 +175,73 @@
   color: var(--warning-text);
 }
 
-.dismiss-btn {
+.view-item-btn {
   background: var(--accent-light);
   color: var(--accent);
 }
 
-.warning-btn:hover,
-.dismiss-btn:hover {
+.resolve-btn:hover,
+.view-item-btn:hover {
   opacity: 0.8;
+}
+
+.resolve-action-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resolve-action-btn {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.resolve-action-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.resolve-action-btn:hover {
+  border-color: var(--accent);
+}
+
+.resolve-action-btn.active[data-action="warning"] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-color: var(--warning-text);
+}
+
+.resolve-action-btn.active[data-action="suspend"] {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-text);
+}
+
+.resolve-action-btn.active[data-action="ban"] {
+  background: var(--danger-text);
+  color: #fff;
+  border-color: var(--danger-text);
+}
+
+.resolve-action-btn.active[data-action="dismiss"] {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 @media (max-width: 768px) {
@@ -221,10 +288,13 @@
     flex: 0 0 100%;
     order: 5;
   }
-  .warning-btn,
-  .dismiss-btn {
+  .resolve-btn,
+  .view-item-btn {
     flex: 1;
     width: auto;
     padding: 9px 12px;
+  }
+  .resolve-action-btn {
+    flex: 1 1 100%;
   }
 }

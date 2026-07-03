@@ -15,7 +15,10 @@ function statusOf(user) {
 
 router.get("/", async (req, res) => {
   try {
-    const users = await User.find({ role: "student" }).sort({ created_at: -1 });
+    const users = await User.find({
+      role: "student",
+      is_deleted: { $ne: true },
+    }).sort({ created_at: -1 });
     res.json(
       users.map((u) => ({
         user_id: u.user_id,
@@ -59,7 +62,8 @@ router.patch("/:user_id/status", async (req, res) => {
 router.get("/:user_id", async (req, res) => {
   try {
     const user = await User.findOne({ user_id: req.params.user_id });
-    if (!user) return res.status(404).json({ error: "not_found" });
+    if (!user || user.is_deleted)
+      return res.status(404).json({ error: "not_found" });
 
     const [itemsSold, activeListings, listings] = await Promise.all([
       Claim.countDocuments({ seller_id: user.user_id, status: "completed" }),
@@ -98,6 +102,7 @@ router.get("/:user_id", async (req, res) => {
       itemsSold,
       activeListings,
       memberSince,
+      warning_count: user.warning_count || 0,
     });
   } catch (err) {
     console.error(err);
@@ -148,7 +153,7 @@ router.delete("/:user_id", async (req, res) => {
     const listingIds = listings.map((l) => l.listings_id);
 
     await Promise.all([
-      User.deleteOne({ user_id }),
+      User.findOneAndUpdate({ user_id }, { is_deleted: true }),
       Listing.deleteMany({ seller_id: user_id }),
       Cart.deleteMany({ buyer_id: user_id }),
       Rating.deleteMany({ rater_id: user_id }),

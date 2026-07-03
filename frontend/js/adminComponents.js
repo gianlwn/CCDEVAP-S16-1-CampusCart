@@ -710,7 +710,7 @@ function renderReportsPage() {
         <span class="report-reporter">${report.reporter}</span>
       </div>
       <div class="report-status-zone">
-        <span class="report-status-badge">${report.status}</span>
+        <span class="report-status-badge status-${report.status === 'Resolved' ? 'resolved' : 'pending'}">${report.status}</span>
       </div>
       <div class="report-reason-section">
         <span class="info-label">Reported</span>
@@ -723,8 +723,10 @@ function renderReportsPage() {
         <span class="info-value">${report.date}</span>
       </div>
       <div class="report-action-group">
+        ${report.reportedListingId
+          ? `<button class="view-item-btn" onclick="viewReportedListing('${report.reportedListingId}')">${ICONS.eye} View Item</button>`
+          : ''}
         <button class="resolve-btn" onclick="openResolveReportModal('${report.reportId}')">${ICONS.shield} Resolve</button>
-        <button class="dismiss-btn" onclick="handleReportAction('dismiss','${report.reportId}',this)">${ICONS.close} Dismiss</button>
       </div>
     </div>
   `).join('');
@@ -744,26 +746,46 @@ function displayReports() {
   setupResizePagination('reports', () => { _reportsPage = 1; renderReportsPage(); });
 }
 
-function handleReportAction(action, reportId, btn) {
-  const row = btn.closest('.report-row-card');
-  const group = btn.closest('.report-action-group');
-  group.querySelectorAll('button').forEach(b => b.disabled = true);
-
-  resolveReportAPI(reportId, action).then(({ ok }) => {
-    if (!ok) {
-      showToast('Error', 'Failed to update the report. Please try again.', 'error');
-      group.querySelectorAll('button').forEach(b => b.disabled = false);
-      return;
-    }
-    _reportsData = _reportsData.filter(r => r.reportId !== reportId);
-    showToast('Dismissed', 'Report has been dismissed.', 'info');
-    if (row) row.style.opacity = '0.4';
-  });
+function viewReportedListing(listingId) {
+  fetchListingById(listingId).then(listing => {
+    const images = Array.isArray(listing.images) ? listing.images.filter(Boolean) : [];
+    const photosHtml = images.length
+      ? images.map((src, i) =>
+          `<img src="${src}" alt="Photo ${i + 1}" style="width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);">`
+        ).join('')
+      : `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">No Photo</div>`;
+    openModal(`
+      <h3 style="${MS.title}">Reported Listing</h3>
+      <div style="${MS.body}">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">${photosHtml}</div>
+        <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.name}</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Status</span><span style="font-size:13px;color:var(--text);text-transform:capitalize;">${listing.status}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${listing.category}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
+          <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
+          <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description || 'No description provided.'}</span></div>
+        </div>
+      </div>
+      <div style="${MS.footer}">
+        <button onclick="closeModal()" style="${MS.cancel}">Close</button>
+      </div>
+    `);
+  }).catch(() => showToast('Not Found', 'This listing is no longer available.', 'error'));
 }
 
 function openResolveReportModal(reportId) {
   const report = _reportsData.find(r => r.reportId === reportId);
   if (!report) return;
+
+  const actions = [
+    { value: 'warning', label: 'Issue Warning', icon: 'alert' },
+    { value: 'suspend', label: 'Suspend User', icon: 'userSlash' },
+    { value: 'ban', label: 'Ban User', icon: 'ban' },
+    { value: 'dismiss', label: 'Dismiss Report', icon: 'close' },
+  ];
+
   openModal(`
     <h3 style="${MS.title}">Resolve Report</h3>
     <div style="${MS.body}">
@@ -773,16 +795,12 @@ function openResolveReportModal(reportId) {
       </div>
       <div style="${MS.row}">
         <label style="${MS.label}">Action</label>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
-            <input type="radio" name="modal-resolve-action" value="warning" checked> Issue Warning
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
-            <input type="radio" name="modal-resolve-action" value="suspend"> Suspend User
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;">
-            <input type="radio" name="modal-resolve-action" value="ban"> Ban User
-          </label>
+        <div class="resolve-action-choices" id="modal-resolve-choices">
+          ${actions.map((a, i) => `
+            <button type="button" class="resolve-action-btn${i === 0 ? ' active' : ''}" data-action="${a.value}" onclick="selectResolveAction(this)">
+              ${ICONS[a.icon]}<span>${a.label}</span>
+            </button>
+          `).join('')}
         </div>
       </div>
       <div style="${MS.row}">
@@ -797,9 +815,14 @@ function openResolveReportModal(reportId) {
   `);
 }
 
+function selectResolveAction(btn) {
+  btn.parentElement.querySelectorAll('.resolve-action-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 function submitResolveReport(reportId) {
-  const selected = document.querySelector('input[name="modal-resolve-action"]:checked');
-  const action = selected ? selected.value : 'warning';
+  const selected = document.querySelector('#modal-resolve-choices .resolve-action-btn.active');
+  const action = selected ? selected.dataset.action : 'warning';
   const note = document.getElementById('modal-resolve-note').value.trim();
 
   resolveReportAPI(reportId, action, note).then(({ ok }) => {
@@ -809,9 +832,9 @@ function submitResolveReport(reportId) {
     }
     _reportsData = _reportsData.filter(r => r.reportId !== reportId);
     closeModal();
-    const labelMap = { warning: 'Warning issued', suspend: 'User suspended', ban: 'User banned' };
-    const typeMap = { warning: 'warning', suspend: 'warning', ban: 'error' };
-    showToast('Resolved', `${labelMap[action]} for this report.`, typeMap[action]);
+    const labelMap = { warning: 'Warning issued', suspend: 'User suspended', ban: 'User banned', dismiss: 'Report dismissed' };
+    const typeMap = { warning: 'warning', suspend: 'warning', ban: 'error', dismiss: 'info' };
+    showToast(action === 'dismiss' ? 'Dismissed' : 'Resolved', `${labelMap[action]} for this report.`, typeMap[action]);
     const row = document.querySelector(`.report-row-card[data-report-id="${reportId}"]`);
     if (row) row.style.opacity = '0.4';
   }).catch(() => showToast('Error', 'Failed to update the report. Please try again.', 'error'));

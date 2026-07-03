@@ -318,4 +318,20 @@ document.addEventListener("DOMContentLoaded", function () {
       renderGrid(allItems);
     })
     .catch(() => showToast("Error", "Could not load listings.", "error"));
+
+  if (getSessionUserId()) {
+    fetchMyProfile()
+      .then((profile) => {
+        const count = profile.warning_count || 0;
+        if (count > 0) {
+          showToast(
+            "Account Warning",
+            `Your account has ${count} warning${count > 1 ? "s" : ""} on file. Continued violations of our community guidelines may result in suspension or a ban.`,
+            "warning",
+            0,
+          );
+        }
+      })
+      .catch(() => {});
+  }
 });

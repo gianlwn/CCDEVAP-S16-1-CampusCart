@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
     warning_count: { type: Number, default: 0 },
     is_suspended: { type: Boolean, default: false },
     is_banned: { type: Boolean, default: false },
+    is_deleted: { type: Boolean, default: false },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

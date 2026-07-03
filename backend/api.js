@@ -185,6 +185,15 @@ function addListingAPI(data) {
   }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
+function fetchListingById(listing_id) {
+  return fetch(`${API}/api/listings/${encodeURIComponent(listing_id)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
+}
+
 function updateListingAPI(listing_id, data) {
   return fetch(`${API}/api/listings/${encodeURIComponent(listing_id)}`, {
     method: "PUT",

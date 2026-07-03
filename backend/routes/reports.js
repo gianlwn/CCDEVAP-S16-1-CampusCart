@@ -4,11 +4,13 @@ const Report = require("../models/Report");
 const User = require("../models/User");
 const Listing = require("../models/Listing");
 const generateId = require("../utils/generateId");
+const createNotification = require("../utils/createNotification");
 
 function toFrontendShape(report, reporterName, subjectText) {
   return {
     reportId: report.report_id,
     reportType: report.reported_listing_id ? "Listing Report" : "User Report",
+    reportedListingId: report.reported_listing_id || null,
     reporter: reporterName || "Unknown",
     status: report.status === "resolved" ? "Resolved" : "Pending Review",
     reason: report.reason,
@@ -49,13 +51,27 @@ async function enrichReports(reports) {
   const listings = await Listing.find({ listings_id: { $in: listingIds } });
   const listingMap = {};
   listings.forEach((l) => {
-    listingMap[l.listings_id] = l.product_name;
+    listingMap[l.listings_id] = { name: l.product_name, seller_id: l.seller_id };
+  });
+
+  const ownerIds = [...new Set(listings.map((l) => l.seller_id).filter(Boolean))];
+  const owners = await User.find({ user_id: { $in: ownerIds } });
+  const ownerMap = {};
+  owners.forEach((u) => {
+    ownerMap[u.user_id] = `${u.first_name} ${u.last_name}`.trim();
   });
 
   return reports.map((r) => {
-    const subject = r.reported_listing_id
-      ? `Listing: ${listingMap[r.reported_listing_id] || "Unknown Listing"}`
-      : `User: ${userMap[r.reported_user_id] || "Unknown User"}`;
+    let subject;
+    if (r.reported_listing_id) {
+      const listing = listingMap[r.reported_listing_id];
+      const listingName = listing ? listing.name : "Unknown Listing";
+      const ownerName =
+        (listing && ownerMap[listing.seller_id]) || "Unknown Owner";
+      subject = `Listing: ${listingName} — Owner: ${ownerName}`;
+    } else {
+      subject = `User: ${userMap[r.reported_user_id] || "Unknown User"}`;
+    }
     return toFrontendShape(r, reporterMap[r.reporter_id], subject);
   });
 }
@@ -89,12 +105,42 @@ router.patch("/:id/resolve", async (req, res) => {
     const report = await Report.findOne({ report_id: req.params.id });
     if (!report) return res.status(404).json({ error: "not_found" });
 
+    let autoSuspended = false;
+
     if (report.reported_user_id) {
       if (action === "warning") {
-        await User.findOneAndUpdate(
+        const updatedUser = await User.findOneAndUpdate(
           { user_id: report.reported_user_id },
           { $inc: { warning_count: 1 } },
+          { new: true },
         );
+        await createNotification(
+          report.reported_user_id,
+          "warning",
+          note
+            ? `You have received a warning: ${note}`
+            : "You have received a warning for violating our platform policies.",
+          report.report_id,
+        ).catch(() => {});
+
+        if (
+          updatedUser &&
+          updatedUser.warning_count >= 3 &&
+          !updatedUser.is_suspended &&
+          !updatedUser.is_banned
+        ) {
+          autoSuspended = true;
+          await User.findOneAndUpdate(
+            { user_id: report.reported_user_id },
+            { is_suspended: true },
+          );
+          await createNotification(
+            report.reported_user_id,
+            "suspension",
+            "Your account has been automatically suspended after receiving 3 warnings.",
+            report.report_id,
+          ).catch(() => {});
+        }
       } else if (action === "suspend") {
         await User.findOneAndUpdate(
           { user_id: report.reported_user_id },
@@ -112,11 +158,14 @@ router.patch("/:id/resolve", async (req, res) => {
     report.action_taken = note
       ? `${RESOLVE_ACTION_LABELS[action]}: ${note}`
       : RESOLVE_ACTION_LABELS[action];
+    if (autoSuspended) {
+      report.action_taken += " (auto-suspended: 3 warnings reached)";
+    }
     report.reviewed_by = reviewed_by || null;
     report.resolved_at = new Date();
     await report.save();
 
-    res.json({ success: true });
+    res.json({ success: true, autoSuspended });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

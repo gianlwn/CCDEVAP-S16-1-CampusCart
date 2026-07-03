@@ -55,6 +55,8 @@ const NOTIF_ICON = {
   seller_ready: `check`,
   transaction_complete: `check`,
   new_review: `star`,
+  warning: `alert`,
+  suspension: `userSlash`,
 };
 
 function refreshNotifs() {
