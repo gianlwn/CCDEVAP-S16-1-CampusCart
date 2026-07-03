@@ -305,27 +305,6 @@ function renderStars(rating, max = 5) {
   return html + "</div>";
 }
 
-function createClaimedRow(item) {
-  const cls = item.status === "completed" ? "completed" : "pending";
-  const CAT_ICON = {
-    Electronics: ICONS.laptop,
-    Books: ICONS.book,
-    "Lab Tools": ICONS.flask,
-    Clothing: ICONS.shirt,
-  };
-  return `
-    <div class="item-row">
-      <div class="item-thumb">${CAT_ICON[item.category] || ICONS.package}</div>
-      <div class="item-info">
-        <p class="item-name">${item.name}</p>
-        <p class="item-meta">${item.price} · ${item.category} · ${item.seller || ""}</p>
-      </div>
-      ${renderStars(item.rating)}
-      <span class="badge-status ${cls}">${item.status}</span>
-    </div>
-  `;
-}
-
 const _CONFIRM_ICONS = {
   trash: `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
   ban: `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,

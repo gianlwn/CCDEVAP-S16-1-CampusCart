@@ -70,5 +70,4 @@ module.exports = {
   deleteListingImages,
   saveProfilePicture,
   deleteProfilePicture,
-  UPLOAD_DIR,
 };
