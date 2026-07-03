@@ -106,4 +106,63 @@ router.get("/dashboard", async (req, res) => {
   }
 });
 
+router.get("/admins", async (req, res) => {
+  try {
+    const admins = await User.find({
+      role: "admin",
+      is_deleted: { $ne: true },
+    }).sort({ created_at: -1 });
+    res.json(
+      admins.map((a) => ({
+        user_id: a.user_id,
+        username: `${a.first_name} ${a.last_name}`.trim(),
+        email: a.email,
+      })),
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+router.post("/admins", async (req, res) => {
+  try {
+    const name = (req.body.name || "").trim();
+    const email = (req.body.email || "").trim().toLowerCase();
+    if (!name || !email) return res.status(400).json({ error: "missing_fields" });
+
+    const user = await User.findOne({ email, is_deleted: { $ne: true } });
+    if (!user) return res.status(404).json({ error: "not_found" });
+    if (user.role === "admin")
+      return res.status(409).json({ error: "already_admin" });
+
+    user.role = "admin";
+    await user.save();
+
+    res.status(201).json({
+      user_id: user.user_id,
+      username: `${user.first_name} ${user.last_name}`.trim(),
+      email: user.email,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
+router.patch("/admins/:user_id/revoke", async (req, res) => {
+  try {
+    const updated = await User.findOneAndUpdate(
+      { user_id: req.params.user_id, role: "admin" },
+      { role: "student" },
+      { new: true },
+    );
+    if (!updated) return res.status(404).json({ error: "not_found" });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+});
+
 module.exports = router;

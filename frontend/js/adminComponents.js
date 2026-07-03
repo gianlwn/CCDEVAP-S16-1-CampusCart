@@ -1,6 +1,3 @@
-let _editTargetCard = null;
-let _editTargetAdminName = null;
-
 function handleAdminSignOut() {
   sessionStorage.setItem('cc_signout', '1');
   window.location.href = '../login-path/login.html';
@@ -154,54 +151,47 @@ function loadAdminSideNav(page) {
 }
 
 let _adminPage = 1;
+let _adminsData = [];
 
 function renderAdminPage() {
   const container = document.getElementById('admins-stack-list');
   if (!container) return;
-  const admins = getAdmins();
   const perPage = getItemsPerPage('admins');
   const start = (_adminPage - 1) * perPage;
-  const slice = admins.slice(start, start + perPage);
+  const slice = _adminsData.slice(start, start + perPage);
 
-  if (!admins.length) {
+  if (!_adminsData.length) {
     container.innerHTML = `<div class="empty-msg">No administrators found. Click "Add Administrator" to create one.</div>`;
+    updateCounter('.admins-counter-text', 'Current Admins', 0);
     return;
   }
-  container.innerHTML = slice.map(admin => {
-    const isActive = admin.status?.toLowerCase() === 'active';
-    const badgeClass = isActive ? 'pill-status-active' : 'pill-status-inactive';
-    const statusText = isActive ? 'Active' : 'Inactive';
-    return `
+  container.innerHTML = slice.map(admin => `
       <div class="admin-identity-row-card responsive-row-card">
         <div class="avatar-wireframe-box"></div>
         <div class="admin-text-details">
           <span class="admin-display-name">${admin.username}</span>
           <span class="admin-display-email">${admin.email}</span>
         </div>
-        <div class="admin-status-badge-zone">
-          <span class="badge-pill ${badgeClass}">${statusText}</span>
-        </div>
         <div class="action-button-group">
-          <button class="action-trigger edit-trigger-btn"
-            onclick="handleAdmin('edit','${admin.username}','${admin.email}','${admin.status}',this)">
-            ${ICONS.edit} Edit
-          </button>
-          <div class="button-inner-divider"></div>
           <button class="action-trigger revoke-trigger-btn"
-            onclick="handleAdmin('revoke','${admin.username}','${admin.email}','${admin.status}',this)">
+            onclick="handleAdmin('revoke','${admin.user_id}')">
             ${ICONS.userSlash} Revoke
           </button>
         </div>
-      </div>`;
-  }).join('');
+      </div>`).join('');
 
-  updateCounter('.admins-counter-text', 'Current Admins', admins.length);
-  renderPagination('admins-stack-list', admins.length, _adminPage, p => { _adminPage = p; renderAdminPage(); }, perPage);
+  updateCounter('.admins-counter-text', 'Current Admins', _adminsData.length);
+  renderPagination('admins-stack-list', _adminsData.length, _adminPage, p => { _adminPage = p; renderAdminPage(); }, perPage);
   initSearch('.admin-identity-row-card');
 }
 
 function displayAdmins() {
-  renderAdminPage();
+  fetchAdmins().then(admins => {
+    _adminsData = admins;
+    renderAdminPage();
+  }).catch(() => {
+    showToast('Failed to load admins', '', 'error');
+  });
   setupResizePagination('admins', () => { _adminPage = 1; renderAdminPage(); });
 
   const addBtn = document.querySelector('.add-admin-action-btn');
@@ -231,71 +221,43 @@ function openAddAdminModal() {
 function saveNewAdmin() {
   const name = document.getElementById('modal-new-admin-name')?.value.trim();
   const email = document.getElementById('modal-new-admin-email')?.value.trim();
-  const result = createAdmin(name, email);
-  if (!result.success) { showToast('Error', 'Name and email are required.', 'error'); return; }
-  closeModal();
-  renderAdminPage();
-  showToast('Added', `${name} has been added as an administrator.`, 'success');
-}
-
-function handleAdmin(action, username, email, status, btn) {
-  const card = btn.closest('.admin-identity-row-card');
-  const badge = card?.querySelector('.badge-pill');
-
-  if (action === 'edit') {
-    _editTargetCard = card;
-    _editTargetAdminName = username;
-    openModal(`
-      <h3 style="${MS.title}">Edit Administrator</h3>
-      <div style="${MS.body}">
-        <div style="${MS.row}">
-          <label style="${MS.label}">Display Name</label>
-          <input id="modal-admin-name" value="${username}" style="${MS.input}">
-        </div>
-        <div style="${MS.row}">
-          <label style="${MS.label}">Email</label>
-          <input id="modal-admin-email" value="${email}" style="${MS.input}">
-        </div>
-      </div>
-      <div style="${MS.footer}">
-        <button onclick="closeModal()" style="${MS.cancel}">Cancel</button>
-        <button onclick="saveAdminEdit()" style="${MS.primary}">Save Changes</button>
-      </div>
-    `);
-
-  } else if (action === 'revoke') {
-    const currentStatus = badge?.textContent.trim().toLowerCase() || status;
-    if (currentStatus === 'inactive') {
-      showToast('Already Revoked', `${username}'s access is already revoked.`, 'warning');
+  if (!name || !email) { showToast('Error', 'Name and email are required.', 'error'); return; }
+  promoteAdminAPI(name, email).then(({ ok, status, data }) => {
+    if (!ok) {
+      const msg = status === 404
+        ? 'No account found with that email. The user must sign up first.'
+        : status === 409
+          ? 'This user is already an administrator.'
+          : 'Could not add administrator.';
+      showToast('Error', msg, 'error');
       return;
     }
+    closeModal();
+    _adminsData.unshift(data);
+    renderAdminPage();
+    showToast('Added', `${data.username} has been added as an administrator.`, 'success');
+  }).catch(() => showToast('Error', 'Could not add administrator.', 'error'));
+}
+
+function handleAdmin(action, userId) {
+  const admin = _adminsData.find(a => a.user_id === userId);
+  if (!admin) return;
+
+  if (action === 'revoke') {
     showConfirm(
       `Revoke Admin Access?`,
-      `Revoke admin access for ${username}? They will no longer be able to manage the platform.`,
+      `Revoke admin access for ${admin.username}? They will no longer be able to manage the platform.`,
       () => {
-        const result = revokeAdmin(username);
-        if (!result.success) return;
-        if (badge) { badge.className = 'badge-pill pill-status-inactive'; badge.textContent = 'Inactive'; }
-        btn.disabled = true;
-        showToast('Access Revoked', `${username}'s admin access has been revoked.`, 'warning');
+        revokeAdminAPI(userId).then(({ ok }) => {
+          if (!ok) { showToast('Error', 'Failed to revoke admin access. Please try again.', 'error'); return; }
+          _adminsData = _adminsData.filter(a => a.user_id !== userId);
+          renderAdminPage();
+          showToast('Access Revoked', `${admin.username}'s admin access has been revoked.`, 'warning');
+        }).catch(() => showToast('Error', 'Failed to revoke admin access. Please try again.', 'error'));
       },
       'Revoke', 'revoke'
     );
   }
-}
-
-function saveAdminEdit() {
-  const name = document.getElementById('modal-admin-name')?.value.trim();
-  const email = document.getElementById('modal-admin-email')?.value.trim();
-  const result = updateAdmin(_editTargetAdminName, name, email);
-  if (!result.success) { showToast('Error', 'Name and email cannot be empty.', 'error'); return; }
-  if (_editTargetCard) {
-    _editTargetCard.querySelector('.admin-display-name').textContent = name;
-    _editTargetCard.querySelector('.admin-display-email').textContent = email;
-  }
-  _editTargetAdminName = null;
-  closeModal();
-  showToast('Saved', 'Administrator updated successfully.', 'success');
 }
 
 let _usersPage = 1;
@@ -570,7 +532,6 @@ function viewListingDetails(listingId) {
 }
 
 function handleApproval(action, listingId, btn) {
-  const card = btn.closest('.listing-card');
   const status = action === 'approve' ? 'active' : 'rejected';
   const actionButtons = btn.closest('.listing-actions').querySelectorAll('button');
   actionButtons.forEach(b => b.disabled = true);
@@ -584,12 +545,15 @@ function handleApproval(action, listingId, btn) {
       return;
     }
     _approvalListings = _approvalListings.filter(l => l.id !== listingId);
+    const perPage = getItemsPerPage('listings');
+    const maxPage = Math.max(1, Math.ceil(_approvalListings.length / perPage));
+    if (_approvalPage > maxPage) _approvalPage = maxPage;
+    renderApprovalPage();
     if (action === 'approve') {
       showToast('Approved', `${listingName} has been approved.`, 'success');
     } else {
       showToast('Rejected', `${listingName} has been rejected.`, 'error');
     }
-    if (card) card.style.opacity = '0.4';
   });
 }
 
@@ -867,11 +831,13 @@ function submitResolveReport(reportId) {
       return;
     }
     _reportsData = _reportsData.filter(r => r.reportId !== reportId);
+    const perPage = getItemsPerPage('reports');
+    const maxPage = Math.max(1, Math.ceil(_reportsData.length / perPage));
+    if (_reportsPage > maxPage) _reportsPage = maxPage;
     closeModal();
+    renderReportsPage();
     const labelMap = { warning: 'Warning issued', suspend: 'User suspended', ban: 'User banned', dismiss: 'Report dismissed' };
     const typeMap = { warning: 'warning', suspend: 'warning', ban: 'error', dismiss: 'info' };
     showToast(action === 'dismiss' ? 'Dismissed' : 'Resolved', `${labelMap[action]} for this report.`, typeMap[action]);
-    const row = document.querySelector(`.report-row-card[data-report-id="${reportId}"]`);
-    if (row) row.style.opacity = '0.4';
   }).catch(() => showToast('Error', 'Failed to update the report. Please try again.', 'error'));
 }

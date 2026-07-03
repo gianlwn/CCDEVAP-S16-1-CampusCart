@@ -335,6 +335,30 @@ function updateUserStatusAPI(user_id, status) {
   }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
 }
 
+function fetchAdmins() {
+  return fetch(`${API}/api/admin/admins`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function promoteAdminAPI(name, email) {
+  return fetch(`${API}/api/admin/admins`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email }),
+  }).then((r) =>
+    r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })),
+  );
+}
+
+function revokeAdminAPI(user_id) {
+  return fetch(
+    `${API}/api/admin/admins/${encodeURIComponent(user_id)}/revoke`,
+    { method: "PATCH" },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
   const reporter_id = getSessionUserId();
   return fetch(`${API}/api/reports`, {

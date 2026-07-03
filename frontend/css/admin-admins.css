@@ -103,14 +103,12 @@
   margin-top: 2px;
 }
 
-.admin-status-badge-zone {
-  flex: 1;
-  display: flex;
-  align-items: center;
+.admin-identity-row-card .action-button-group {
+  margin-left: auto;
 }
 
 @media (max-width: 850px) {
-  .admin-status-badge-zone {
-    flex: none;
+  .admin-identity-row-card .action-button-group {
+    margin-left: 0;
   }
 }
