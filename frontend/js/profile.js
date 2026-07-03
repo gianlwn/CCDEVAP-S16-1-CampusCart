@@ -13,8 +13,32 @@ function checkVerified() {
   }
 }
 
-function handleEditImage() {
-  showToast("Edit Photo", "Photo upload coming soon!", "info");
+function renderAvatar(profilePicture) {
+  const avatarEl = document.getElementById("profile-avatar-el");
+  if (profilePicture && profilePicture.startsWith("/uploads/")) {
+    avatarEl.innerHTML = `<img src="${API}${profilePicture}" alt="Profile photo">`;
+  }
+}
+
+function uploadProfilePicture(dataUrl) {
+  const avatarEl = document.getElementById("profile-avatar-el");
+  const previousHtml = avatarEl.innerHTML;
+  avatarEl.innerHTML = `<img src="${dataUrl}" alt="Profile photo">`;
+
+  updateProfileAPI({ profile_picture: dataUrl })
+    .then(({ ok, data }) => {
+      if (!ok) {
+        avatarEl.innerHTML = previousHtml;
+        showToast("Error", "Could not update photo.", "error");
+        return;
+      }
+      renderAvatar(data.profile_picture);
+      showToast("Photo Updated", "Your profile photo has been updated.", "success");
+    })
+    .catch(() => {
+      avatarEl.innerHTML = previousHtml;
+      showToast("Error", "Could not update photo.", "error");
+    });
 }
 
 function handleSaveProfile() {
@@ -145,7 +169,21 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("stat-member-since").textContent =
         data.memberSince || "—";
 
+      renderAvatar(data.profile_picture);
       checkVerified();
     })
     .catch(() => showToast("Error", "Failed to load profile.", "error"));
+
+  document.getElementById("profile-img-input").addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    this.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("Invalid File", "Please select an image file.", "error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => uploadProfilePicture(ev.target.result);
+    reader.readAsDataURL(file);
+  });
 });

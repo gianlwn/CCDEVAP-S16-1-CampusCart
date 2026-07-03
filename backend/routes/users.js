@@ -8,6 +8,7 @@ const Rating = require("../models/Rating");
 const Cart = require("../models/Cart");
 const createNotification = require("../utils/createNotification");
 const issueWarning = require("../utils/issueWarning");
+const { saveProfilePicture, deleteProfilePicture } = require("../utils/imageStorage");
 
 function statusOf(user) {
   if (user.is_banned) return "banned";
@@ -135,6 +136,7 @@ router.get("/:user_id", async (req, res) => {
       bio: user.bio || "",
       school: user.school || "",
       course_code: user.course_code || "",
+      profile_picture: user.profile_picture,
       rating: avgRating,
       itemsSold,
       activeListings,
@@ -157,6 +159,7 @@ router.put("/:user_id", async (req, res) => {
       school,
       course_code,
       password,
+      profile_picture,
     } = req.body;
     const update = {};
     if (first_name !== undefined) update.first_name = first_name;
@@ -167,13 +170,24 @@ router.put("/:user_id", async (req, res) => {
     if (course_code !== undefined) update.course_code = course_code;
     if (password) update.password_hash = await bcrypt.hash(password, 10);
 
+    let previousPicture = null;
+    if (profile_picture) {
+      const saved = saveProfilePicture(profile_picture, req.params.user_id);
+      if (!saved) return res.status(400).json({ error: "invalid_image" });
+      const existing = await User.findOne({ user_id: req.params.user_id });
+      if (!existing) return res.status(404).json({ error: "not_found" });
+      previousPicture = existing.profile_picture;
+      update.profile_picture = saved;
+    }
+
     const updated = await User.findOneAndUpdate(
       { user_id: req.params.user_id },
       update,
       { new: true },
     );
     if (!updated) return res.status(404).json({ error: "not_found" });
-    res.json({ user_id: updated.user_id });
+    if (previousPicture) deleteProfilePicture(previousPicture);
+    res.json({ user_id: updated.user_id, profile_picture: updated.profile_picture });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });
