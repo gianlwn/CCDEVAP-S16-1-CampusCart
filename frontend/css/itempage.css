@@ -64,6 +64,11 @@
   display: block;
 }
 
+.ip-main-img:hover .ip-main-photo {
+  object-fit: contain;
+  cursor: zoom-out;
+}
+
 .ip-img-label {
   position: absolute;
   top: 12px;
