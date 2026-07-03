@@ -59,6 +59,13 @@
   color: var(--accent);
   text-transform: uppercase;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.vu-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .vu-name {
@@ -162,6 +169,24 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.vu-reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.vu-reviews-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 @media (max-width: 900px) {

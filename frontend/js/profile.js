@@ -3,6 +3,18 @@ function syncSummaryName(val) {
     val.trim() || "Your Name";
 }
 
+const SCHOOL_PRESETS = [
+  "De La Salle University",
+  "University of Santo Tomas",
+  "Ateneo de Manila University",
+  "University of the Philippines",
+];
+
+function toggleOtherSchool(value) {
+  document.getElementById("prof-school-other").style.display =
+    value === "Other" ? "block" : "none";
+}
+
 function checkVerified() {
   const email = document.getElementById("prof-email").value;
   const badge = document.getElementById("verified-badge");
@@ -13,6 +25,8 @@ function checkVerified() {
   }
 }
 
+let _pendingProfilePicture = null;
+
 function renderAvatar(profilePicture) {
   const avatarEl = document.getElementById("profile-avatar-el");
   if (profilePicture && profilePicture.startsWith("/uploads/")) {
@@ -20,25 +34,11 @@ function renderAvatar(profilePicture) {
   }
 }
 
-function uploadProfilePicture(dataUrl) {
-  const avatarEl = document.getElementById("profile-avatar-el");
-  const previousHtml = avatarEl.innerHTML;
-  avatarEl.innerHTML = `<img src="${dataUrl}" alt="Profile photo">`;
-
-  updateProfileAPI({ profile_picture: dataUrl })
-    .then(({ ok, data }) => {
-      if (!ok) {
-        avatarEl.innerHTML = previousHtml;
-        showToast("Error", "Could not update photo.", "error");
-        return;
-      }
-      renderAvatar(data.profile_picture);
-      showToast("Photo Updated", "Your profile photo has been updated.", "success");
-    })
-    .catch(() => {
-      avatarEl.innerHTML = previousHtml;
-      showToast("Error", "Could not update photo.", "error");
-    });
+function previewProfilePicture(dataUrl) {
+  _pendingProfilePicture = dataUrl;
+  document.getElementById("profile-avatar-el").innerHTML =
+    `<img src="${dataUrl}" alt="Profile photo">`;
+  showToast("Photo Selected", "Press Save Changes to apply your new photo.", "info");
 }
 
 function handleSaveProfile() {
@@ -63,6 +63,14 @@ function handleSaveProfile() {
     return;
   }
 
+  const schoolSelect = document.getElementById("prof-school").value;
+  const schoolOther = document.getElementById("prof-school-other").value.trim();
+  if (schoolSelect === "Other" && !schoolOther) {
+    showToast("Missing Field", "Please enter your school name.", "warning");
+    return;
+  }
+  const school = schoolSelect === "Other" ? schoolOther : schoolSelect;
+
   const parts = fullName.split(" ");
   const last_name = parts.length > 1 ? parts.pop() : "";
   const first_name = parts.join(" ");
@@ -72,19 +80,24 @@ function handleSaveProfile() {
     last_name,
     contact_number: document.getElementById("prof-phone").value.trim(),
     bio: document.getElementById("prof-bio").value.trim(),
-    school: document.getElementById("prof-school").value,
+    school,
     course_code: document.getElementById("prof-course").value.trim(),
   };
   if (pw) data.password = pw;
+  if (_pendingProfilePicture) data.profile_picture = _pendingProfilePicture;
 
   updateProfileAPI(data)
-    .then(({ ok }) => {
+    .then(({ ok, data: resData }) => {
       if (!ok) {
         showToast("Error", "Could not save profile.", "error");
         return;
       }
       document.getElementById("prof-pw").value = "";
       document.getElementById("prof-pw2").value = "";
+      if (_pendingProfilePicture) {
+        renderAvatar(resData.profile_picture);
+        _pendingProfilePicture = null;
+      }
       showToast("Profile Saved", "Your profile has been updated.", "success");
     })
     .catch(() => showToast("Error", "Could not save profile.", "error"));
@@ -155,7 +168,14 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("prof-phone").value = data.contact_number || "";
       document.getElementById("prof-bio").value = data.bio || "";
       document.getElementById("prof-email").value = data.email || "";
-      document.getElementById("prof-school").value = data.school || "";
+      const school = data.school || "";
+      if (school && !SCHOOL_PRESETS.includes(school)) {
+        document.getElementById("prof-school").value = "Other";
+        document.getElementById("prof-school-other").value = school;
+        toggleOtherSchool("Other");
+      } else {
+        document.getElementById("prof-school").value = school;
+      }
       document.getElementById("prof-course").value = data.course_code || "";
 
       document.getElementById("summary-rating-val").textContent =
@@ -183,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (ev) => uploadProfilePicture(ev.target.result);
+    reader.onload = (ev) => previewProfilePicture(ev.target.result);
     reader.readAsDataURL(file);
   });
 });

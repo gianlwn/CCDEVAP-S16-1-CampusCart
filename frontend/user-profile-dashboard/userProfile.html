@@ -108,14 +108,15 @@
               </div>
               <div class="form-group">
                 <label class="form-label">School / University</label>
-                <select class="form-select" id="prof-school">
+                <select class="form-select" id="prof-school" onchange="toggleOtherSchool(this.value)">
                   <option>De La Salle University</option>
                   <option>University of Santo Tomas</option>
                   <option>Ateneo de Manila University</option>
                   <option>University of the Philippines</option>
-                  <option>Mapua University</option>
                   <option>Other</option>
                 </select>
+                <input type="text" class="form-input" id="prof-school-other" placeholder="Enter your school name"
+                  style="display:none;margin-top:8px;">
               </div>
               <div class="form-group">
                 <label class="form-label">Course Code</label>
