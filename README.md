@@ -78,8 +78,7 @@ CCDEVAP-S16-1-CampusCart/
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) v18+ and npm
-- A MongoDB connection string (a free [MongoDB Atlas](https://www.mongodb.com/atlas) cluster works)
-- An [EmailJS](https://www.emailjs.com/) account (service ID, template ID, public key, private key) — used to send registration/password-reset OTP codes
+- Access to the team's shared MongoDB Atlas cluster and EmailJS account — ask a team member for the connection string and API keys
 
 ### 1. Install dependencies
 
@@ -89,16 +88,16 @@ npm install
 
 ### 2. Configure environment variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root using the team's shared MongoDB cluster and EmailJS credentials:
 
 ```env
-MONGO_URI=your-mongodb-connection-string
+MONGO_URI=team-mongodb-connection-string
 PORT=3000
 
-EMAILJS_SERVICE_ID=your-emailjs-service-id
-EMAILJS_TEMPLATE_ID=your-emailjs-template-id
-EMAILJS_PUBLIC_KEY=your-emailjs-public-key
-EMAILJS_PRIVATE_KEY=your-emailjs-private-key
+EMAILJS_SERVICE_ID=team-emailjs-service-id
+EMAILJS_TEMPLATE_ID=team-emailjs-template-id
+EMAILJS_PUBLIC_KEY=team-emailjs-public-key
+EMAILJS_PRIVATE_KEY=team-emailjs-private-key
 ```
 
 The EmailJS template should accept `to_email`, `to_name`, and `otp_code` variables — these are what `backend/routes/auth.js` sends when generating a one-time code.
@@ -112,10 +111,6 @@ npm start       # plain node
 ```
 
 The app (frontend + API) is served together at **http://localhost:3000**.
-
-### 4. Create an admin account
-
-There's no seed script yet. Register a normal student account through the UI, then in MongoDB manually set that user's `role` field from `"student"` to `"admin"` (e.g. via Atlas's Data Explorer or `mongosh`). Logging in again with that account will route to the admin dashboard.
 
 ---
 
