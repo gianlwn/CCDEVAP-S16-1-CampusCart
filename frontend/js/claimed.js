@@ -23,14 +23,14 @@ function renderClaimed() {
     const icon      = CATEGORY_ICONS[item.category] || ICONS.package;
     const hasReview = item.userRating != null;
 
-    const canReview = item.buyer_completed && item.seller_completed;
+    const canReview = item.buyer_completed && item.seller_completed && !hasReview;
 
     let actionBtns = "";
     if (!item.buyer_completed) {
       actionBtns += `<button class="btn-icon" title="Mark as Complete" onclick="markBuyerComplete('${item.id}')" style="color:var(--success-text);">${ICONS.check}</button>`;
     }
     if (canReview) {
-      actionBtns += `<button class="btn-icon" title="${hasReview ? "Edit Review" : "Write a Review"}" onclick="openReviewModal('${item.id}')">${ICONS.edit}</button>`;
+      actionBtns += `<button class="btn-icon" title="Write a Review" onclick="openReviewModal('${item.id}')">${ICONS.edit}</button>`;
     }
     if (!item.seller_completed) {
       actionBtns += `<button class="btn-icon danger" title="Cancel Claim" onclick="cancelClaim('${item.id}')">${ICONS.trash}</button>`;
@@ -107,12 +107,16 @@ function cancelClaim(id) {
 function openReviewModal(id) {
   const item = claimedItems.find((c) => c.id === id);
   if (!item) return;
+  if (item.userRating != null) {
+    showToast("Already Reviewed", "You've already submitted a review for this item and it can't be changed.", "warning");
+    return;
+  }
   reviewingId = id;
-  pickedStar  = item.userRating || 0;
+  pickedStar  = 0;
 
-  document.getElementById("review-modal-title").textContent    = item.userRating ? "Edit Review" : "Rate & Review";
+  document.getElementById("review-modal-title").textContent    = "Rate & Review";
   document.getElementById("review-modal-subtitle").textContent = `"${item.name}" from ${item.seller}`;
-  document.getElementById("review-comment").value              = item.userComment || "";
+  document.getElementById("review-comment").value              = "";
   _highlightReviewStars(pickedStar);
   document.getElementById("review-modal").style.display = "flex";
 }
@@ -129,15 +133,16 @@ function saveReview() {
     showToast("Rating Required", "Please select a star rating.", "warning");
     return;
   }
-  const item    = claimedItems.find((c) => c.id === reviewingId);
+  const item = claimedItems.find((c) => c.id === reviewingId);
   if (!item) return;
+  if (item.userRating != null) {
+    showToast("Already Reviewed", "You've already submitted a review for this item and it can't be changed.", "warning");
+    closeReviewModal();
+    return;
+  }
   const comment = document.getElementById("review-comment").value.trim();
 
-  const apiCall = item.rating_id
-    ? updateRatingAPI(item.rating_id, pickedStar, comment)
-    : submitRatingAPI(item.listing_id, pickedStar, comment);
-
-  apiCall.then(({ ok, data }) => {
+  submitRatingAPI(item.listing_id, pickedStar, comment).then(({ ok, data }) => {
     if (!ok) { showToast("Error", "Could not save review.", "error"); return; }
     claimedItems = claimedItems.map((c) =>
       c.id === reviewingId
