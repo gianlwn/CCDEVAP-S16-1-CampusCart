@@ -113,6 +113,14 @@ async function claimItem(id, maxQuantity) {
         "This item has already been claimed by someone else.",
         "warning",
       );
+    } else if (data.error === "invalid_quantity") {
+      showToast(
+        "Not Enough Stock",
+        data.max > 0
+          ? `Only ${data.max} unit${data.max > 1 ? "s" : ""} left available to claim.`
+          : "All units of this item have already been claimed.",
+        "warning",
+      );
     } else {
       showToast("Error", "Could not complete the claim.", "error");
     }

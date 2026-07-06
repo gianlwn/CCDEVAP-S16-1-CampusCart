@@ -30,7 +30,8 @@ async function _addToCartFromPage() {
     showToast("Not Allowed", "You cannot add your own listing to your cart.", "warning");
     return;
   }
-  if (_ipItem.status === "claimed") {
+  const available = _ipItem.available ?? _ipItem.quantity ?? 1;
+  if (_ipItem.status === "claimed" || available <= 0) {
     showToast("Already Claimed", "This item has already been claimed.", "warning");
     return;
   }
@@ -143,7 +144,7 @@ function renderItemPage(item) {
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Quantity</p>
-            <p class="ip-detail-value">${item.quantity ?? 1}</p>
+            <p class="ip-detail-value">${item.available ?? item.quantity ?? 1}</p>
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Listed On</p>
@@ -161,7 +162,7 @@ function renderItemPage(item) {
           ${
             isOwn
               ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Your Listing</button>`
-              : item.status === "claimed"
+              : item.status === "claimed" || (item.available ?? item.quantity ?? 1) <= 0
               ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
               : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
           }

@@ -2,10 +2,11 @@ const Listing = require("../models/Listing");
 const User = require("../models/User");
 const ListingCategory = require("../models/ListingCategory");
 const Category = require("../models/Category");
+const Claim = require("../models/Claim");
 const generateId = require("../utils/generateId");
 const { saveListingImage, saveListingImages, deleteListingImages } = require("../utils/imageStorage");
 
-function toFrontendShape(listing, sellerName, sellerId, categoryNames) {
+function toFrontendShape(listing, sellerName, sellerId, categoryNames, availableQty) {
   const cats =
     categoryNames && categoryNames.length ? categoryNames : ["Others"];
   return {
@@ -22,6 +23,7 @@ function toFrontendShape(listing, sellerName, sellerId, categoryNames) {
     location: listing.location || "",
     images: listing.images || [],
     quantity: listing.quantity ?? 1,
+    available: availableQty,
     created: listing.created,
   };
 }
@@ -55,12 +57,23 @@ async function enrichListings(listings) {
     if (name) listingCatMap[lc.listing_id].push(name);
   });
 
+  const pendingClaims = await Claim.find({
+    listing_id: { $in: listingIds },
+    status: "pending",
+  });
+  const reservedMap = {};
+  pendingClaims.forEach((c) => {
+    reservedMap[c.listing_id] =
+      (reservedMap[c.listing_id] || 0) + (c.quantity || 1);
+  });
+
   return listings.map((l) =>
     toFrontendShape(
       l,
       sellerMap[l.seller_id],
       l.seller_id,
       listingCatMap[l.listings_id],
+      Math.max(0, (l.quantity ?? 1) - (reservedMap[l.listings_id] || 0)),
     ),
   );
 }

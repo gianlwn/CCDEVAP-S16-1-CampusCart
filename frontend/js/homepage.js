@@ -74,7 +74,7 @@ function _renderHpPage() {
           <div class="hp-item-footer">
             <div>
               <p class="hp-item-price">₱${item.price}</p>
-              <p class="hp-item-qty">Qty: ${item.quantity ?? 1}</p>
+              <p class="hp-item-qty">Qty: ${item.available ?? item.quantity ?? 1}</p>
             </div>
             ${isOwn
               ? `<button class="hp-view-btn" disabled style="opacity:0.5;cursor:not-allowed;">Your Listing</button>`
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fetchListings()
     .then((items) => {
       allItems = items
-        .filter((i) => i.status === "active" && (i.quantity ?? 1) > 0)
+        .filter((i) => i.status === "active" && (i.available ?? i.quantity ?? 1) > 0)
         .map((i) => ({
           ...i,
           seller: i.seller || "Campus Seller",

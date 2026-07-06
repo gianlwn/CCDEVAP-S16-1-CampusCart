@@ -25,6 +25,16 @@ async function cartDocToFrontend(cartDoc) {
     if (cat) categoryName = cat.category_name;
   }
 
+  const pendingClaims = await Claim.find({
+    listing_id: cartDoc.listing_id,
+    status: "pending",
+  });
+  const pendingQty = pendingClaims.reduce(
+    (s, c) => s + (c.quantity || 1),
+    0,
+  );
+  const available = Math.max(0, (listing.quantity ?? 1) - pendingQty);
+
   return {
     id: cartDoc.cart_id,
     listing_id: cartDoc.listing_id,
@@ -34,7 +44,7 @@ async function cartDocToFrontend(cartDoc) {
     seller: sellerName,
     seller_id: listing.seller_id,
     status: listing.status,
-    maxQuantity: listing.quantity ?? 1,
+    maxQuantity: available,
   };
 }
 
@@ -108,18 +118,21 @@ exports.claim = async (req, res) => {
     if (listing.status !== "active")
       return res.status(409).json({ error: "listing_unavailable" });
 
-    const existingClaim = await Claim.findOne({
+    const pendingClaims = await Claim.find({
       listing_id: cartDoc.listing_id,
       status: "pending",
     });
-    if (existingClaim)
-      return res.status(409).json({ error: "already_claimed" });
+    const pendingQty = pendingClaims.reduce(
+      (s, c) => s + (c.quantity || 1),
+      0,
+    );
+    const available = listing.quantity - pendingQty;
 
     const requestedQty = parseInt(req.body.quantity) || 1;
-    if (requestedQty < 1 || requestedQty > listing.quantity) {
+    if (requestedQty < 1 || requestedQty > available) {
       return res
         .status(400)
-        .json({ error: "invalid_quantity", max: listing.quantity });
+        .json({ error: "invalid_quantity", max: available });
     }
 
     const claim_id = await generateId(Claim, "claim_id", "claim_id_");
