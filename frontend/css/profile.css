@@ -346,7 +346,6 @@
     gap: 8px;
     margin-top: 16px;
   }
-  .mobile-account-actions .admin-dash-btn,
   .mobile-account-actions .signout-btn {
     flex: 1;
     justify-content: center;
