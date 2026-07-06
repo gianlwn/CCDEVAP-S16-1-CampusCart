@@ -83,9 +83,23 @@
       transition:background-color var(--transition);
       max-height:calc(100vh - 40px); overflow-y:auto;
     ">
-      <h2 style="font-size:16px;font-weight:800;margin-bottom:6px;color:var(--text);">Edit Listing</h2>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.5;">
-        Changing the name, price, description, location, or photos will require admin approval before it's visible to buyers again.</p>
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:14px;color:var(--text);">Edit Listing</h2>
+
+      <div style="
+        display:flex;align-items:flex-start;gap:10px;
+        background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.35);
+        border-radius:var(--radius-xs);padding:11px 13px;margin-bottom:20px;
+      ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ca8a04"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <p style="font-size:12px;color:#92400e;line-height:1.5;margin:0;">
+          Changing the name, price, description, location, or photos will require admin approval before it's visible to buyers again.
+        </p>
+      </div>
 
       <p
         style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
