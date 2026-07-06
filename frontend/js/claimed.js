@@ -46,7 +46,7 @@ function renderClaimed() {
         <div class="item-thumb" style="cursor:pointer;" onclick="goToItem('${item.listing_id}')">${icon}</div>
         <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem('${item.listing_id}')">
           <p class="item-name">${item.name}</p>
-          <p class="item-meta">${item.price} · Qty: ${item.quantity ?? 1} · ${item.category} · ${item.seller || ""} · ${item.date}</p>
+          <p class="item-meta">${item.total || item.price} (${item.price} × ${item.quantity ?? 1}) · ${item.category} · ${item.seller || ""} · ${item.date}</p>
           <p class="item-meta">📍 ${item.location || "Location not set"}${item.seller_contact ? ` · 📞 ${item.seller_contact}` : ""}${item.seller_email ? ` · ✉️ ${item.seller_email}` : ""}</p>
           ${hasReview && item.userComment ? `<p class="item-review">"${item.userComment}"</p>` : ""}
         </div>

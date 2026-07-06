@@ -75,6 +75,14 @@ function removeFromCartAPI(cart_id) {
   }).then((r) => r.json().then((data) => ({ ok: r.ok, data })));
 }
 
+function updateCartQuantityAPI(cart_id, quantity) {
+  return fetch(`${API}/api/cart/${encodeURIComponent(cart_id)}/quantity`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quantity }),
+  }).then((r) => r.json().then((data) => ({ ok: r.ok, data })));
+}
+
 function claimCartItemAPI(cart_id, quantity) {
   return fetch(`${API}/api/cart/${encodeURIComponent(cart_id)}/claim`, {
     method: "POST",

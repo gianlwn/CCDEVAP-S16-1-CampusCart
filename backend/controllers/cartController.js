@@ -45,6 +45,7 @@ async function cartDocToFrontend(cartDoc) {
     seller_id: listing.seller_id,
     status: listing.status,
     maxQuantity: available,
+    quantity: Math.min(cartDoc.quantity ?? 1, available || 1),
   };
 }
 
@@ -99,6 +100,47 @@ exports.remove = async (req, res) => {
     );
     if (!result) return res.status(404).json({ error: "not_found" });
     res.json({ message: "Removed from cart" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.updateQuantity = async (req, res) => {
+  try {
+    const parsedQty = parseInt(req.body.quantity);
+    if (!parsedQty || parsedQty < 1) {
+      return res.status(400).json({ error: "invalid_quantity" });
+    }
+
+    const cartDoc = await Cart.findOne({
+      cart_id: req.params.cart_id,
+      does_exist: true,
+    });
+    if (!cartDoc) return res.status(404).json({ error: "not_found" });
+
+    const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
+    if (!listing) return res.status(404).json({ error: "listing_not_found" });
+
+    const pendingClaims = await Claim.find({
+      listing_id: cartDoc.listing_id,
+      status: "pending",
+    });
+    const pendingQty = pendingClaims.reduce(
+      (s, c) => s + (c.quantity || 1),
+      0,
+    );
+    const available = Math.max(0, (listing.quantity ?? 1) - pendingQty);
+
+    if (parsedQty > available) {
+      return res
+        .status(400)
+        .json({ error: "invalid_quantity", max: available });
+    }
+
+    cartDoc.quantity = parsedQty;
+    await cartDoc.save();
+    res.json({ success: true, quantity: cartDoc.quantity });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

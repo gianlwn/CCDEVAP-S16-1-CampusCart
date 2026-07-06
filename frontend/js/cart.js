@@ -25,8 +25,9 @@ function _renderCartPage() {
   const pageItems = cartItems.slice(start, start + CART_PER_PAGE);
 
   cartList.innerHTML = pageItems
-    .map(
-      (item) => `
+    .map((item) => {
+      const qty = Math.min(Math.max(item.quantity || 1, 1), item.maxQuantity || 1);
+      return `
     <div class="cart-row" id="cart-row-${item.id}">
       <div class="cart-thumb" style="background:${CATEGORY_BG[item.category] || CATEGORY_BG.Others};cursor:pointer;" onclick="viewCartItem('${item.listing_id}')">
         ${CATEGORY_ICONS[item.category] || CATEGORY_ICONS.Others}
@@ -37,20 +38,20 @@ function _renderCartPage() {
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
         <label style="font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;">Qty</label>
-        <input id="qty-${item.id}" type="number" min="1" max="${item.maxQuantity}" value="1"
+        <input id="qty-${item.id}" type="number" min="1" max="${item.maxQuantity}" value="${qty}"
           style="width:54px;padding:5px 7px;border:1px solid var(--border);border-radius:var(--radius-xs);
           background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;text-align:center;"
-          onclick="event.stopPropagation()">
+          onclick="event.stopPropagation()" oninput="_updateCartItemPrice('${item.id}')">
         <span style="font-size:11px;color:var(--text-muted);">/ ${item.maxQuantity}</span>
       </div>
-      <p class="cart-item-price">₱${item.price.toLocaleString()}</p>
+      <p class="cart-item-price" id="price-${item.id}">₱${(item.price * qty).toLocaleString()}</p>
       <div class="cart-item-actions">
         <button class="btn-claim-item" onclick="claimItem('${item.id}', ${item.maxQuantity})">Claim</button>
         <button class="btn-cancel-item" onclick="cancelItem('${item.id}')">Cancel</button>
       </div>
     </div>
-  `,
-    )
+  `;
+    })
     .join("");
 
   if (pag) _renderCartPagination(pag);
@@ -85,6 +86,27 @@ function viewCartItem(id) {
   window.location.href = "itempage.html?id=" + id;
 }
 
+const _cartQtySaveTimers = {};
+
+function _updateCartItemPrice(id) {
+  const item = cartItems.find((i) => String(i.id) === String(id));
+  if (!item) return;
+  const qtyInput = document.getElementById("qty-" + id);
+  const priceEl = document.getElementById("price-" + id);
+  if (!qtyInput || !priceEl) return;
+  const quantity = Math.min(
+    Math.max(parseInt(qtyInput.value) || 1, 1),
+    item.maxQuantity || 1,
+  );
+  priceEl.textContent = "₱" + (item.price * quantity).toLocaleString();
+  item.quantity = quantity;
+
+  clearTimeout(_cartQtySaveTimers[id]);
+  _cartQtySaveTimers[id] = setTimeout(() => {
+    updateCartQuantityAPI(id, quantity).catch(() => {});
+  }, 400);
+}
+
 async function claimItem(id, maxQuantity) {
   const item = cartItems.find((i) => String(i.id) === String(id));
   if (!item) return;
@@ -103,6 +125,7 @@ async function claimItem(id, maxQuantity) {
         4000,
       );
       cartItems = cartItems.filter((i) => String(i.id) !== String(id));
+      clearTimeout(_cartQtySaveTimers[id]);
       if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
         _cartPage = Math.max(1, _cartPage - 1);
       _renderCartPage();
@@ -141,6 +164,7 @@ async function cancelItem(id) {
         "warning",
       );
       cartItems = cartItems.filter((i) => String(i.id) !== String(id));
+      clearTimeout(_cartQtySaveTimers[id]);
       if (_cartPage > Math.ceil(cartItems.length / CART_PER_PAGE))
         _cartPage = Math.max(1, _cartPage - 1);
       _renderCartPage();

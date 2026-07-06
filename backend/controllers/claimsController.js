@@ -115,6 +115,9 @@ exports.list = async (req, res) => {
           rating_id: existingRating ? existingRating.rating_id : null,
           name: listing ? listing.product_name : "Unknown Item",
           price: listing ? `₱${Number(listing.price).toLocaleString()}` : "—",
+          total: listing
+            ? `₱${(Number(listing.price) * (c.quantity ?? 1)).toLocaleString()}`
+            : "—",
           category: listingCatMap[c.listing_id] || "Others",
           seller: sellerNameById[listing?.seller_id] || "Campus Seller",
           seller_id: listing?.seller_id || "",
