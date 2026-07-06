@@ -184,6 +184,19 @@
 .notif-list {
   display: flex;
   flex-direction: column;
+  max-height: 270px;
+  overflow-y: auto;
+}
+
+.notif-list::-webkit-scrollbar {
+  width: 6px;
+}
+.notif-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.notif-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
 }
 
 .notif-empty {
