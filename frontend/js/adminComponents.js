@@ -1,6 +1,9 @@
 function handleAdminSignOut() {
+  localStorage.removeItem("session_email");
+  localStorage.removeItem("session_role");
+  localStorage.removeItem("session_user_id");
   sessionStorage.setItem('cc_signout', '1');
-  window.location.href = '../login-path/login.html';
+  window.location.replace('../login-path/login.html');
 }
 
 function renderPagination(containerId, total, currentPage, onPageChange, itemsPerPage) {
