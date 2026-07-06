@@ -246,6 +246,12 @@ function fetchSellerReviewsByUserId(seller_id) {
   );
 }
 
+function removeRatingAPI(rating_id) {
+  return fetch(`${API}/api/ratings/${encodeURIComponent(rating_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
 function fetchNotificationsAPI() {
   const userId = getSessionUserId();
   if (!userId) return Promise.resolve([]);

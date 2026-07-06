@@ -7,6 +7,7 @@ const ratingSchema = new mongoose.Schema(
     rater_id: { type: String, required: true },
     rating: { type: Number, required: true, min: 1, max: 5 },
     review: { type: String },
+    is_removed: { type: Boolean, default: false },
     reviewed_at: { type: Date, default: Date.now },
   },
   { versionKey: false },

@@ -69,7 +69,10 @@ exports.getDashboard = async (req, res) => {
       0,
     );
 
-    const myRatings = await Rating.find({ listing_id: { $in: myListingIds } });
+    const myRatings = await Rating.find({
+      listing_id: { $in: myListingIds },
+      is_removed: false,
+    });
     const avgRating = myRatings.length
       ? parseFloat(
           (

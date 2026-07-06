@@ -1,11 +1,20 @@
+let _vuUser     = null;
+let _vuListings = [];
+let _vuReviews  = [];
+
 function _getSellerId() {
   return new URLSearchParams(window.location.search).get("seller_id") || "";
+}
+
+function _isAdmin() {
+  return localStorage.getItem("session_role") === "admin";
 }
 
 function buildReviewsHtml(reviews) {
   if (!reviews.length) {
     return `<div class="empty-state"><div class="empty-icon-svg">${ICONS.star}</div><p>No reviews yet for this seller.</p></div>`;
   }
+  const isAdmin = _isAdmin();
   return reviews
     .map(
       (r) => `
@@ -17,10 +26,29 @@ function buildReviewsHtml(reviews) {
         ${r.review ? `<p class="item-review">"${r.review}"</p>` : ""}
       </div>
       ${renderStars(r.rating)}
+      ${isAdmin ? `<button class="btn-icon danger" title="Delete Review" onclick="adminDeleteReview('${r.id}')">${ICONS.trash}</button>` : ""}
     </div>
   `,
     )
     .join("");
+}
+
+function adminDeleteReview(ratingId) {
+  showConfirm(
+    "Delete this Review?",
+    "This will permanently remove this review from the seller's profile. This cannot be undone.",
+    () => {
+      removeRatingAPI(ratingId).then(({ ok }) => {
+        if (!ok) { showToast("Error", "Could not delete review.", "error"); return; }
+        _vuReviews = _vuReviews.filter((r) => r.id !== ratingId);
+        const sellerListings = _vuListings.filter((l) => l.seller_id === _getSellerId());
+        renderSellerProfile(_vuUser, sellerListings, _vuReviews);
+        showToast("Deleted", "Review has been removed.", "success");
+      }).catch(() => showToast("Error", "Could not delete review.", "error"));
+    },
+    "Delete",
+    "trash",
+  );
 }
 
 function renderSellerProfile(user, listings, reviews) {
@@ -123,6 +151,9 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchSellerReviewsByUserId(sellerId),
   ])
     .then(([user, listings, reviews]) => {
+      _vuUser     = user;
+      _vuListings = listings;
+      _vuReviews  = reviews;
       const sellerListings = listings.filter((l) => l.seller_id === sellerId);
       renderSellerProfile(user, sellerListings, reviews);
     })

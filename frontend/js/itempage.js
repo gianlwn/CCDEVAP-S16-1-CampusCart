@@ -179,6 +179,13 @@ function renderItemPage(item) {
   loadSellerReviews(item.seller_id);
 }
 
+let _ipSellerId = null;
+let _ipReviews  = [];
+
+function _isAdmin() {
+  return localStorage.getItem("session_role") === "admin";
+}
+
 function renderSellerReviews(reviews) {
   const section = document.getElementById("ip-reviews-section");
   const summaryEl = document.getElementById("ip-reviews-summary");
@@ -195,6 +202,7 @@ function renderSellerReviews(reviews) {
   const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
   summaryEl.innerHTML = `${renderStars(Math.round(avg))}<span>${avg.toFixed(1)} · ${reviews.length} review${reviews.length > 1 ? "s" : ""}</span>`;
 
+  const isAdmin = _isAdmin();
   listEl.innerHTML = reviews
     .map(
       (r) => `
@@ -206,17 +214,39 @@ function renderSellerReviews(reviews) {
         ${r.review ? `<p class="item-review">"${r.review}"</p>` : ""}
       </div>
       ${renderStars(r.rating)}
+      ${isAdmin ? `<button class="btn-icon danger" title="Delete Review" onclick="adminDeleteReview('${r.id}')">${ICONS.trash}</button>` : ""}
     </div>
   `,
     )
     .join("");
 }
 
+function adminDeleteReview(ratingId) {
+  showConfirm(
+    "Delete this Review?",
+    "This will permanently remove this review from the seller's profile. This cannot be undone.",
+    () => {
+      removeRatingAPI(ratingId).then(({ ok }) => {
+        if (!ok) { showToast("Error", "Could not delete review.", "error"); return; }
+        _ipReviews = _ipReviews.filter((r) => r.id !== ratingId);
+        renderSellerReviews(_ipReviews);
+        showToast("Deleted", "Review has been removed.", "success");
+      }).catch(() => showToast("Error", "Could not delete review.", "error"));
+    },
+    "Delete",
+    "trash",
+  );
+}
+
 function loadSellerReviews(sellerId) {
   const section = document.getElementById("ip-reviews-section");
   if (!sellerId || !section) return;
+  _ipSellerId = sellerId;
   fetchSellerReviewsByUserId(sellerId)
-    .then((reviews) => renderSellerReviews(reviews))
+    .then((reviews) => {
+      _ipReviews = reviews;
+      renderSellerReviews(reviews);
+    })
     .catch(() => {
       section.style.display = "block";
       document.getElementById("ip-reviews-list").innerHTML =

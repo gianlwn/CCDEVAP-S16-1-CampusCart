@@ -16,7 +16,10 @@ exports.listBySeller = async (req, res) => {
       myListings.map((l) => [l.listings_id, l]),
     );
 
-    const ratings = await Rating.find({ listing_id: { $in: myListingIds } });
+    const ratings = await Rating.find({
+      listing_id: { $in: myListingIds },
+      is_removed: false,
+    });
     if (!ratings.length) return res.json([]);
 
     const lcLinks = await ListingCategory.find({
@@ -129,6 +132,21 @@ exports.update = async (req, res) => {
     );
     if (!updated) return res.status(404).json({ error: "not_found" });
     res.json({ rating_id: updated.rating_id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const updated = await Rating.findOneAndUpdate(
+      { rating_id: req.params.id },
+      { is_removed: true },
+      { new: true },
+    );
+    if (!updated) return res.status(404).json({ error: "not_found" });
+    res.json({ success: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });

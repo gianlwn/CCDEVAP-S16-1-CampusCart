@@ -110,7 +110,10 @@ exports.getOne = async (req, res) => {
     const listingIds = listings.map((l) => l.listings_id);
     let avgRating = null;
     if (listingIds.length) {
-      const ratings = await Rating.find({ listing_id: { $in: listingIds } });
+      const ratings = await Rating.find({
+        listing_id: { $in: listingIds },
+        is_removed: false,
+      });
       if (ratings.length) {
         const sum = ratings.reduce((acc, r) => acc + r.rating, 0);
         avgRating = Math.round((sum / ratings.length) * 10) / 10;
