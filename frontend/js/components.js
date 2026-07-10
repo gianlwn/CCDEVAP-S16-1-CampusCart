@@ -100,6 +100,7 @@ function refreshNotifs() {
         list.innerHTML = '<p class="notif-empty">No notifications yet.</p>';
       } else {
         list.innerHTML = notifications
+          .slice(0, 5)
           .map(
             (n) => `
           <div class="notif-item${n.is_read ? "" : " unread"}" data-id="${n.notification_id}">
@@ -226,6 +227,7 @@ function markAllNotifsRead() {
 function loadSideNav() {
   const cur = window.location.pathname;
   const a = (p) => (cur.includes(p) ? "active" : "");
+  const isAdmin = localStorage.getItem("session_role") === "admin";
 
   const html = `
     <aside class="side-nav">
@@ -250,6 +252,11 @@ function loadSideNav() {
             <span class="nav-item-icon">${ICONS.user}</span>Profile
           </a>
         </li>
+        ${isAdmin ? `<li>
+          <a href="../admin-dashboard/adminDashboard.html">
+            <span class="nav-item-icon">${ICONS.shield}</span>Admin Dashboard
+          </a>
+        </li>` : ""}
       </ul>
       <div class="sidebar-bottom">
         <button class="signout-btn" onclick="handleSignOut()">

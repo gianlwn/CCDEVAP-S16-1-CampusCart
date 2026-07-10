@@ -131,7 +131,33 @@ function initUserSearch() {
   if (select) select.addEventListener('change', applyUserFilters);
 }
 
+function renderAccessDenied() {
+  document.body.innerHTML = `
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-family:inherit;">
+      <div style="max-width:420px;">
+        <div style="color:var(--accent,#0e8878);margin-bottom:16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9.5" y1="12" x2="14.5" y2="12"/></svg>
+        </div>
+        <h1 style="font-size:22px;margin:0 0 10px;">Access Denied</h1>
+        <p style="color:var(--text-muted,#667);font-size:14px;line-height:1.5;margin:0 0 22px;">
+          You don't have permission to view the admin dashboard. This area is restricted to administrator accounts.
+        </p>
+        <a href="../user-profile-dashboard/dashboard.html" style="display:inline-block;padding:10px 20px;background:var(--accent,#0e8878);color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">Back to My Dashboard</a>
+      </div>
+    </div>`;
+}
+
+// Blocks non-admin accounts from any admin page. Called first by every admin
+// page's init; throwing halts the rest of that page's inline script.
+function guardAdmin() {
+  if (localStorage.getItem("session_role") === "admin") return;
+  renderAccessDenied();
+  throw new Error("access_denied");
+}
+
 function loadAdminSideNav(page) {
+  guardAdmin();
+
   const html = `
     <div class="nav-links">
       <a href="adminDashboard.html"   class="nav-item">${ICONS.chart}<span class="nav-item-label">Admin Dashboard</span></a>

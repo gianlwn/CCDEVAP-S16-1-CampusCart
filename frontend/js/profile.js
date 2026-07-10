@@ -27,19 +27,45 @@ function updateBioCounter() {
 }
 
 let _pendingProfilePicture = null;
+let _pendingRemovePicture = false;
+
+const DEFAULT_AVATAR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>`;
+
+function setRemoveBtnVisible(visible) {
+  const btn = document.getElementById("btn-remove-img");
+  if (btn) btn.style.display = visible ? "" : "none";
+}
+
+function renderDefaultAvatar() {
+  document.getElementById("profile-avatar-el").innerHTML = DEFAULT_AVATAR_SVG;
+}
 
 function renderAvatar(profilePicture) {
-  const avatarEl = document.getElementById("profile-avatar-el");
-  if (profilePicture && profilePicture.startsWith("/uploads/")) {
-    avatarEl.innerHTML = `<img src="${API}${profilePicture}" alt="Profile photo">`;
+  const hasCustom = profilePicture && profilePicture.startsWith("/uploads/");
+  if (hasCustom) {
+    document.getElementById("profile-avatar-el").innerHTML =
+      `<img src="${API}${profilePicture}" alt="Profile photo">`;
+  } else {
+    renderDefaultAvatar();
   }
+  setRemoveBtnVisible(hasCustom);
 }
 
 function previewProfilePicture(dataUrl) {
   _pendingProfilePicture = dataUrl;
+  _pendingRemovePicture = false;
   document.getElementById("profile-avatar-el").innerHTML =
     `<img src="${dataUrl}" alt="Profile photo">`;
+  setRemoveBtnVisible(true);
   showToast("Photo Selected", "Press Save Changes to apply your new photo.", "info");
+}
+
+function handleRemovePicture() {
+  _pendingRemovePicture = true;
+  _pendingProfilePicture = null;
+  renderDefaultAvatar();
+  setRemoveBtnVisible(false);
+  showToast("Photo Removed", "Press Save Changes to apply.", "info");
 }
 
 function handleSaveProfile() {
@@ -86,6 +112,7 @@ function handleSaveProfile() {
   };
   if (pw) data.password = pw;
   if (_pendingProfilePicture) data.profile_picture = _pendingProfilePicture;
+  else if (_pendingRemovePicture) data.remove_picture = true;
 
   updateProfileAPI(data)
     .then(({ ok, data: resData }) => {
@@ -97,9 +124,10 @@ function handleSaveProfile() {
       document.getElementById("prof-pw2").value = "";
       document.getElementById("summary-school").textContent =
         school || "CampusCart Member";
-      if (_pendingProfilePicture) {
+      if (_pendingProfilePicture || _pendingRemovePicture) {
         renderAvatar(resData.profile_picture);
         _pendingProfilePicture = null;
+        _pendingRemovePicture = false;
       }
       showToast("Profile Saved", "Your profile has been updated.", "success");
     })

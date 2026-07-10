@@ -161,6 +161,7 @@ exports.update = async (req, res) => {
       course_code,
       password,
       profile_picture,
+      remove_picture,
     } = req.body;
     const update = {};
     if (first_name !== undefined) update.first_name = first_name;
@@ -179,6 +180,11 @@ exports.update = async (req, res) => {
       if (!existing) return res.status(404).json({ error: "not_found" });
       previousPicture = existing.profile_picture;
       update.profile_picture = saved;
+    } else if (remove_picture) {
+      const existing = await User.findOne({ user_id: req.params.user_id });
+      if (!existing) return res.status(404).json({ error: "not_found" });
+      previousPicture = existing.profile_picture;
+      update.profile_picture = "default_pfp.jpg";
     }
 
     const updated = await User.findOneAndUpdate(

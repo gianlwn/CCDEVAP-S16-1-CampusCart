@@ -184,8 +184,6 @@
 .notif-list {
   display: flex;
   flex-direction: column;
-  max-height: 270px;
-  overflow-y: auto;
 }
 
 .notif-list::-webkit-scrollbar {
