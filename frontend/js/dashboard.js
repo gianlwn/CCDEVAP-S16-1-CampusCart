@@ -7,19 +7,26 @@ const centerTextPlugin = {
     const { ctx, chartArea } = chart;
     if (!chartArea) return;
     const t = getChartTheme();
-    const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+    const total = chart.config.options._emptyTotal ?? chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
     const cx = (chartArea.left + chartArea.right) / 2;
     const cy = (chartArea.top + chartArea.bottom) / 2;
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = t.text;
-    ctx.font = 'bold 20px Segoe UI, sans-serif';
-    ctx.fillText(total, cx, cy - 9);
-    ctx.font = '10px Segoe UI, sans-serif';
-    ctx.fillStyle = t.text;
-    ctx.globalAlpha = 0.55;
-    ctx.fillText('reports', cx, cy + 10);
+    if (total === 0) {
+      ctx.font = '11px Segoe UI, sans-serif';
+      ctx.fillStyle = t.text;
+      ctx.globalAlpha = 0.5;
+      ctx.fillText('No reports', cx, cy);
+    } else {
+      ctx.fillStyle = t.text;
+      ctx.font = 'bold 20px Segoe UI, sans-serif';
+      ctx.fillText(total, cx, cy - 9);
+      ctx.font = '10px Segoe UI, sans-serif';
+      ctx.fillStyle = t.text;
+      ctx.globalAlpha = 0.55;
+      ctx.fillText('reports', cx, cy + 10);
+    }
     ctx.restore();
   }
 };
@@ -116,14 +123,23 @@ function buildCharts(data) {
     }
   });
 
+  const hasReports = data.reportsOnListing.length > 0;
   charts.reports = new Chart(document.getElementById('chart-reports'), {
     type: 'doughnut',
     _centerText: true,
-    data: {
+    data: hasReports ? {
       labels: data.reportsOnListing.map(d => d.label),
       datasets: [{
         data: data.reportsOnListing.map(d => d.value),
         backgroundColor: REPORT_COLORS,
+        borderColor: t.cardBg,
+        borderWidth: 3,
+      }]
+    } : {
+      labels: ['No reports'],
+      datasets: [{
+        data: [1],
+        backgroundColor: [t.grid],
         borderColor: t.cardBg,
         borderWidth: 3,
       }]
@@ -133,17 +149,18 @@ function buildCharts(data) {
       maintainAspectRatio: false,
       cutout: '64%',
       _centerText: true,
+      _emptyTotal: hasReports ? undefined : 0,
       plugins: {
         legend: { display: false },
-        tooltip: {
-          callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` }
-        }
+        tooltip: { enabled: hasReports, callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } }
       }
     }
   });
 
   const legend = document.getElementById('reports-legend');
-  legend.innerHTML = data.reportsOnListing.map((d, i) => `
+  legend.innerHTML = !hasReports
+    ? `<div class="legend-empty" style="opacity:.55;font-size:12px;">No reports on your listings</div>`
+    : data.reportsOnListing.map((d, i) => `
     <div class="legend-item">
       <span class="legend-dot" style="background:${REPORT_COLORS[i]}"></span>
       <span class="legend-label">${d.label}</span>

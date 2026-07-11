@@ -5,6 +5,7 @@ const Category = require("../models/Category");
 const Claim = require("../models/Claim");
 const generateId = require("../utils/generateId");
 const { saveListingImage, saveListingImages, deleteListingImages } = require("../utils/imageStorage");
+const createNotification = require("../utils/createNotification");
 
 function toFrontendShape(listing, sellerName, sellerId, categoryNames, availableQty) {
   const cats =
@@ -279,6 +280,16 @@ exports.updateStatus = async (req, res) => {
       { new: true },
     );
     if (!listing) return res.status(404).json({ error: "not_found" });
+
+    createNotification(
+      listing.seller_id,
+      status === "active" ? "listing_approved" : "listing_rejected",
+      status === "active"
+        ? `Your listing "${listing.product_name}" was approved and is now live.`
+        : `Your listing "${listing.product_name}" was rejected by an admin.`,
+      listing.listings_id,
+    ).catch(() => {});
+
     res.json({ success: true, listing });
   } catch (err) {
     console.error(err);

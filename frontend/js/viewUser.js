@@ -10,6 +10,45 @@ function _isAdmin() {
   return localStorage.getItem("session_role") === "admin";
 }
 
+function openAccountReportModal() {
+  if (!_vuUser) return;
+  if (!localStorage.getItem("session_user_id")) {
+    showToast("Not Logged In", "Please log in to report an account.", "warning");
+    return;
+  }
+  document.getElementById("report-account-modal-subtitle").textContent = _vuUser.name || "This user";
+  document.getElementById("report-account-inp-reason").value = "";
+  document.getElementById("report-account-modal").style.display = "flex";
+}
+
+function closeAccountReportModal() {
+  document.getElementById("report-account-modal").style.display = "none";
+}
+
+function submitAccountReport() {
+  const reason = document.getElementById("report-account-inp-reason").value.trim();
+  if (!reason) {
+    showToast("Missing Reason", "Please describe why this account violates platform rules.", "warning");
+    return;
+  }
+  submitReportAPI({ reported_user_id: _getSellerId(), reason })
+    .then(({ ok }) => {
+      if (!ok) {
+        showToast("Error", "Could not submit report.", "error");
+        return;
+      }
+      closeAccountReportModal();
+      showToast("Reported", "Your report has been submitted for admin review.", "info");
+    })
+    .catch(() => showToast("Error", "Could not submit report.", "error"));
+}
+
+document
+  .getElementById("report-account-modal")
+  .addEventListener("click", function (e) {
+    if (e.target === this) closeAccountReportModal();
+  });
+
 function buildReviewsHtml(reviews) {
   if (!reviews.length) {
     return `<div class="empty-state"><div class="empty-icon-svg">${ICONS.star}</div><p>No reviews yet for this seller.</p></div>`;
@@ -80,6 +119,11 @@ function renderSellerProfile(user, listings, reviews) {
         .join("")
     : `<div class="empty-state"><div class="empty-icon-svg">${ICONS.tag}</div><p>No active listings from this seller.</p></div>`;
 
+  const isOwnProfile = localStorage.getItem("session_user_id") === _getSellerId();
+  const reportBtnHtml = isOwnProfile
+    ? ""
+    : `<button class="btn-outline" style="margin-top:12px;color:var(--danger-text, #dc2626);border-color:var(--danger-text, #dc2626);" onclick="openAccountReportModal()">${ICONS.alert} Report Account</button>`;
+
   const reviewsHtml = buildReviewsHtml(reviews);
   const reviewsSummary = reviews.length
     ? (() => {
@@ -114,6 +158,7 @@ function renderSellerProfile(user, listings, reviews) {
             <span class="vu-stat-label">Member Since</span>
           </div>
         </div>
+        ${reportBtnHtml}
       </div>
 
       <div class="vu-main-col">

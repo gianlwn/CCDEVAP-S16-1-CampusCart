@@ -1,14 +1,20 @@
 const Report = require("../models/Report");
 const User = require("../models/User");
 const Listing = require("../models/Listing");
+const Rating = require("../models/Rating");
 const generateId = require("../utils/generateId");
 const issueWarning = require("../utils/issueWarning");
 
 function toFrontendShape(report, reporterName, subjectText) {
   return {
     reportId: report.report_id,
-    reportType: report.reported_listing_id ? "Listing Report" : "User Report",
+    reportType: report.reported_rating_id
+      ? "Review Report"
+      : report.reported_listing_id
+        ? "Listing Report"
+        : "User Report",
     reportedListingId: report.reported_listing_id || null,
+    reportedRatingId: report.reported_rating_id || null,
     reporter: reporterName || "Unknown",
     status: report.status === "resolved" ? "Resolved" : "Pending Review",
     reason: report.reason,
@@ -59,9 +65,24 @@ async function enrichReports(reports) {
     ownerMap[u.user_id] = `${u.first_name} ${u.last_name}`.trim();
   });
 
+  const ratingIds = [
+    ...new Set(reports.filter((r) => r.reported_rating_id).map((r) => r.reported_rating_id)),
+  ];
+  const ratings = await Rating.find({ rating_id: { $in: ratingIds } });
+  const ratingMap = {};
+  ratings.forEach((rt) => {
+    ratingMap[rt.rating_id] = rt;
+  });
+
   return reports.map((r) => {
     let subject;
-    if (r.reported_listing_id) {
+    if (r.reported_rating_id) {
+      const rating = ratingMap[r.reported_rating_id];
+      const reviewerName = userMap[r.reported_user_id] || "Unknown User";
+      subject = rating
+        ? `Review by ${reviewerName}: "${rating.review || "(no comment)"}" (${rating.rating}★)`
+        : `Review by ${reviewerName} (review no longer exists)`;
+    } else if (r.reported_listing_id) {
       const listing = listingMap[r.reported_listing_id];
       const listingName = listing ? listing.name : "Unknown Listing";
       const ownerName =
@@ -146,7 +167,7 @@ exports.resolve = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { reporter_id, reported_listing_id, reported_user_id, reason } =
+    const { reporter_id, reported_listing_id, reported_user_id, reported_rating_id, reason } =
       req.body;
     if (!reporter_id || !reason)
       return res.status(400).json({ error: "missing_fields" });
@@ -157,6 +178,7 @@ exports.create = async (req, res) => {
       reporter_id,
       reported_listing_id: reported_listing_id || null,
       reported_user_id: reported_user_id || null,
+      reported_rating_id: reported_rating_id || null,
       reason,
       status: "pending",
     }).save();

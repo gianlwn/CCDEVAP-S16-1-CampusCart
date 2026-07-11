@@ -24,6 +24,7 @@ function renderClaimed() {
     const hasReview = item.userRating != null;
 
     const canReview = item.buyer_completed && item.seller_completed && !hasReview;
+    const awaitingSeller = item.buyer_completed && !item.seller_completed && item.status !== "cancelled";
 
     let actionBtns = "";
     if (!item.buyer_completed) {
@@ -33,13 +34,15 @@ function renderClaimed() {
       actionBtns += `<button class="btn-icon" title="Write a Review" onclick="openReviewModal('${item.id}')">${ICONS.edit}</button>`;
     }
     if (!item.seller_completed) {
-      actionBtns += `<button class="btn-icon danger" title="Cancel Claim" onclick="cancelClaim('${item.id}')">${ICONS.trash}</button>`;
+      actionBtns += `<button class="btn-icon danger" title="Cancel Claim — notifies the seller and cannot be undone" onclick="cancelClaim('${item.id}')">${ICONS.trash}</button>`;
     }
     actionBtns += `<button class="btn-icon" title="Report Seller" onclick="reportClaimedItem('${item.id}')" style="color:var(--warning-text);">${ICONS.alert}</button>`;
 
     const statusOrStars = hasReview
       ? renderStars(item.userRating)
-      : `<span class="badge-status ${item.status}">${item.status}</span>`;
+      : awaitingSeller
+        ? `<span class="badge-status pending" title="You've confirmed receipt — waiting on the seller to confirm the handoff too">Awaiting Seller</span>`
+        : `<span class="badge-status ${item.status}">${item.status}</span>`;
 
     return `
       <div class="item-row claimed-item-row" id="claimed-row-${item.id}">
@@ -48,6 +51,7 @@ function renderClaimed() {
           <p class="item-name">${item.name}</p>
           <p class="item-meta">${item.total || item.price} (${item.price} × ${item.quantity ?? 1}) · ${item.category} · ${item.seller || ""} · ${item.date}</p>
           <p class="item-meta">📍 ${item.location || "Location not set"}${item.seller_contact ? ` · 📞 ${item.seller_contact}` : ""}${item.seller_email ? ` · ✉️ ${item.seller_email}` : ""}</p>
+          ${awaitingSeller ? `<p class="item-meta" style="color:var(--warning-text);">You've confirmed receipt. Waiting for the seller to confirm before this is marked completed — you can still cancel if needed.</p>` : ""}
           ${hasReview && item.userComment ? `<p class="item-review">"${item.userComment}"</p>` : ""}
         </div>
         ${statusOrStars}

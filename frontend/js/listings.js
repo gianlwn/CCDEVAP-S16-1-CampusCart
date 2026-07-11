@@ -105,7 +105,10 @@ function editListing(id) {
   document.getElementById("edit-inp-name").value = item.name || "";
   document.getElementById("edit-inp-price").value = item.price || "";
   document.getElementById("edit-inp-qty").value = item.quantity ?? 1;
-  document.getElementById("edit-inp-category").value = item.category || "";
+  const cats = Array.isArray(item.categories) && item.categories.length ? item.categories : [item.category].filter(Boolean);
+  document.getElementById("edit-inp-category").value = cats[0] || "";
+  document.getElementById("edit-inp-category-2").value = cats[1] || "";
+  document.getElementById("edit-inp-category-3").value = cats[2] || "";
   document.getElementById("edit-inp-condition").value = item.condition || "";
   document.getElementById("edit-inp-location").value = item.location || "";
   document.getElementById("edit-inp-desc").value = item.description || "";
@@ -136,12 +139,21 @@ function saveEditListing() {
   )?.status;
 
   const parsedQty = parseInt(document.getElementById("edit-inp-qty").value);
+  const categories = [
+    ...new Set(
+      [
+        document.getElementById("edit-inp-category").value,
+        document.getElementById("edit-inp-category-2").value,
+        document.getElementById("edit-inp-category-3").value,
+      ].filter(Boolean),
+    ),
+  ];
 
   updateListingAPI(editingListingId, {
     product_name: name,
     price: parseFloat(price),
     quantity: Number.isNaN(parsedQty) ? 1 : parsedQty,
-    category: document.getElementById("edit-inp-category").value,
+    categories,
     condition: document.getElementById("edit-inp-condition").value,
     description: document.getElementById("edit-inp-desc").value.trim(),
     location: document.getElementById("edit-inp-location").value.trim(),
@@ -240,7 +252,11 @@ function submitReport() {
     );
     return;
   }
-  submitReportAPI({ reported_user_id: reportingReview.rater_id, reason })
+  submitReportAPI({
+    reported_user_id: reportingReview.rater_id,
+    reported_rating_id: reportingReview.id,
+    reason,
+  })
     .then(({ ok }) => {
       if (!ok) {
         showToast("Error", "Could not submit report.", "error");
@@ -342,6 +358,20 @@ function markSellerComplete(id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  fetchCategories()
+    .then((categories) => {
+      const names = categories.map((c) => c.category_name);
+      const primary = document.getElementById("edit-inp-category");
+      const secondary = document.getElementById("edit-inp-category-2");
+      const tertiary = document.getElementById("edit-inp-category-3");
+      names.forEach((name) => {
+        primary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
+        secondary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
+        tertiary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
+      });
+    })
+    .catch(() => {});
+
   fetchUserListings()
     .then((items) => {
       allListings = items;

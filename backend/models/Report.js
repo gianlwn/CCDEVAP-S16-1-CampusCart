@@ -5,6 +5,7 @@ const reportSchema = new mongoose.Schema(
     reporter_id: { type: String, required: true },
     reported_listing_id: { type: String },
     reported_user_id: { type: String },
+    reported_rating_id: { type: String },
     reason: { type: String, required: true },
     status: { type: String, enum: ["pending", "resolved"], default: "pending" },
     reviewed_by: { type: String, default: null },

@@ -542,7 +542,7 @@ function viewListingDetails(listingId) {
       <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.name}</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
-        <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${listing.category}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${(listing.categories || [listing.category]).join(", ")}</span></div>
         <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
         <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
         <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description || 'No description provided.'}</span></div>
@@ -786,7 +786,7 @@ function viewReportedListing(listingId) {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
           <div style="${MS.row}"><span style="${MS.label}">Status</span><span style="font-size:13px;color:var(--text);text-transform:capitalize;">${listing.status}</span></div>
-          <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${listing.category}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${(listing.categories || [listing.category]).join(", ")}</span></div>
           <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
           <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
           <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description || 'No description provided.'}</span></div>
@@ -804,10 +804,10 @@ function openResolveReportModal(reportId) {
   if (!report) return;
 
   const actions = [
-    { value: 'warning', label: 'Issue Warning', icon: 'alert' },
-    { value: 'suspend', label: 'Suspend User', icon: 'userSlash' },
-    { value: 'ban', label: 'Ban User', icon: 'ban' },
-    { value: 'dismiss', label: 'Dismiss Report', icon: 'close' },
+    { value: 'warning', label: 'Issue Warning', icon: 'alert', desc: 'Adds a strike to the user\'s record. 3 warnings auto-suspend the account.' },
+    { value: 'suspend', label: 'Suspend User', icon: 'userSlash', desc: 'Blocks login for a moderate/first-time violation. Reversible by an admin at any time.' },
+    { value: 'ban', label: 'Ban User', icon: 'ban', desc: 'Blocks login for a severe or repeat violation. Also reversible by an admin — use for the most serious cases.' },
+    { value: 'dismiss', label: 'Dismiss Report', icon: 'close', desc: 'Closes the report with no action taken against the user.' },
   ];
 
   openModal(`
@@ -816,16 +816,24 @@ function openResolveReportModal(reportId) {
       <div style="${MS.row}">
         <span style="font-size:13px;color:var(--text);font-weight:600;">${report.subject}</span>
         <span style="font-size:12px;color:var(--text-muted);">Reported by ${report.reporter}</span>
+        ${report.reportedRatingId ? `
+          <button type="button" id="modal-delete-review-btn" onclick="deleteReportedReview('${reportId}')" style="
+            margin-top:8px;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;
+            padding:6px 10px;background:var(--danger-bg);color:var(--danger-text);
+            border:none;border-radius:var(--radius-xs);cursor:pointer;font-size:12px;font-weight:700;
+          ">${ICONS.trash} Delete this Review</button>
+        ` : ''}
       </div>
       <div style="${MS.row}">
         <label style="${MS.label}">Action</label>
         <div class="resolve-action-choices" id="modal-resolve-choices">
           ${actions.map((a, i) => `
-            <button type="button" class="resolve-action-btn${i === 0 ? ' active' : ''}" data-action="${a.value}" onclick="selectResolveAction(this)">
+            <button type="button" class="resolve-action-btn${i === 0 ? ' active' : ''}" data-action="${a.value}" title="${a.desc}" onclick="selectResolveAction(this)">
               ${ICONS[a.icon]}<span>${a.label}</span>
             </button>
           `).join('')}
         </div>
+        <p id="modal-resolve-action-desc" style="font-size:11.5px;color:var(--text-muted);margin-top:6px;line-height:1.4;">${actions[0].desc}</p>
       </div>
       <div style="${MS.row}">
         <label style="${MS.label}">Action Taken</label>
@@ -839,9 +847,38 @@ function openResolveReportModal(reportId) {
   `);
 }
 
+function deleteReportedReview(reportId) {
+  const report = _reportsData.find(r => r.reportId === reportId);
+  if (!report || !report.reportedRatingId) return;
+  showConfirm(
+    'Delete this Review?',
+    'This will permanently remove the reported review from the seller\'s profile. This cannot be undone.',
+    () => {
+      removeRatingAPI(report.reportedRatingId).then(({ ok }) => {
+        if (!ok) {
+          showToast('Error', 'Could not delete review.', 'error');
+          return;
+        }
+        const btn = document.getElementById('modal-delete-review-btn');
+        if (btn) {
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+          btn.style.cursor = 'default';
+          btn.innerHTML = `${ICONS.check} Review Deleted`;
+        }
+        showToast('Deleted', 'Review has been removed.', 'success');
+      }).catch(() => showToast('Error', 'Could not delete review.', 'error'));
+    },
+    'Delete',
+    'trash',
+  );
+}
+
 function selectResolveAction(btn) {
   btn.parentElement.querySelectorAll('.resolve-action-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const descEl = document.getElementById('modal-resolve-action-desc');
+  if (descEl) descEl.textContent = btn.title;
 }
 
 function submitResolveReport(reportId) {

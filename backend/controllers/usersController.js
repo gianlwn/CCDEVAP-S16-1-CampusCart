@@ -49,9 +49,15 @@ exports.updateStatus = async (req, res) => {
     if (!["active", "suspended", "banned"].includes(status)) {
       return res.status(400).json({ error: "invalid_status" });
     }
+    const update = {
+      is_suspended: status === "suspended",
+      is_banned: status === "banned",
+    };
+    if (status === "active") update.warning_count = 0;
+
     const updated = await User.findOneAndUpdate(
       { user_id: req.params.user_id },
-      { is_suspended: status === "suspended", is_banned: status === "banned" },
+      update,
       { new: true },
     );
     if (!updated) return res.status(404).json({ error: "not_found" });

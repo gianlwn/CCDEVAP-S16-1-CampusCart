@@ -87,6 +87,8 @@ const NOTIF_ICON = {
   suspension: `userSlash`,
   ban: `ban`,
   reactivated: `check`,
+  listing_approved: `package`,
+  listing_rejected: `close`,
 };
 
 function refreshNotifs() {
