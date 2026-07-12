@@ -159,6 +159,7 @@ body.darkMode .kpi-card.kpi-gold .kpi-icon-wrap {
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  max-width: 200px;
 }
 
 .legend-item {
@@ -177,11 +178,11 @@ body.darkMode .kpi-card.kpi-gold .kpi-icon-wrap {
 
 .legend-label {
   color: var(--text-muted);
-  flex: 1;
 }
 .legend-val {
   font-weight: 700;
   color: var(--text);
+  margin-left: auto;
 }
 
 @media (max-width: 768px) {
