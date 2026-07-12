@@ -13,6 +13,7 @@ let activeFilter = "all";
 let _advConditions = [];
 let _advMinPrice = 0;
 let _advMaxPrice = Infinity;
+let _personalizedCategories = [];
 
 function renderGrid(items) {
   _filteredItems = items;
@@ -164,13 +165,41 @@ function handleSearch() {
   applyFilters();
 }
 
+function _computePersonalizedCategories(claims) {
+  const counts = {};
+  claims.forEach((c) => {
+    if (!c.category) return;
+    counts[c.category] = (counts[c.category] || 0) + 1;
+  });
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+}
+
 function applyFilters() {
   const searchInput = document.getElementById("search-input");
   if (!searchInput) return;
   const q = searchInput.value.toLowerCase().trim();
+
+  let baseItems = allItems;
+  let category = activeFilter;
+  if (activeFilter === "foryou") {
+    category = "all";
+    if (_personalizedCategories.length) {
+      baseItems = allItems.filter((i) =>
+        _personalizedCategories.includes(i.category),
+      );
+      if (!baseItems.length) baseItems = allItems;
+    } else if (!getSessionUserId()) {
+      showToast(
+        "Log In for Picks",
+        "Log in so we can personalize recommendations based on what you've bought. Showing trending items for now.",
+        "info",
+      );
+    }
+  }
+
   renderGrid(
-    filterListings(allItems, {
-      category: activeFilter,
+    filterListings(baseItems, {
+      category,
       query: q,
       conditions: _advConditions,
       minPrice: _advMinPrice,
@@ -304,6 +333,13 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(() => showToast("Error", "Could not load listings.", "error"));
 
   if (getSessionUserId()) {
+    fetchClaims()
+      .then((claims) => {
+        _personalizedCategories = _computePersonalizedCategories(claims);
+        if (activeFilter === "foryou") applyFilters();
+      })
+      .catch(() => {});
+
     fetchMyProfile()
       .then((profile) => {
         const count = profile.warning_count || 0;

@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const emailjs = require("@emailjs/nodejs");
 const User = require("../models/User");
 const generateId = require("../utils/generateId");
+const { liftExpiredSuspension } = require("../utils/suspension");
 
 const otpStore = new Map();
 const recoveryVerified = new Set();
@@ -104,8 +105,11 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: "invalid_credentials" });
     if (user.is_banned)
       return res.status(403).json({ error: "account_banned" });
+    await liftExpiredSuspension(user);
     if (user.is_suspended)
-      return res.status(403).json({ error: "account_suspended" });
+      return res
+        .status(403)
+        .json({ error: "account_suspended", suspended_until: user.suspended_until });
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: "invalid_credentials" });
     res.json({

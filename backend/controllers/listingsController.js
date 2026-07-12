@@ -3,6 +3,7 @@ const User = require("../models/User");
 const ListingCategory = require("../models/ListingCategory");
 const Category = require("../models/Category");
 const Claim = require("../models/Claim");
+const Cart = require("../models/Cart");
 const generateId = require("../utils/generateId");
 const { saveListingImage, saveListingImages, deleteListingImages } = require("../utils/imageStorage");
 const createNotification = require("../utils/createNotification");
@@ -305,6 +306,12 @@ exports.remove = async (req, res) => {
       { new: true },
     );
     if (!listing) return res.status(404).json({ error: "not_found" });
+
+    await Cart.updateMany(
+      { listing_id: req.params.id, does_exist: true },
+      { does_exist: false },
+    );
+
     res.json({ success: true });
   } catch (err) {
     console.error(err);

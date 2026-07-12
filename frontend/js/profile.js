@@ -188,7 +188,42 @@ function handleHelp() {
   );
 }
 
+function renderMyReports(reports) {
+  const el = document.getElementById("my-reports-list");
+  if (!el) return;
+  if (!reports.length) {
+    el.innerHTML =
+      '<p style="color:var(--text-muted);font-size:13px;">You haven\'t filed any reports.</p>';
+    return;
+  }
+  el.innerHTML = reports
+    .map((r) => {
+      const statusClass = r.status === "Resolved" ? "active" : "pending_review";
+      const outcome = r.actionTaken ? ` — ${r.actionTaken}` : "";
+      return `
+      <div class="listing-row">
+        <div class="item-info" style="flex:1;min-width:0;">
+          <p class="item-name">${r.subject}</p>
+          <p class="item-meta">${r.reportType} · Reason: ${r.reason} · ${r.date}</p>
+          ${r.status === "Resolved" ? `<p class="item-meta">${outcome.replace(/^ — /, "")}</p>` : ""}
+        </div>
+        <span class="badge-status ${statusClass}">${r.status}</span>
+      </div>
+    `;
+    })
+    .join("");
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  fetchMyReports()
+    .then((reports) => renderMyReports(reports))
+    .catch(() => {
+      const el = document.getElementById("my-reports-list");
+      if (el)
+        el.innerHTML =
+          '<p style="color:var(--text-muted);font-size:13px;">Could not load reports.</p>';
+    });
+
   fetchMyProfile()
     .then((data) => {
       const fullName = `${data.first_name} ${data.last_name}`.trim();

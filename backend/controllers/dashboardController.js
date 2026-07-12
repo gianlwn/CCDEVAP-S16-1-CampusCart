@@ -146,7 +146,7 @@ exports.getDashboard = async (req, res) => {
           : l.status === "active"
             ? "Active"
             : l.status === "claimed"
-              ? "Claimed"
+              ? "Collected"
               : l.status;
       statusCount[label] = (statusCount[label] || 0) + 1;
     });

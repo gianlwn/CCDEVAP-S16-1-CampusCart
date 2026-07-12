@@ -119,7 +119,7 @@ async function claimItem(id, maxQuantity) {
     const { ok, data } = await claimCartItemAPI(id, quantity);
     if (ok) {
       showToast(
-        "Claimed!",
+        "Bought!",
         `${quantity}× "${item.name}" reserved. Coordinate with the seller to arrange pickup.`,
         "success",
         4000,
@@ -133,15 +133,15 @@ async function claimItem(id, maxQuantity) {
     } else if (data.error === "listing_unavailable") {
       showToast(
         "Unavailable",
-        "This item has already been claimed by someone else.",
+        "This item has already been collected by someone else.",
         "warning",
       );
     } else if (data.error === "invalid_quantity") {
       showToast(
         "Not Enough Stock",
         data.max > 0
-          ? `Only ${data.max} unit${data.max > 1 ? "s" : ""} left available to claim.`
-          : "All units of this item have already been claimed.",
+          ? `Only ${data.max} unit${data.max > 1 ? "s" : ""} left available to buy.`
+          : "All units of this item have already been collected.",
         "warning",
       );
     } else {

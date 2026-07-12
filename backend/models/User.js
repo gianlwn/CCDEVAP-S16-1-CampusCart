@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
     profile_picture: { type: String, default: "default_pfp.jpg" },
     warning_count: { type: Number, default: 0 },
     is_suspended: { type: Boolean, default: false },
+    suspended_until: { type: Date, default: null },
     is_banned: { type: Boolean, default: false },
     is_deleted: { type: Boolean, default: false },
   },

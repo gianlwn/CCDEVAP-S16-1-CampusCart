@@ -67,11 +67,15 @@ async function handleLogin() {
           "error",
         );
       } else if (data.error === "account_suspended") {
-        showToast(
-          "Account Suspended",
-          "Your account is currently suspended.",
-          "error",
-        );
+        let message = "Your account is currently suspended.";
+        if (data.suspended_until) {
+          const until = new Date(data.suspended_until);
+          message = `Your account is suspended until ${until.toLocaleString(
+            "en-US",
+            { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" },
+          )}.`;
+        }
+        showToast("Account Suspended", message, "error");
       } else {
         showToast("Error", "Something went wrong. Please try again.", "error");
       }
@@ -249,16 +253,16 @@ async function handleRegister(event) {
   if (!/^[a-zA-Z-]+$/.test(course)) {
     showToast(
       "Invalid Course",
-      "Course code can only contain letters or hyphens (e.g., BSIT, BS-CS).",
+      "Course can only contain letters or hyphens (e.g., BSIT, BS-CS).",
       "error",
     );
     return;
   }
   const phoneCleaned = phone.replace(/\s+/g, "");
-  if (!/^09\d{9}$/.test(phoneCleaned)) {
+  if (!/^\+639\d{9}$/.test(phoneCleaned)) {
     showToast(
       "Invalid Phone",
-      "Phone number must be 11 digits starting with 09.",
+      "Phone number must be in the format +63 9XX XXX XXXX.",
       "error",
     );
     return;

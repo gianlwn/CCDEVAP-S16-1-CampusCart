@@ -7,10 +7,15 @@ const Cart = require("../models/Cart");
 const createNotification = require("../utils/createNotification");
 const issueWarning = require("../utils/issueWarning");
 const { saveProfilePicture, deleteProfilePicture } = require("../utils/imageStorage");
+const { suspendUser } = require("../utils/suspension");
 
 function statusOf(user) {
   if (user.is_banned) return "banned";
-  if (user.is_suspended) return "suspended";
+  if (user.is_suspended) {
+    if (user.suspended_until && user.suspended_until <= new Date())
+      return "active";
+    return "suspended";
+  }
   return "active";
 }
 
@@ -53,9 +58,10 @@ exports.updateStatus = async (req, res) => {
       is_suspended: status === "suspended",
       is_banned: status === "banned",
     };
+    if (status !== "suspended") update.suspended_until = null;
     if (status === "active") update.warning_count = 0;
 
-    const updated = await User.findOneAndUpdate(
+    let updated = await User.findOneAndUpdate(
       { user_id: req.params.user_id },
       update,
       { new: true },
@@ -63,10 +69,11 @@ exports.updateStatus = async (req, res) => {
     if (!updated) return res.status(404).json({ error: "not_found" });
 
     if (status === "suspended") {
+      updated = await suspendUser(updated.user_id);
       await createNotification(
         updated.user_id,
         "suspension",
-        "Your account has been suspended by an administrator.",
+        "Your account has been suspended by an administrator for 3 days.",
       ).catch(() => {});
     } else if (status === "banned") {
       await createNotification(

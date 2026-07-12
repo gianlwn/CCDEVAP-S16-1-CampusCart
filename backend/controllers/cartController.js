@@ -9,7 +9,7 @@ const createNotification = require("../utils/createNotification");
 
 async function cartDocToFrontend(cartDoc) {
   const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
-  if (!listing) return null;
+  if (!listing || listing.is_deleted) return null;
 
   const seller = await User.findOne({ user_id: listing.seller_id });
   const sellerName = seller
@@ -72,7 +72,8 @@ exports.add = async (req, res) => {
       return res.status(400).json({ error: "missing_fields" });
 
     const listing = await Listing.findOne({ listings_id: listing_id });
-    if (!listing) return res.status(404).json({ error: "listing_not_found" });
+    if (!listing || listing.is_deleted)
+      return res.status(404).json({ error: "listing_not_found" });
     if (listing.status !== "active")
       return res.status(409).json({ error: "listing_unavailable" });
 
@@ -120,7 +121,8 @@ exports.updateQuantity = async (req, res) => {
     if (!cartDoc) return res.status(404).json({ error: "not_found" });
 
     const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
-    if (!listing) return res.status(404).json({ error: "listing_not_found" });
+    if (!listing || listing.is_deleted)
+      return res.status(404).json({ error: "listing_not_found" });
 
     const pendingClaims = await Claim.find({
       listing_id: cartDoc.listing_id,
@@ -156,7 +158,8 @@ exports.claim = async (req, res) => {
     if (!cartDoc) return res.status(404).json({ error: "not_found" });
 
     const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
-    if (!listing) return res.status(404).json({ error: "listing_not_found" });
+    if (!listing || listing.is_deleted)
+      return res.status(404).json({ error: "listing_not_found" });
     if (listing.status !== "active")
       return res.status(409).json({ error: "listing_unavailable" });
 

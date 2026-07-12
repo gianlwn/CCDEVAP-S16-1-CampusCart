@@ -13,7 +13,15 @@ const centerTextPlugin = {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    if (total === 0) {
+    if (chart.config.options._satisfied) {
+      ctx.fillStyle = t.text;
+      ctx.font = 'bold 20px Segoe UI, sans-serif';
+      ctx.fillText('100%', cx, cy - 9);
+      ctx.font = '10px Segoe UI, sans-serif';
+      ctx.fillStyle = t.text;
+      ctx.globalAlpha = 0.55;
+      ctx.fillText('satisfied', cx, cy + 10);
+    } else if (total === 0) {
       ctx.font = '11px Segoe UI, sans-serif';
       ctx.fillStyle = t.text;
       ctx.globalAlpha = 0.5;
@@ -136,10 +144,10 @@ function buildCharts(data) {
         borderWidth: 3,
       }]
     } : {
-      labels: ['No reports'],
+      labels: ['Satisfied'],
       datasets: [{
-        data: [1],
-        backgroundColor: [t.grid],
+        data: [100],
+        backgroundColor: [REPORT_COLORS[0]],
         borderColor: t.cardBg,
         borderWidth: 3,
       }]
@@ -149,7 +157,7 @@ function buildCharts(data) {
       maintainAspectRatio: false,
       cutout: '64%',
       _centerText: true,
-      _emptyTotal: hasReports ? undefined : 0,
+      _satisfied: !hasReports,
       plugins: {
         legend: { display: false },
         tooltip: { enabled: hasReports, callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } }
@@ -159,7 +167,7 @@ function buildCharts(data) {
 
   const legend = document.getElementById('reports-legend');
   legend.innerHTML = !hasReports
-    ? `<div class="legend-empty" style="opacity:.55;font-size:12px;">No reports on your listings</div>`
+    ? `<div class="legend-item"><span class="legend-dot" style="background:${REPORT_COLORS[0]}"></span><span class="legend-label">Satisfied</span><strong class="legend-val">100%</strong></div>`
     : data.reportsOnListing.map((d, i) => `
     <div class="legend-item">
       <span class="legend-dot" style="background:${REPORT_COLORS[i]}"></span>

@@ -246,7 +246,7 @@ function loadSideNav() {
         </li>
         <li class="${a("claimed")}">
           <a href="../user-profile-dashboard/claimed.html">
-            <span class="nav-item-icon">${ICONS.bag}</span>Claimed
+            <span class="nav-item-icon">${ICONS.bag}</span>Bought
           </a>
         </li>
         <li class="${a("userProfile")}">
@@ -282,7 +282,7 @@ function loadBottomNav() {
       <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
     </a>
     <a href="../user-profile-dashboard/claimed.html" class="${a("claimed")}">
-      <span class="nav-icon">${ICONS.bag}</span><span>Claimed</span>
+      <span class="nav-icon">${ICONS.bag}</span><span>Bought</span>
     </a>
     <a href="../user-profile-dashboard/userProfile.html" class="${a("userProfile")}">
       <span class="nav-icon">${ICONS.user}</span><span>Profile</span>

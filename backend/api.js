@@ -323,6 +323,17 @@ function fetchPendingReports() {
   });
 }
 
+function fetchMyReports() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(
+    `${API}/api/reports/mine?reporter_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
 function resolveReportAPI(report_id, action, note) {
   return fetch(`${API}/api/reports/${encodeURIComponent(report_id)}/resolve`, {
     method: "PATCH",

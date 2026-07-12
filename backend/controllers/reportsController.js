@@ -4,6 +4,8 @@ const Listing = require("../models/Listing");
 const Rating = require("../models/Rating");
 const generateId = require("../utils/generateId");
 const issueWarning = require("../utils/issueWarning");
+const { suspendUser } = require("../utils/suspension");
+const createNotification = require("../utils/createNotification");
 
 function toFrontendShape(report, reporterName, subjectText) {
   return {
@@ -17,6 +19,7 @@ function toFrontendShape(report, reporterName, subjectText) {
     reportedRatingId: report.reported_rating_id || null,
     reporter: reporterName || "Unknown",
     status: report.status === "resolved" ? "Resolved" : "Pending Review",
+    actionTaken: report.action_taken || null,
     reason: report.reason,
     subject: subjectText,
     date: new Date(report.created_at).toLocaleDateString("en-US", {
@@ -102,10 +105,33 @@ const RESOLVE_ACTION_LABELS = {
   dismiss: "Dismissed",
 };
 
+const RESOLVE_ACTION_REPORTER_TEXT = {
+  warning: "a warning was issued to the user you reported",
+  suspend: "the user you reported was suspended",
+  ban: "the user you reported was banned",
+  dismiss: "your report was reviewed and dismissed",
+};
+
 exports.list = async (req, res) => {
   try {
     const filter = req.query.status ? { status: req.query.status } : {};
     const reports = await Report.find(filter).sort({ created_at: -1 });
+    const result = await enrichReports(reports);
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.mine = async (req, res) => {
+  try {
+    const { reporter_id } = req.query;
+    if (!reporter_id)
+      return res.status(400).json({ error: "missing_reporter_id" });
+    const reports = await Report.find({ reporter_id }).sort({
+      created_at: -1,
+    });
     const result = await enrichReports(reports);
     res.json(result);
   } catch (err) {
@@ -135,10 +161,7 @@ exports.resolve = async (req, res) => {
         );
         autoSuspended = result ? result.autoSuspended : false;
       } else if (action === "suspend") {
-        await User.findOneAndUpdate(
-          { user_id: report.reported_user_id },
-          { is_suspended: true },
-        );
+        await suspendUser(report.reported_user_id);
       } else if (action === "ban") {
         await User.findOneAndUpdate(
           { user_id: report.reported_user_id },
@@ -157,6 +180,26 @@ exports.resolve = async (req, res) => {
     report.reviewed_by = reviewed_by || null;
     report.resolved_at = new Date();
     await report.save();
+
+    let subjectLabel = "your report";
+    if (report.reported_listing_id) {
+      const listing = await Listing.findOne({
+        listings_id: report.reported_listing_id,
+      });
+      if (listing) subjectLabel = `your report on "${listing.product_name}"`;
+    } else if (report.reported_user_id) {
+      const reportedUser = await User.findOne({
+        user_id: report.reported_user_id,
+      });
+      if (reportedUser)
+        subjectLabel = `your report on ${reportedUser.first_name} ${reportedUser.last_name}`.trim();
+    }
+    await createNotification(
+      report.reporter_id,
+      "report_resolved",
+      `An admin reviewed ${subjectLabel} — ${RESOLVE_ACTION_REPORTER_TEXT[action]}.`,
+      report.report_id,
+    ).catch(() => {});
 
     res.json({ success: true, autoSuspended });
   } catch (err) {

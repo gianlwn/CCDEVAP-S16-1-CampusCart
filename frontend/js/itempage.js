@@ -32,7 +32,7 @@ async function _addToCartFromPage() {
   }
   const available = _ipItem.available ?? _ipItem.quantity ?? 1;
   if (_ipItem.status === "claimed" || available <= 0) {
-    showToast("Already Claimed", "This item has already been claimed.", "warning");
+    showToast("Already Collected", "This item has already been collected.", "warning");
     return;
   }
   try {
@@ -163,7 +163,7 @@ function renderItemPage(item) {
             isOwn
               ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Your Listing</button>`
               : item.status === "claimed" || (item.available ?? item.quantity ?? 1) <= 0
-              ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Claimed</button>`
+              ? `<button class="ip-btn-cart" disabled style="opacity:0.45;cursor:not-allowed;">Already Collected</button>`
               : `<button class="ip-btn-cart" onclick="_addToCartFromPage()">${cartSvg} Add to Cart</button>`
           }
           ${

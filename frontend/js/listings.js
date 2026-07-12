@@ -300,7 +300,7 @@ let allSellerClaims = [];
 function renderSellerClaims() {
   const el = document.getElementById("seller-claimed-list");
   if (!allSellerClaims.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon-svg">${ICONS.bag}</div><p>No claimed listings yet.</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon-svg">${ICONS.bag}</div><p>No collected listings yet.</p></div>`;
     return;
   }
   el.innerHTML = allSellerClaims

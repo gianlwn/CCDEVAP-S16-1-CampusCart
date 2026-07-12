@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const createNotification = require("./createNotification");
+const { suspendUser } = require("./suspension");
 
 async function issueWarning(userId, note, referenceId) {
   const updatedUser = await User.findOneAndUpdate(
@@ -25,11 +26,11 @@ async function issueWarning(userId, note, referenceId) {
     !updatedUser.is_banned
   ) {
     autoSuspended = true;
-    await User.findOneAndUpdate({ user_id: userId }, { is_suspended: true });
+    await suspendUser(userId);
     await createNotification(
       userId,
       "suspension",
-      "Your account has been automatically suspended after receiving 3 warnings.",
+      "Your account has been automatically suspended for 3 days after receiving 3 warnings.",
       referenceId,
     ).catch(() => {});
   }

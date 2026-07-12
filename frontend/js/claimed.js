@@ -16,7 +16,7 @@ function goToItem(id) {
 function renderClaimed() {
   const el = document.getElementById("claimed-list");
   if (!claimedItems.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No claimed items yet.</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No bought items yet.</p></div>`;
     return;
   }
   el.innerHTML = claimedItems.map((item) => {
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .then((items) => {
       claimedItems = items;
       renderClaimed();
-      showToast("Claimed Items", `You have ${items.length} claimed items.`, "info", 2500);
+      showToast("Bought Items", `You have bought ${items.length} items.`, "info", 2500);
     })
     .catch(() => {
       document.getElementById("claimed-list").innerHTML =
