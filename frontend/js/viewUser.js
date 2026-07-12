@@ -122,7 +122,7 @@ function renderSellerProfile(user, listings, reviews) {
   const isOwnProfile = localStorage.getItem("session_user_id") === _getSellerId();
   const reportBtnHtml = isOwnProfile
     ? ""
-    : `<button class="btn-outline" style="margin-top:12px;color:var(--danger-text, #dc2626);border-color:var(--danger-text, #dc2626);" onclick="openAccountReportModal()">${ICONS.alert} Report Account</button>`;
+    : `<button class="vu-report-btn" onclick="openAccountReportModal()">${ICONS.alert} Report Account</button>`;
 
   const reviewsHtml = buildReviewsHtml(reviews);
   const reviewsSummary = reviews.length
