@@ -83,7 +83,7 @@ exports.register = async (req, res) => {
       last_name,
       course_code: course_code.toUpperCase(),
       school,
-      phone,
+      contact_number: phone,
       role: "student",
     });
     await user.save();
