@@ -250,9 +250,11 @@ function saveNewAdmin() {
     if (!ok) {
       const msg = status === 404
         ? 'No account found with that email. The user must sign up first.'
-        : status === 409
-          ? 'This user is already an administrator.'
-          : 'Could not add administrator.';
+        : data?.error === 'max_admins_reached'
+          ? 'Cannot add administrator: the maximum of 15 administrators has been reached.'
+          : status === 409
+            ? 'This user is already an administrator.'
+            : 'Could not add administrator.';
       showToast('Error', msg, 'error');
       return;
     }

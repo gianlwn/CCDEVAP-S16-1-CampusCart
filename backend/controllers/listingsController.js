@@ -8,7 +8,7 @@ const generateId = require("../utils/generateId");
 const { saveListingImage, saveListingImages, deleteListingImages } = require("../utils/imageStorage");
 const createNotification = require("../utils/createNotification");
 
-function toFrontendShape(listing, sellerName, sellerId, categoryNames, availableQty) {
+function toFrontendShape(listing, sellerName, sellerId, categoryNames, availableQty, sellerProfilePicture) {
   const cats =
     categoryNames && categoryNames.length ? categoryNames : ["Others"];
   return {
@@ -21,6 +21,7 @@ function toFrontendShape(listing, sellerName, sellerId, categoryNames, available
     condition: listing.condition,
     seller: sellerName || "Campus Seller",
     seller_id: sellerId || "",
+    seller_profile_picture: sellerProfilePicture || "",
     description: listing.description || "",
     location: listing.location || "",
     images: listing.images || [],
@@ -38,8 +39,10 @@ async function enrichListings(listings) {
 
   const sellers = await User.find({ user_id: { $in: sellerIds } });
   const sellerMap = {};
+  const sellerPicMap = {};
   sellers.forEach((u) => {
     sellerMap[u.user_id] = `${u.first_name} ${u.last_name}`.trim();
+    sellerPicMap[u.user_id] = u.profile_picture;
   });
 
   const lcLinks = await ListingCategory.find({
@@ -76,6 +79,7 @@ async function enrichListings(listings) {
       l.seller_id,
       listingCatMap[l.listings_id],
       Math.max(0, (l.quantity ?? 1) - (reservedMap[l.listings_id] || 0)),
+      sellerPicMap[l.seller_id],
     ),
   );
 }

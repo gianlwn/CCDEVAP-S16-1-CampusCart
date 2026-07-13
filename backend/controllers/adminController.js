@@ -123,6 +123,8 @@ exports.listAdmins = async (req, res) => {
   }
 };
 
+const MAX_ADMINS = 15;
+
 exports.promoteAdmin = async (req, res) => {
   try {
     const email = (req.body.email || "").trim().toLowerCase();
@@ -132,6 +134,13 @@ exports.promoteAdmin = async (req, res) => {
     if (!user) return res.status(404).json({ error: "not_found" });
     if (user.role === "admin")
       return res.status(409).json({ error: "already_admin" });
+
+    const adminCount = await User.countDocuments({
+      role: "admin",
+      is_deleted: { $ne: true },
+    });
+    if (adminCount >= MAX_ADMINS)
+      return res.status(409).json({ error: "max_admins_reached" });
 
     user.role = "admin";
     await user.save();

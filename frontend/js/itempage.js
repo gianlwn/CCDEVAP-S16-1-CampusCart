@@ -62,6 +62,12 @@ function renderItemPage(item) {
   const bg = CATEGORY_BG[item.category] || CATEGORY_BG.Others;
   const condClass = IP_CONDITION_CLASS[item.condition] || "ip-condition-used";
   const sellerInitial = (item.seller || "S").charAt(0).toUpperCase();
+  const sellerHasPhoto =
+    item.seller_profile_picture &&
+    item.seller_profile_picture.startsWith("/uploads/");
+  const sellerAvatarHtml = sellerHasPhoto
+    ? `<img src="${API}${item.seller_profile_picture}" alt="${item.seller || "Seller"}">`
+    : sellerInitial;
   const isOwn = item.seller_id && item.seller_id === getSessionUserId();
   const createdDate = item.created
     ? new Date(item.created).toLocaleDateString("en-PH", {
@@ -120,7 +126,7 @@ function renderItemPage(item) {
         <div class="ip-divider"></div>
 
         <div class="ip-seller-card" style="cursor:pointer;" onclick="window.location.href='viewUser.html?seller_id=${encodeURIComponent(item.seller_id || "")}'">
-          <div class="ip-seller-avatar">${sellerInitial}</div>
+          <div class="ip-seller-avatar">${sellerAvatarHtml}</div>
           <div class="ip-seller-info">
             <p class="ip-seller-name">${item.seller || "Campus Seller"}</p>
             <p class="ip-seller-meta">Seller · Tap to view profile</p>
