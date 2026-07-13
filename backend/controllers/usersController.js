@@ -140,13 +140,18 @@ exports.getOne = async (req, res) => {
         })
       : "—";
 
+    const rawPhone = user.contact_number || "";
+    const formattedPhone = (rawPhone.startsWith("09") && rawPhone.length === 11)
+      ? "+63" + rawPhone.slice(1)
+      : rawPhone;
+    
     res.json({
       user_id: user.user_id,
       first_name: user.first_name,
       last_name: user.last_name,
       name: `${user.first_name} ${user.last_name}`.trim(),
       email: user.email,
-      contact_number: user.contact_number || "",
+      contact_number: formattedPhone,
       bio: user.bio || "",
       school: user.school || "",
       course_code: user.course_code || "",
