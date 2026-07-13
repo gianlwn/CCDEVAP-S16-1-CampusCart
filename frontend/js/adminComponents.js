@@ -115,46 +115,39 @@ const MS = {
   row: 'display:flex;flex-direction:column;gap:4px;',
 };
 
-function initSearch(cardSelector) {
+// Filters the full data array (not just what's currently rendered on the
+// visible page) so search results aren't limited to the current pagination
+// page. `textFn` extracts the searchable text from one data item.
+function filterBySearch(data, textFn) {
+  const q = (document.querySelector('.search-input-field')?.value || '').toLowerCase().trim();
+  if (!q) return data;
+  return data.filter(item => textFn(item).toLowerCase().includes(q));
+}
+
+// Binds the search input/button once (call from a page's display*() setup,
+// not from its render*Page() function, so listeners aren't re-added on every
+// re-render). `onSearch` should reset that page's current-page var to 1 and
+// re-render, so pagination reflects the filtered result set from page 1.
+function initSearch(onSearch) {
   const input = document.querySelector('.search-input-field');
   const btn = document.querySelector('.search-glass-btn');
   if (!input) return;
 
-  const doFilter = () => {
-    const q = input.value.toLowerCase().trim();
-    document.querySelectorAll(cardSelector).forEach(card => {
-      card.style.display = (!q || card.textContent.toLowerCase().includes(q)) ? '' : 'none';
-    });
-  };
-
-  input.addEventListener('input', doFilter);
-  if (btn) btn.addEventListener('click', doFilter);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doFilter(); });
+  input.addEventListener('input', onSearch);
+  if (btn) btn.addEventListener('click', onSearch);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') onSearch(); });
 }
 
-function applyUserFilters() {
-  const q = (document.querySelector('.search-input-field')?.value || '').toLowerCase().trim();
+function filterUsers() {
   const statusVal = (document.querySelector('.status-filter-dropdown')?.value || 'all').toLowerCase();
-
-  document.querySelectorAll('.user-identity-row-card').forEach(card => {
-    const textMatch = !q || card.textContent.toLowerCase().includes(q);
-    const badge = card.querySelector('.user-status-pill');
-    const status = badge?.textContent.trim().toLowerCase() || '';
-    const statusMatch = statusVal === 'all' || status === statusVal;
-    card.style.display = (textMatch && statusMatch) ? '' : 'none';
-  });
+  const byStatus = statusVal === 'all' ? _usersData : _usersData.filter(u => u.status === statusVal);
+  return filterBySearch(byStatus, u => `${u.username} ${u.email}`);
 }
 
-function initUserSearch() {
-  const input = document.querySelector('.search-input-field');
-  const btn = document.querySelector('.search-glass-btn');
+function initUserSearch(onSearch) {
+  initSearch(onSearch);
   const select = document.querySelector('.status-filter-dropdown');
-  if (input) {
-    input.addEventListener('input', applyUserFilters);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') applyUserFilters(); });
-  }
-  if (btn) btn.addEventListener('click', applyUserFilters);
-  if (select) select.addEventListener('change', applyUserFilters);
+  if (select) select.addEventListener('change', onSearch);
 }
 
 function renderAccessDenied() {
@@ -211,13 +204,19 @@ let _adminsData = [];
 function renderAdminPage() {
   const container = document.getElementById('admins-stack-list');
   if (!container) return;
+  const filtered = filterBySearch(_adminsData, a => `${a.username} ${a.email}`);
   const perPage = getItemsPerPage('admins');
   const start = (_adminPage - 1) * perPage;
-  const slice = _adminsData.slice(start, start + perPage);
+  const slice = filtered.slice(start, start + perPage);
 
   if (!_adminsData.length) {
     container.innerHTML = `<div class="empty-msg">No administrators found. Click "Add Administrator" to create one.</div>`;
     updateCounter('.admins-counter-text', 'Current Admins', 0);
+    return;
+  }
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-msg">No administrators match your search.</div>`;
+    updateCounter('.admins-counter-text', 'Current Admins', _adminsData.length);
     return;
   }
   container.innerHTML = slice.map(admin => `
@@ -236,8 +235,7 @@ function renderAdminPage() {
       </div>`).join('');
 
   updateCounter('.admins-counter-text', 'Current Admins', _adminsData.length);
-  renderPagination('admins-stack-list', _adminsData.length, _adminPage, p => { _adminPage = p; renderAdminPage(); }, perPage);
-  initSearch('.admin-identity-row-card');
+  renderPagination('admins-stack-list', filtered.length, _adminPage, p => { _adminPage = p; renderAdminPage(); }, perPage);
 }
 
 function displayAdmins() {
@@ -248,6 +246,7 @@ function displayAdmins() {
     showToast('Failed to load admins', '', 'error');
   });
   setupResizePagination('admins', () => { _adminPage = 1; renderAdminPage(); });
+  initSearch(() => { _adminPage = 1; renderAdminPage(); });
 
   const addBtn = document.querySelector('.add-admin-action-btn');
   if (addBtn) addBtn.onclick = () => openAddAdminModal();
@@ -325,12 +324,15 @@ function renderUsersPage() {
   const container = document.getElementById('users-stack-list');
   if (!container) return;
 
+  const filtered = filterUsers();
   const perPage = getItemsPerPage('users');
   const start = (_usersPage - 1) * perPage;
-  const usersSlice = _usersData.slice(start, start + perPage);
+  const usersSlice = filtered.slice(start, start + perPage);
 
   if (!_usersData.length) {
     container.innerHTML = `<div class="empty-msg">No users found.</div>`;
+  } else if (!filtered.length) {
+    container.innerHTML = `<div class="empty-msg">No users match your search.</div>`;
   } else {
     container.innerHTML = usersSlice.map(user => {
       const meta = _USER_STATUS_META[user.status] || _USER_STATUS_META.active;
@@ -371,9 +373,8 @@ function renderUsersPage() {
   }
 
   updateCounter('.users-counter-text', 'Total Users', _usersData.length);
-  renderPagination('users-stack-list', _usersData.length, _usersPage, p => { _usersPage = p; renderUsersPage(); }, perPage);
+  renderPagination('users-stack-list', filtered.length, _usersPage, p => { _usersPage = p; renderUsersPage(); }, perPage);
   setupResizePagination('users', () => { _usersPage = 1; renderUsersPage(); });
-  initUserSearch();
 }
 
 function displayUsers() {
@@ -384,6 +385,7 @@ function displayUsers() {
     showToast('Failed to load users', '', 'error');
   });
   setupResizePagination('users', () => { _usersPage = 1; renderUsersPage(); });
+  initUserSearch(() => { _usersPage = 1; renderUsersPage(); });
 }
 
 function handleUser(action, userId, btn) {
@@ -511,12 +513,21 @@ let _approvalListings = [];
 function renderApprovalPage() {
   const container = document.getElementById('approval-grid');
   if (!container) return;
+  const filtered = filterBySearch(
+    _approvalListings,
+    l => `${l.name} ${l.seller} ${l.condition} ${(l.categories || [l.category]).join(' ')}`,
+  );
   const perPage = getItemsPerPage('listings');
   const start = (_approvalPage - 1) * perPage;
-  const slice = _approvalListings.slice(start, start + perPage);
+  const slice = filtered.slice(start, start + perPage);
 
-  if (!slice.length) {
+  if (!_approvalListings.length) {
     container.innerHTML = `<div class="empty-msg">No listings needed for approval.</div>`;
+    updateCounter('.pending-count', 'Pending Approval', 0);
+    return;
+  }
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-msg">No listings match your search.</div>`;
     updateCounter('.pending-count', 'Pending Approval', _approvalListings.length);
     return;
   }
@@ -542,7 +553,7 @@ function renderApprovalPage() {
   }).join('');
 
   updateCounter('.pending-count', 'Pending Approval', _approvalListings.length);
-  renderPagination('approval-grid', _approvalListings.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); }, perPage);
+  renderPagination('approval-grid', filtered.length, _approvalPage, p => { _approvalPage = p; renderApprovalPage(); }, perPage);
 }
 
 function displayListingApprovals() {
@@ -553,6 +564,7 @@ function displayListingApprovals() {
     showToast('Failed to load listings', '', 'error');
   });
   setupResizePagination('listings', () => { _approvalPage = 1; renderApprovalPage(); });
+  initSearch(() => { _approvalPage = 1; renderApprovalPage(); });
 }
 
 function viewListingDetails(listingId) {
@@ -616,12 +628,17 @@ function renderCategoryPage() {
   const container = document.getElementById('category-grid');
   if (!container) return;
 
+  const filtered = filterBySearch(_categoriesData, c => c.category_name);
   const perPage = getItemsPerPage('categories');
   const start = (_catPage - 1) * perPage;
-  const slice = _categoriesData.slice(start, start + perPage);
+  const slice = filtered.slice(start, start + perPage);
 
   if (!_categoriesData.length) {
     container.innerHTML = `<div class="empty-msg">No categories found. Click "+ Add New Category" to create one.</div>`;
+    return;
+  }
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-msg">No categories match your search.</div>`;
     return;
   }
 
@@ -640,8 +657,7 @@ function renderCategoryPage() {
   `;
   }).join('');
 
-  renderPagination('category-grid', _categoriesData.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
-  initSearch('.category-card');
+  renderPagination('category-grid', filtered.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
 }
 
 function displayCategories() {
@@ -655,6 +671,7 @@ function displayCategories() {
   const addBtn = document.querySelector('.add-category-btn');
   if (addBtn) addBtn.onclick = () => openAddCategoryModal();
   setupResizePagination('categories', () => { _catPage = 1; renderCategoryPage(); });
+  initSearch(() => { _catPage = 1; renderCategoryPage(); });
 }
 
 function openAddCategoryModal() {
@@ -747,13 +764,20 @@ function renderReportsPage() {
   const container = document.getElementById('reports-stack-list');
   if (!container) return;
 
-  const reports = _reportsData;
+  const reports = filterBySearch(
+    _reportsData,
+    r => `${r.reportType} ${r.reporter} ${r.subject} ${r.reason} ${r.status}`,
+  );
   const perPage = getItemsPerPage('reports');
   const start = (_reportsPage - 1) * perPage;
   const slice = reports.slice(start, start + perPage);
 
-  if (!reports.length) {
+  if (!_reportsData.length) {
     container.innerHTML = `<div class="empty-msg">No reports found.</div>`;
+    return;
+  }
+  if (!reports.length) {
+    container.innerHTML = `<div class="empty-msg">No reports match your search.</div>`;
     return;
   }
 
@@ -786,9 +810,8 @@ function renderReportsPage() {
     </div>
   `).join('');
 
-  updateCounter('.reports-counter-text', 'Pending Reports', reports.length);
+  updateCounter('.reports-counter-text', 'Pending Reports', _reportsData.length);
   renderPagination('reports-stack-list', reports.length, _reportsPage, p => { _reportsPage = p; renderReportsPage(); }, perPage);
-  initSearch('.report-row-card');
 }
 
 function displayReports() {
@@ -799,6 +822,7 @@ function displayReports() {
     showToast('Failed to load reports', '', 'error');
   });
   setupResizePagination('reports', () => { _reportsPage = 1; renderReportsPage(); });
+  initSearch(() => { _reportsPage = 1; renderReportsPage(); });
 }
 
 function viewReportedListing(listingId) {

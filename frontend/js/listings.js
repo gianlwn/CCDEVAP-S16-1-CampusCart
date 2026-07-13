@@ -126,8 +126,9 @@ function closeEditListing() {
 function saveEditListing() {
   const name = document.getElementById("edit-inp-name").value.trim();
   const price = document.getElementById("edit-inp-price").value.trim();
-  if (!name || !price) {
-    showToast("Missing Fields", "Name and Price are required.", "warning");
+  const location = document.getElementById("edit-inp-location").value.trim();
+  if (!name || !price || !location) {
+    showToast("Missing Fields", "Name, Price, and Pickup Location are required.", "warning");
     return;
   }
   if (editingImages.length < 1) {
@@ -156,7 +157,7 @@ function saveEditListing() {
     categories,
     condition: document.getElementById("edit-inp-condition").value,
     description: document.getElementById("edit-inp-desc").value.trim(),
-    location: document.getElementById("edit-inp-location").value.trim(),
+    location,
     images: editingImages,
   }).then(({ ok, data }) => {
     if (!ok) {

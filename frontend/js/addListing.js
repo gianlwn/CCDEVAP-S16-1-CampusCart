@@ -53,8 +53,8 @@ function handleAddListing() {
   const qty = parseInt(document.getElementById('inp-qty').value) || 1;
   const location = document.getElementById('inp-location').value.trim();
 
-  if (!name || !price || !cat || !condition) {
-    showToast('Missing Fields', 'Please fill in Name, Price, Category, and Condition.', 'warning');
+  if (!name || !price || !cat || !condition || !location) {
+    showToast('Missing Fields', 'Please fill in Name, Price, Category, Condition, and Pickup Location.', 'warning');
     return;
   }
 
