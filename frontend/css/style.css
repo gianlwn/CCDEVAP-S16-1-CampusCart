@@ -240,9 +240,61 @@ img {
   color: var(--success-text);
 }
 
-.badge-status.pending {
+.badge-status.pending,
+.badge-status.pending_review {
   background: var(--warning-bg);
   color: var(--warning-text);
+}
+
+.badge-status.resolved {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.outcome-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.outcome-tag.outcome-dismissed {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.outcome-tag.outcome-warning {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.outcome-tag.outcome-suspended,
+.outcome-tag.outcome-banned {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.my-reports-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reports-modal-dialog {
+  max-width: 520px;
+  text-align: left;
+  align-items: stretch;
+}
+
+.reports-modal-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .char-counter {

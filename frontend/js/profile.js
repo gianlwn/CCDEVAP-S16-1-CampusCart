@@ -188,40 +188,82 @@ function handleHelp() {
   );
 }
 
+let _myReports = [];
+
+function reportStatusClass(status) {
+  return status === "Resolved" ? "resolved" : "pending_review";
+}
+
+function reportOutcomeClass(actionTaken) {
+  if (!actionTaken) return "";
+  const a = actionTaken.toLowerCase();
+  if (a.startsWith("dismissed")) return "outcome-dismissed";
+  if (a.startsWith("warning")) return "outcome-warning";
+  if (a.startsWith("user suspended")) return "outcome-suspended";
+  if (a.startsWith("user banned")) return "outcome-banned";
+  return "outcome-dismissed";
+}
+
 function renderMyReports(reports) {
-  const el = document.getElementById("my-reports-list");
-  if (!el) return;
+  _myReports = reports;
+  const summary = document.getElementById("my-reports-summary");
+  const btn = document.getElementById("view-reports-btn");
+  if (!summary) return;
   if (!reports.length) {
-    el.innerHTML =
-      '<p style="color:var(--text-muted);font-size:13px;">You haven\'t filed any reports.</p>';
+    summary.textContent = "You haven't filed any reports.";
+    if (btn) btn.style.display = "none";
     return;
   }
-  el.innerHTML = reports
-    .map((r) => {
-      const statusClass = r.status === "Resolved" ? "active" : "pending_review";
-      const outcome = r.actionTaken ? ` — ${r.actionTaken}` : "";
-      return `
+  const pending = reports.filter((r) => r.status !== "Resolved").length;
+  summary.textContent = `${reports.length} report${reports.length === 1 ? "" : "s"} filed${pending ? ` · ${pending} pending review` : ""}`;
+  if (btn) btn.style.display = "";
+}
+
+function reportRowHtml(r) {
+  const statusClass = reportStatusClass(r.status);
+  const outcomeClass = reportOutcomeClass(r.actionTaken);
+  return `
       <div class="listing-row">
         <div class="item-info" style="flex:1;min-width:0;">
           <p class="item-name">${r.subject}</p>
           <p class="item-meta">${r.reportType} · Reason: ${r.reason} · ${r.date}</p>
-          ${r.status === "Resolved" ? `<p class="item-meta">${outcome.replace(/^ — /, "")}</p>` : ""}
+          ${r.status === "Resolved" && r.actionTaken ? `<p class="item-meta"><span class="outcome-tag ${outcomeClass}">${r.actionTaken}</span></p>` : ""}
         </div>
         <span class="badge-status ${statusClass}">${r.status}</span>
       </div>
     `;
-    })
-    .join("");
+}
+
+function openReportsModal() {
+  document.getElementById("reports-modal-overlay")?.remove();
+  const overlay = document.createElement("div");
+  overlay.id = "reports-modal-overlay";
+  overlay.className = "confirm-overlay";
+  overlay.innerHTML = `
+    <div class="confirm-dialog reports-modal-dialog" role="dialog" aria-modal="true">
+      <div class="confirm-title" style="margin-bottom:16px;">My Reports</div>
+      <div class="reports-modal-list">
+        ${_myReports.map(reportRowHtml).join("")}
+      </div>
+      <div class="confirm-actions" style="margin-top:20px;">
+        <button class="confirm-cancel reports-modal-close">Close</button>
+      </div>
+    </div>
+  `;
+  const close = () => overlay.remove();
+  overlay.querySelector(".reports-modal-close").addEventListener("click", close);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+  document.body.appendChild(overlay);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchMyReports()
     .then((reports) => renderMyReports(reports))
     .catch(() => {
-      const el = document.getElementById("my-reports-list");
-      if (el)
-        el.innerHTML =
-          '<p style="color:var(--text-muted);font-size:13px;">Could not load reports.</p>';
+      const summary = document.getElementById("my-reports-summary");
+      if (summary) summary.textContent = "Could not load reports.";
     });
 
   fetchMyProfile()

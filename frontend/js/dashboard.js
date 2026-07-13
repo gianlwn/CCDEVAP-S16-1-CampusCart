@@ -25,7 +25,7 @@ const centerTextPlugin = {
       ctx.font = '11px Segoe UI, sans-serif';
       ctx.fillStyle = t.text;
       ctx.globalAlpha = 0.5;
-      ctx.fillText('No reports', cx, cy);
+      ctx.fillText(chart.config.options._centerEmptyLabel || 'No reports', cx, cy);
     } else {
       ctx.fillStyle = t.text;
       ctx.font = 'bold 20px Segoe UI, sans-serif';
@@ -33,7 +33,7 @@ const centerTextPlugin = {
       ctx.font = '10px Segoe UI, sans-serif';
       ctx.fillStyle = t.text;
       ctx.globalAlpha = 0.55;
-      ctx.fillText('reports', cx, cy + 10);
+      ctx.fillText(chart.config.options._centerLabel || 'reports', cx, cy + 10);
     }
     ctx.restore();
   }
@@ -185,6 +185,7 @@ function buildCharts(data) {
 
   charts.listingStatus = new Chart(document.getElementById('chart-listing-status'), {
     type: 'doughnut',
+    _centerText: true,
     data: {
       labels: data.listingStatus.map(d => d.label),
       datasets: [{
@@ -198,6 +199,9 @@ function buildCharts(data) {
       responsive: true,
       maintainAspectRatio: false,
       cutout: '62%',
+      _centerText: true,
+      _centerLabel: 'listings',
+      _centerEmptyLabel: 'No listings',
       plugins: {
         legend: { display: false },
         tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } }
