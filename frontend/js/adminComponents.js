@@ -39,10 +39,36 @@ function getItemsPerPage(type) {
     case 'reports':
       return w >= 1024 ? 8 : w >= 768 ? 5 : 3;
     case 'categories':
-      return 10;
+      return getCategoriesPerPage();
     default:
       return 10;
   }
+}
+
+function getCategoriesPerPage() {
+  const grid = document.getElementById('category-grid');
+  if (!grid) return 12;
+
+  const gap = 18;
+  const stacked = window.innerWidth <= 480;
+  const cardMinWidth = stacked ? window.innerWidth : 280;
+  const cardHeight = stacked ? 108 : 64;
+
+  const gridWidth = grid.clientWidth || window.innerWidth;
+  const columns = Math.max(1, Math.floor((gridWidth + gap) / (cardMinWidth + gap)));
+
+  const top = grid.getBoundingClientRect().top;
+  const bottomReserve = stacked ? 160 : 110;
+  const availableHeight = window.innerHeight - top - bottomReserve;
+  const rows = Math.max(1, Math.floor((availableHeight + gap) / (cardHeight + gap)));
+
+  return Math.max(columns * rows, columns);
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[c]);
 }
 
 function updateCounter(selector, label, count) {
@@ -599,17 +625,20 @@ function renderCategoryPage() {
     return;
   }
 
-  container.innerHTML = slice.map(category => `
+  container.innerHTML = slice.map(category => {
+    const name = escapeHtml(category.category_name);
+    return `
     <div class="category-card">
       <div class="category-info">
-        <h2>${category.category_name}</h2>
+        <h2 title="${name}">${name}</h2>
       </div>
       <div class="category-actions">
         <button class="edit-btn"   onclick="handleCategory('edit',  '${category.category_id}')">${ICONS.edit}  Edit</button>
         <button class="delete-btn" onclick="handleCategory('delete','${category.category_id}')">${ICONS.trash} Delete</button>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   renderPagination('category-grid', _categoriesData.length, _catPage, (p) => { _catPage = p; renderCategoryPage(); }, perPage);
   initSearch('.category-card');

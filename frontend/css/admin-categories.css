@@ -61,6 +61,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 14px;
+  min-width: 0;
   transition:
     transform var(--transition),
     box-shadow var(--transition),
@@ -77,6 +78,7 @@
 
 .category-info {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -88,6 +90,10 @@
   color: var(--text);
   margin: 0;
   letter-spacing: -0.1px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .category-actions {
@@ -125,4 +131,33 @@
 .edit-btn:hover,
 .delete-btn:hover {
   opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  #category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .category-info h2 {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .category-actions {
+    justify-content: stretch;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
