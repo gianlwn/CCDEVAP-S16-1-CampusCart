@@ -44,7 +44,39 @@ const ICONS = {
   userSlash: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" y1="2" x2="2" y2="22"/></svg>`,
   image: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
   help: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  chevronUp: `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`,
+  chevronDown: `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
 };
+
+// Wires custom up/down buttons to a number input so it matches the app's UI
+// instead of the browser's native spinner. Expects markup:
+// <div class="number-spinner-wrap">
+//   <input type="number" class="has-spinner" id="...">
+//   <div class="number-spinner">
+//     <button type="button" class="spinner-btn spinner-up" tabindex="-1">...</button>
+//     <button type="button" class="spinner-btn spinner-down" tabindex="-1">...</button>
+//   </div>
+// </div>
+function bindNumberSpinner(inputId) {
+  const input = document.getElementById(inputId);
+  const wrap = input && input.closest(".number-spinner-wrap");
+  if (!wrap) return;
+
+  const adjust = (dir) => {
+    const step = parseFloat(input.step) || 1;
+    const min = input.min !== "" ? parseFloat(input.min) : -Infinity;
+    const max = input.max !== "" ? parseFloat(input.max) : Infinity;
+    const decimals = input.step && input.step.includes(".") ? input.step.split(".")[1].length : 0;
+    const current = parseFloat(input.value) || 0;
+    const next = Math.min(max, Math.max(min, current + dir * step));
+    input.value = decimals ? next.toFixed(decimals) : String(next);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  wrap.querySelector(".spinner-up")?.addEventListener("click", () => adjust(1));
+  wrap.querySelector(".spinner-down")?.addEventListener("click", () => adjust(-1));
+}
 
 const CATEGORY_BG = {
   Electronics: "rgba(122,171,138,0.18)",

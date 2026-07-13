@@ -38,10 +38,16 @@ function _renderCartPage() {
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
         <label style="font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;">Qty</label>
-        <input id="qty-${item.id}" type="number" min="1" max="${item.maxQuantity}" value="${qty}"
-          style="width:54px;padding:5px 7px;border:1px solid var(--border);border-radius:var(--radius-xs);
-          background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;text-align:center;"
-          onclick="event.stopPropagation()" oninput="_updateCartItemPrice('${item.id}')">
+        <div class="number-spinner-wrap" onclick="event.stopPropagation()">
+          <input id="qty-${item.id}" type="number" min="1" max="${item.maxQuantity}" value="${qty}" class="has-spinner"
+            style="width:64px;padding:5px 7px;border:1px solid var(--border);border-radius:var(--radius-xs);
+            background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;text-align:center;"
+            oninput="_updateCartItemPrice('${item.id}')">
+          <div class="number-spinner">
+            <button type="button" class="spinner-btn spinner-up" tabindex="-1" aria-label="Increase quantity">${ICONS.chevronUp}</button>
+            <button type="button" class="spinner-btn spinner-down" tabindex="-1" aria-label="Decrease quantity">${ICONS.chevronDown}</button>
+          </div>
+        </div>
         <span style="font-size:11px;color:var(--text-muted);">/ ${item.maxQuantity}</span>
       </div>
       <p class="cart-item-price" id="price-${item.id}">₱${(item.price * qty).toLocaleString()}</p>
@@ -53,6 +59,8 @@ function _renderCartPage() {
   `;
     })
     .join("");
+
+  pageItems.forEach((item) => bindNumberSpinner("qty-" + item.id));
 
   if (pag) _renderCartPagination(pag);
 }

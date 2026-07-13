@@ -123,6 +123,9 @@ document.addEventListener('DOMContentLoaded', function () {
     el.addEventListener('change', updatePreview);
   });
 
+  bindNumberSpinner('inp-price');
+  bindNumberSpinner('inp-qty');
+
   document.getElementById('img-file-input').addEventListener('change', function (e) {
     const remaining = 5 - uploadedImages.length;
     Array.from(e.target.files).slice(0, remaining).forEach(file => {

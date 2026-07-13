@@ -760,6 +760,57 @@ body.darkMode .big-number {
   cursor: not-allowed;
 }
 
+.number-spinner-wrap {
+  position: relative;
+}
+
+.has-spinner {
+  padding-right: 30px !important;
+  -moz-appearance: textfield;
+}
+
+.has-spinner::-webkit-inner-spin-button,
+.has-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-spinner {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+}
+
+.spinner-btn {
+  flex: 1;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+  transition:
+    color var(--transition),
+    background-color var(--transition);
+}
+
+.spinner-btn:hover {
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.spinner-btn svg {
+  pointer-events: none;
+}
+
 .confirm-overlay {
   position: fixed;
   inset: 0;

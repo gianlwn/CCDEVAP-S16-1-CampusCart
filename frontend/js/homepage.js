@@ -239,9 +239,21 @@ function openFiltersPanel() {
     <div class="hp-afp-section">
       <p class="hp-afp-label">Price Range (₱)</p>
       <div class="hp-afp-price-row">
-        <input type="number" id="afp-min" placeholder="Min" min="0" value="${_advMinPrice || ""}">
+        <div class="number-spinner-wrap">
+          <input type="number" id="afp-min" placeholder="Min" min="0" class="has-spinner" value="${_advMinPrice || ""}">
+          <div class="number-spinner">
+            <button type="button" class="spinner-btn spinner-up" tabindex="-1" aria-label="Increase minimum price">${ICONS.chevronUp}</button>
+            <button type="button" class="spinner-btn spinner-down" tabindex="-1" aria-label="Decrease minimum price">${ICONS.chevronDown}</button>
+          </div>
+        </div>
         <span>–</span>
-        <input type="number" id="afp-max" placeholder="Max" min="0" value="${_advMaxPrice === Infinity ? "" : _advMaxPrice}">
+        <div class="number-spinner-wrap">
+          <input type="number" id="afp-max" placeholder="Max" min="0" class="has-spinner" value="${_advMaxPrice === Infinity ? "" : _advMaxPrice}">
+          <div class="number-spinner">
+            <button type="button" class="spinner-btn spinner-up" tabindex="-1" aria-label="Increase maximum price">${ICONS.chevronUp}</button>
+            <button type="button" class="spinner-btn spinner-down" tabindex="-1" aria-label="Decrease maximum price">${ICONS.chevronDown}</button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="hp-afp-footer">
@@ -253,6 +265,9 @@ function openFiltersPanel() {
   document
     .querySelector(".hp-filters")
     .insertAdjacentElement("afterend", panel);
+
+  bindNumberSpinner("afp-min");
+  bindNumberSpinner("afp-max");
 }
 
 function applyAdvFilters() {

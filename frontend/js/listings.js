@@ -359,6 +359,9 @@ function markSellerComplete(id) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  bindNumberSpinner("edit-inp-price");
+  bindNumberSpinner("edit-inp-qty");
+
   fetchCategories()
     .then((categories) => {
       const names = categories.map((c) => c.category_name);

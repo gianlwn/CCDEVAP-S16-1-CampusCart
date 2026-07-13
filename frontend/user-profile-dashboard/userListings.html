@@ -116,23 +116,43 @@
           <p
             style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
             Price (₱)</p>
-          <input id="edit-inp-price" type="number" min="0" style="
-            width:100%;padding:9px 11px;border:1px solid var(--border);
-            border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
-            font-size:13px;outline:none;font-family:inherit;
-            transition:all var(--transition);box-sizing:border-box;
-          " placeholder="0">
+          <div class="number-spinner-wrap">
+            <input id="edit-inp-price" type="number" min="0" class="has-spinner" style="
+              width:100%;padding:9px 11px;border:1px solid var(--border);
+              border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+              font-size:13px;outline:none;font-family:inherit;
+              transition:all var(--transition);box-sizing:border-box;
+            " placeholder="0">
+            <div class="number-spinner">
+              <button type="button" class="spinner-btn spinner-up" tabindex="-1" aria-label="Increase price">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              </button>
+              <button type="button" class="spinner-btn spinner-down" tabindex="-1" aria-label="Decrease price">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
         <div>
           <p
             style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:6px;">
             Quantity</p>
-          <input id="edit-inp-qty" type="number" min="1" style="
-            width:100%;padding:9px 11px;border:1px solid var(--border);
-            border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
-            font-size:13px;outline:none;font-family:inherit;
-            transition:all var(--transition);box-sizing:border-box;
-          " placeholder="1">
+          <div class="number-spinner-wrap">
+            <input id="edit-inp-qty" type="number" min="1" class="has-spinner" style="
+              width:100%;padding:9px 11px;border:1px solid var(--border);
+              border-radius:var(--radius-xs);background:var(--bg);color:var(--text);
+              font-size:13px;outline:none;font-family:inherit;
+              transition:all var(--transition);box-sizing:border-box;
+            " placeholder="1">
+            <div class="number-spinner">
+              <button type="button" class="spinner-btn spinner-up" tabindex="-1" aria-label="Increase quantity">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+              </button>
+              <button type="button" class="spinner-btn spinner-down" tabindex="-1" aria-label="Decrease quantity">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
