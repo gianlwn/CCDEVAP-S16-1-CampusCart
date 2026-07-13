@@ -126,11 +126,14 @@ async function claimItem(id, maxQuantity) {
   try {
     const { ok, data } = await claimCartItemAPI(id, quantity);
     if (ok) {
+      const contactLines = [`Contact: ${item.seller}`];
+      if (item.seller_contact) contactLines.push(`📞 ${item.seller_contact}`);
+      if (item.seller_email) contactLines.push(`✉️ ${item.seller_email}`);
       showToast(
         "Bought!",
-        `${quantity}× "${item.name}" reserved. Coordinate with the seller to arrange pickup.`,
+        `${quantity}× "${item.name}" reserved.<br>📍 ${item.location || "location not set"}<br>${contactLines.join("<br>")}`,
         "success",
-        4000,
+        6000,
       );
       cartItems = cartItems.filter((i) => String(i.id) !== String(id));
       clearTimeout(_cartQtySaveTimers[id]);

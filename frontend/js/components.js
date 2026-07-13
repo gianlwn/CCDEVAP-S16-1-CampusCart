@@ -112,6 +112,7 @@ function timeAgo(dateStr) {
 
 const NOTIF_ICON = {
   claim_received: `tag`,
+  claim_submitted: `tag`,
   seller_ready: `check`,
   transaction_complete: `check`,
   new_review: `star`,

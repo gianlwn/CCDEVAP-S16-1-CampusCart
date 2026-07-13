@@ -43,6 +43,9 @@ async function cartDocToFrontend(cartDoc) {
     category: categoryName,
     seller: sellerName,
     seller_id: listing.seller_id,
+    seller_contact: seller?.contact_number || "",
+    seller_email: seller?.email || "",
+    location: listing.location || "",
     status: listing.status,
     maxQuantity: available,
     quantity: Math.min(cartDoc.quantity ?? 1, available || 1),
@@ -195,17 +198,34 @@ exports.claim = async (req, res) => {
     );
 
     try {
-      const buyer = await User.findOne(
-        { user_id: cartDoc.buyer_id },
-        "first_name last_name",
-      );
+      const [buyer, seller] = await Promise.all([
+        User.findOne({ user_id: cartDoc.buyer_id }, "first_name last_name"),
+        User.findOne(
+          { user_id: listing.seller_id },
+          "first_name last_name email contact_number",
+        ),
+      ]);
       const buyerName = buyer
         ? `${buyer.first_name} ${buyer.last_name}`.trim()
         : "A buyer";
+      const sellerName = seller
+        ? `${seller.first_name} ${seller.last_name}`.trim()
+        : "the seller";
+
       createNotification(
         listing.seller_id,
         "claim_received",
         `${buyerName} claimed your item "${listing.product_name}"`,
+        claim_id,
+      ).catch(() => {});
+
+      const contactLines = [`Contact: ${sellerName}`];
+      if (seller?.contact_number) contactLines.push(`📞 ${seller.contact_number}`);
+      if (seller?.email) contactLines.push(`✉️ ${seller.email}`);
+      createNotification(
+        cartDoc.buyer_id,
+        "claim_submitted",
+        `You claimed "${listing.product_name}"!<br>📍 ${listing.location || "location not set"}<br>${contactLines.join("<br>")}`,
         claim_id,
       ).catch(() => {});
     } catch (_) {}
