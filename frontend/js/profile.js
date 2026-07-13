@@ -98,6 +98,16 @@ function handleSaveProfile() {
   }
   const school = schoolSelect === "Other" ? schoolOther : schoolSelect;
 
+  const phoneDigits = document.getElementById("prof-phone").value.trim();
+  if (phoneDigits && !/^9\d{9}$/.test(phoneDigits)) {
+    showToast(
+      "Invalid Phone",
+      "Phone number must be 10 digits starting with 9 (e.g. +63 9XXXXXXXXX).",
+      "error",
+    );
+    return;
+  }
+
   const parts = fullName.split(" ");
   const last_name = parts.length > 1 ? parts.pop() : "";
   const first_name = parts.join(" ");
@@ -105,7 +115,7 @@ function handleSaveProfile() {
   const data = {
     first_name,
     last_name,
-    contact_number: document.getElementById("prof-phone").value.trim(),
+    contact_number: phoneDigits ? "+63" + phoneDigits : "",
     bio: document.getElementById("prof-bio").value.trim(),
     school,
     course_code: document.getElementById("prof-course").value.trim(),
@@ -223,13 +233,13 @@ function reportRowHtml(r) {
   const statusClass = reportStatusClass(r.status);
   const outcomeClass = reportOutcomeClass(r.actionTaken);
   return `
-      <div class="listing-row">
-        <div class="item-info" style="flex:1;min-width:0;">
-          <p class="item-name">${r.subject}</p>
-          <p class="item-meta">${r.reportType} · Reason: ${r.reason} · ${r.date}</p>
-          ${r.status === "Resolved" && r.actionTaken ? `<p class="item-meta"><span class="outcome-tag ${outcomeClass}">${r.actionTaken}</span></p>` : ""}
+      <div class="report-entry-card">
+        <div class="report-entry-header">
+          <p class="report-entry-subject">${r.subject}</p>
+          <span class="badge-status ${statusClass}">${r.status}</span>
         </div>
-        <span class="badge-status ${statusClass}">${r.status}</span>
+        <p class="report-entry-meta">${r.reportType} · Reason: ${r.reason} · ${r.date}</p>
+        ${r.status === "Resolved" && r.actionTaken ? `<div class="report-entry-outcome"><span class="outcome-tag ${outcomeClass}">${r.actionTaken}</span></div>` : ""}
       </div>
     `;
 }
@@ -273,7 +283,9 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("prof-name").value = fullName;
       document.getElementById("summary-name").textContent =
         fullName || "Your Name";
-      document.getElementById("prof-phone").value = data.contact_number || "";
+      document.getElementById("prof-phone").value = (
+        data.contact_number || ""
+      ).replace(/^\+?63/, "");
       document.getElementById("prof-bio").value = data.bio || "";
       updateBioCounter();
       document.getElementById("prof-email").value = data.email || "";

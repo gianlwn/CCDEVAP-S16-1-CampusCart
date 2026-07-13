@@ -258,15 +258,16 @@ async function handleRegister(event) {
     );
     return;
   }
-  const phoneCleaned = phone.replace(/\s+/g, "");
-  if (!/^\+639\d{9}$/.test(phoneCleaned)) {
+  const phoneDigits = phone.replace(/\D/g, "");
+  if (!/^9\d{9}$/.test(phoneDigits)) {
     showToast(
       "Invalid Phone",
-      "Phone number must be in the format +63 9XX XXX XXXX.",
+      "Phone number must be 10 digits starting with 9 (e.g. +63 9XXXXXXXXX).",
       "error",
     );
     return;
   }
+  const phoneCleaned = "+63" + phoneDigits;
 
   try {
     const res = await fetch(`${API}/api/auth/register`, {

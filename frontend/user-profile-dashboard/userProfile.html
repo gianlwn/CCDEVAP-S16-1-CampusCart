@@ -99,7 +99,12 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Phone Number</label>
-                <input type="tel" class="form-input" id="prof-phone" placeholder="+63 000 000 0000" maxlength="13">
+                <div class="phone-input-wrap">
+                  <span class="phone-prefix">+63</span>
+                  <input type="tel" class="form-input with-phone-prefix" id="prof-phone" inputmode="numeric"
+                    placeholder="9XXXXXXXXX" maxlength="10"
+                    oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
+                </div>
               </div>
               <div class="form-group full">
                 <label class="form-label">

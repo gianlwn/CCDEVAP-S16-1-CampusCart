@@ -294,7 +294,64 @@ img {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+}
+
+.report-entry-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+}
+
+.report-entry-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
+}
+
+.report-entry-subject {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  margin: 0;
+}
+
+.report-entry-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.report-entry-outcome {
+  margin: 0;
+}
+
+.phone-input-wrap {
+  position: relative;
+}
+
+.phone-prefix {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.form-input.with-phone-prefix {
+  padding-left: 44px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .char-counter {
