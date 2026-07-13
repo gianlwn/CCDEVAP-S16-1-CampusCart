@@ -858,11 +858,15 @@ function openResolveReportModal(reportId) {
   const report = _reportsData.find(r => r.reportId === reportId);
   if (!report) return;
 
+  const listingTakedownNote = report.reportedListingId
+    ? ' The reported listing will also be taken down, removed from any carts, and any pending (unconfirmed) claims on it will be cancelled.'
+    : '';
+
   const actions = [
-    { value: 'warning', label: 'Issue Warning', icon: 'alert', desc: 'Adds a strike to the user\'s record. 3 warnings auto-suspend the account.' },
-    { value: 'suspend', label: 'Suspend User', icon: 'userSlash', desc: 'Blocks login for a moderate/first-time violation. Reversible by an admin at any time.' },
-    { value: 'ban', label: 'Ban User', icon: 'ban', desc: 'Blocks login for a severe or repeat violation. Also reversible by an admin — use for the most serious cases.' },
-    { value: 'dismiss', label: 'Dismiss Report', icon: 'close', desc: 'Closes the report with no action taken against the user.' },
+    { value: 'warning', label: 'Issue Warning', icon: 'alert', desc: `Adds a strike to the user's record. 3 warnings auto-suspend the account.${listingTakedownNote}` },
+    { value: 'suspend', label: 'Suspend User', icon: 'userSlash', desc: `Blocks login for a moderate/first-time violation. Reversible by an admin at any time.${listingTakedownNote}` },
+    { value: 'ban', label: 'Ban User', icon: 'ban', desc: `Blocks login for a severe or repeat violation. Also reversible by an admin — use for the most serious cases.${listingTakedownNote}` },
+    { value: 'dismiss', label: 'Dismiss Report', icon: 'close', desc: 'Closes the report with no action taken against the user or listing.' },
   ];
 
   openModal(`
@@ -941,7 +945,7 @@ function submitResolveReport(reportId) {
   const action = selected ? selected.dataset.action : 'warning';
   const note = document.getElementById('modal-resolve-note').value.trim();
 
-  resolveReportAPI(reportId, action, note).then(({ ok }) => {
+  resolveReportAPI(reportId, action, note).then(({ ok, data }) => {
     if (!ok) {
       showToast('Error', 'Failed to update the report. Please try again.', 'error');
       return;
@@ -954,6 +958,14 @@ function submitResolveReport(reportId) {
     renderReportsPage();
     const labelMap = { warning: 'Warning issued', suspend: 'User suspended', ban: 'User banned', dismiss: 'Report dismissed' };
     const typeMap = { warning: 'warning', suspend: 'warning', ban: 'error', dismiss: 'info' };
-    showToast(action === 'dismiss' ? 'Dismissed' : 'Resolved', `${labelMap[action]} for this report.`, typeMap[action]);
+    let message = `${labelMap[action]} for this report.`;
+    if (data?.listingTakenDown) {
+      message += ' Listing taken down';
+      const parts = [];
+      if (data.cartsCleared) parts.push(`removed from ${data.cartsCleared} cart${data.cartsCleared > 1 ? 's' : ''}`);
+      if (data.claimsCancelled) parts.push(`${data.claimsCancelled} pending claim${data.claimsCancelled > 1 ? 's' : ''} cancelled`);
+      message += parts.length ? ` (${parts.join(', ')}).` : '.';
+    }
+    showToast(action === 'dismiss' ? 'Dismissed' : 'Resolved', message, typeMap[action]);
   }).catch(() => showToast('Error', 'Failed to update the report. Please try again.', 'error'));
 }

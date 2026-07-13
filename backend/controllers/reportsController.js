@@ -2,6 +2,8 @@ const Report = require("../models/Report");
 const User = require("../models/User");
 const Listing = require("../models/Listing");
 const Rating = require("../models/Rating");
+const Cart = require("../models/Cart");
+const Claim = require("../models/Claim");
 const generateId = require("../utils/generateId");
 const issueWarning = require("../utils/issueWarning");
 const { suspendUser } = require("../utils/suspension");
@@ -170,6 +172,83 @@ exports.resolve = async (req, res) => {
       }
     }
 
+    let listingTakenDown = false;
+    let cartsCleared = 0;
+    let claimsCancelled = 0;
+
+    if (report.reported_listing_id && action !== "dismiss") {
+      const takenDownListing = await Listing.findOneAndUpdate(
+        { listings_id: report.reported_listing_id, is_deleted: { $ne: true } },
+        { status: "rejected" },
+        { new: true },
+      );
+
+      if (takenDownListing) {
+        listingTakenDown = true;
+
+        const affectedCarts = await Cart.find({
+          listing_id: report.reported_listing_id,
+          does_exist: true,
+        });
+        if (affectedCarts.length) {
+          await Cart.updateMany(
+            { listing_id: report.reported_listing_id, does_exist: true },
+            { does_exist: false },
+          );
+          cartsCleared = affectedCarts.length;
+          const cartBuyerIds = [...new Set(affectedCarts.map((c) => c.buyer_id))];
+          await Promise.all(
+            cartBuyerIds.map((buyerId) =>
+              createNotification(
+                buyerId,
+                "listing_removed_from_cart",
+                `"${takenDownListing.product_name}" was removed from your cart after being taken down for a policy violation.`,
+                report.reported_listing_id,
+              ).catch(() => {}),
+            ),
+          );
+        }
+
+        // Mirrors claimsController.cancel's own rule: don't cancel a claim
+        // the seller already confirmed their side of — that pickup may have
+        // already happened, so it shouldn't be force-reverted here.
+        const affectedClaims = await Claim.find({
+          listing_id: report.reported_listing_id,
+          status: "pending",
+          seller_completed: { $ne: true },
+        });
+        if (affectedClaims.length) {
+          await Claim.updateMany(
+            {
+              listing_id: report.reported_listing_id,
+              status: "pending",
+              seller_completed: { $ne: true },
+            },
+            { status: "cancelled" },
+          );
+          claimsCancelled = affectedClaims.length;
+          const claimBuyerIds = [...new Set(affectedClaims.map((c) => c.buyer_id))];
+          await Promise.all(
+            claimBuyerIds.map((buyerId) =>
+              createNotification(
+                buyerId,
+                "claim_cancelled",
+                `Your claim on "${takenDownListing.product_name}" was cancelled because the listing was taken down for a policy violation.`,
+                report.reported_listing_id,
+              ).catch(() => {}),
+            ),
+          );
+        }
+
+        await createNotification(
+          takenDownListing.seller_id,
+          "listing_taken_down",
+          `Your listing "${takenDownListing.product_name}" was taken down after a report against it was upheld.`,
+          report.reported_listing_id,
+        ).catch(() => {});
+      }
+    }
+
     report.status = "resolved";
     report.action_taken = note
       ? `${RESOLVE_ACTION_LABELS[action]}: ${note}`
@@ -201,7 +280,7 @@ exports.resolve = async (req, res) => {
       report.report_id,
     ).catch(() => {});
 
-    res.json({ success: true, autoSuspended });
+    res.json({ success: true, autoSuspended, listingTakenDown, cartsCleared, claimsCancelled });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server_error" });
