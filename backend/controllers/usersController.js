@@ -185,6 +185,13 @@ exports.update = async (req, res) => {
       profile_picture,
       remove_picture,
     } = req.body;
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (first_name !== undefined && !nameRegex.test(first_name.trim())) {
+      return res.status(400).json({ error: "invalid_first_name" });
+    }
+    if (last_name !== undefined && !nameRegex.test(last_name.trim())) {
+      return res.status(400).json({ error: "invalid_last_name" });
+    }
     const update = {};
     if (first_name !== undefined) update.first_name = first_name;
     if (last_name !== undefined) update.last_name = last_name;
