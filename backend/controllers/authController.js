@@ -65,12 +65,16 @@ exports.verifyCode = (req, res) => {
 exports.register = async (req, res) => {
   try {
     const { name, email, password, school, course_code, phone } = req.body;
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !school || !phone) {
       return res.status(400).json({ error: "missing_fields" });
     }
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (!nameRegex.test(name.trim())) {
       return res.status(400).json({ error: "invalid_name_format" });
+    }
+    const phoneRegex = /^9\d{9}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      return res.status(400).json({ error: "invalid_phone_format" });
     }
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) return res.status(409).json({ error: "email_taken" });
