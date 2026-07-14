@@ -34,7 +34,8 @@ exports.sendCode = async (req, res) => {
       return res.status(400).json({ error: "invalid_email" });
     }
     const existing = await User.findOne({ email: email.toLowerCase() });
-    if (existing) return res.status(409).json({ error: "email_taken" });
+    if (existing && !existing.is_deleted)
+      return res.status(409).json({ error: "email_taken" });
     const code = generateOTP();
     otpStore.set(email.toLowerCase(), {
       code,
@@ -77,11 +78,34 @@ exports.register = async (req, res) => {
       return res.status(400).json({ error: "invalid_phone_format" });
     }
     const existing = await User.findOne({ email: email.toLowerCase() });
-    if (existing) return res.status(409).json({ error: "email_taken" });
+    if (existing && !existing.is_deleted)
+      return res.status(409).json({ error: "email_taken" });
     const nameParts = name.trim().split(" ");
     const last_name = nameParts.length > 1 ? nameParts.pop() : "";
     const first_name = nameParts.join(" ");
     const password_hash = await bcrypt.hash(password, 10);
+
+    if (existing) {
+      // Reactivate a previously soft-deleted account instead of creating a
+      // duplicate document, since email must remain unique.
+      existing.password_hash = password_hash;
+      existing.first_name = first_name;
+      existing.last_name = last_name;
+      existing.course_code = course_code.toUpperCase();
+      existing.school = school;
+      existing.contact_number = phone;
+      existing.role = "student";
+      existing.is_deleted = false;
+      existing.is_suspended = false;
+      existing.suspended_until = null;
+      existing.is_banned = false;
+      existing.warning_count = 0;
+      existing.bio = undefined;
+      existing.profile_picture = "default_pfp.jpg";
+      await existing.save();
+      return res.status(201).json({ message: "Account created" });
+    }
+
     const user_id = await generateId(User, "user_id", "user_id_");
     const user = new User({
       user_id,
