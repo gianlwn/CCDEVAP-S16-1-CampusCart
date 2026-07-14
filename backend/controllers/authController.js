@@ -3,6 +3,7 @@ const emailjs = require("@emailjs/nodejs");
 const User = require("../models/User");
 const generateId = require("../utils/generateId");
 const { liftExpiredSuspension } = require("../utils/suspension");
+const titleCase = require("../utils/titleCase");
 
 const otpStore = new Map();
 const recoveryVerified = new Set();
@@ -73,17 +74,23 @@ exports.register = async (req, res) => {
     if (!nameRegex.test(name.trim())) {
       return res.status(400).json({ error: "invalid_name_format" });
     }
-    const phoneRegex = /^9\d{9}$/;
-    if (!phoneRegex.test(phone.trim())) {
+    let phoneDigits = phone.trim().replace(/\D/g, "");
+    if (phoneDigits.length === 12 && phoneDigits.startsWith("63")) {
+      phoneDigits = phoneDigits.slice(2);
+    } else if (phoneDigits.length === 11 && phoneDigits.startsWith("0")) {
+      phoneDigits = phoneDigits.slice(1);
+    }
+    if (!/^9\d{9}$/.test(phoneDigits)) {
       return res.status(400).json({ error: "invalid_phone_format" });
     }
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing && !existing.is_deleted)
       return res.status(409).json({ error: "email_taken" });
     const nameParts = name.trim().split(" ");
-    const last_name = nameParts.length > 1 ? nameParts.pop() : "";
-    const first_name = nameParts.join(" ");
+    const last_name = titleCase(nameParts.length > 1 ? nameParts.pop() : "");
+    const first_name = titleCase(nameParts.join(" "));
     const password_hash = await bcrypt.hash(password, 10);
+    const contact_number = `+63${phoneDigits}`;
 
     if (existing) {
       // Reactivate a previously soft-deleted account instead of creating a
@@ -93,7 +100,7 @@ exports.register = async (req, res) => {
       existing.last_name = last_name;
       existing.course_code = course_code.toUpperCase();
       existing.school = school;
-      existing.contact_number = phone;
+      existing.contact_number = contact_number;
       existing.role = "student";
       existing.is_deleted = false;
       existing.is_suspended = false;
@@ -115,7 +122,7 @@ exports.register = async (req, res) => {
       last_name,
       course_code: course_code.toUpperCase(),
       school,
-      contact_number: phone,
+      contact_number,
       role: "student",
     });
     await user.save();

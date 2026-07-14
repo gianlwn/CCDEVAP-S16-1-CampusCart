@@ -8,6 +8,7 @@ const createNotification = require("../utils/createNotification");
 const issueWarning = require("../utils/issueWarning");
 const { saveProfilePicture, deleteProfilePicture } = require("../utils/imageStorage");
 const { suspendUser } = require("../utils/suspension");
+const titleCase = require("../utils/titleCase");
 
 function statusOf(user) {
   if (user.is_banned) return "banned";
@@ -193,8 +194,8 @@ exports.update = async (req, res) => {
       return res.status(400).json({ error: "invalid_last_name" });
     }
     const update = {};
-    if (first_name !== undefined) update.first_name = first_name;
-    if (last_name !== undefined) update.last_name = last_name;
+    if (first_name !== undefined) update.first_name = titleCase(first_name);
+    if (last_name !== undefined) update.last_name = titleCase(last_name);
     if (contact_number !== undefined) update.contact_number = contact_number;
     if (bio !== undefined) update.bio = bio;
     if (school !== undefined) update.school = school;
