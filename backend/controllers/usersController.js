@@ -141,9 +141,13 @@ exports.getOne = async (req, res) => {
       : "—";
 
     const rawPhone = user.contact_number || "";
-    const formattedPhone = (rawPhone.startsWith("09") && rawPhone.length === 11)
-      ? "+63" + rawPhone.slice(1)
-      : rawPhone;
+    let formattedPhone = rawPhone;
+    if (rawPhone.length === 10 && rawPhone.startsWith("9")) {
+      formattedPhone = "+63" + rawPhone;
+    } 
+    else if (rawPhone.length === 11 && rawPhone.startsWith("09")) {
+      formattedPhone = "+63" + rawPhone.slice(1);
+    }
     
     res.json({
       user_id: user.user_id,
