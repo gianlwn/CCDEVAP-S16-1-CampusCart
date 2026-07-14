@@ -68,6 +68,10 @@ exports.register = async (req, res) => {
     if (!name || !email || !password) {
       return res.status(400).json({ error: "missing_fields" });
     }
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (!nameRegex.test(name.trim())) {
+      return res.status(400).json({ error: "invalid_name_format" });
+    }
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing) return res.status(409).json({ error: "email_taken" });
     const nameParts = name.trim().split(" ");
