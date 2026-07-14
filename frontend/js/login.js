@@ -26,7 +26,37 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("login-pw")
     ?.addEventListener("keydown", onLoginEnter);
+
+  const schoolSelect = document.getElementById("reg-school");
+  
+  if (schoolSelect) {
+    schoolSelect.addEventListener("change", toggleOtherSchoolInput);
+    toggleOtherSchoolInput();
+  }
 });
+
+function toggleOtherSchoolInput() {
+  const schoolSelect = document.getElementById("reg-school");
+  const otherSchoolGroup = document.getElementById(
+    "reg-other-school-group"
+  );
+  const otherSchoolInput = document.getElementById(
+    "reg-other-school"
+  );
+
+  if (!schoolSelect || !otherSchoolGroup || !otherSchoolInput) {
+    return;
+  }
+
+  const isOther = schoolSelect.value === "Other";
+
+  otherSchoolGroup.hidden = !isOther;
+  otherSchoolInput.required = isOther;
+
+  if (!isOther) {
+    otherSchoolInput.value = "";
+  }
+}
 
 async function handleLogin() {
   const email = document.getElementById("login-email").value.trim();
@@ -226,18 +256,33 @@ async function handleRegister(event) {
   const email = document.getElementById("reg-email").value.trim();
   const pw = document.getElementById("reg-pw").value;
   const pw2 = document.getElementById("reg-pw2").value;
-  const school = document.getElementById("reg-school").value;
-  const course = document.getElementById("reg-course").value.trim();
-  const phone = document.getElementById("reg-phone").value.trim();
+  
+  const selectedSchool =
+  document.getElementById("reg-school").value;
+  
+  const otherSchool =
+  document.getElementById("reg-other-school")?.value.trim() || "";
 
-  if (!name || !email || !pw || !school || !phone) {
+  const school =
+  selectedSchool === "Other"
+    ? otherSchool
+    : selectedSchool;
+
+  const course =
+    document.getElementById("reg-course").value.trim();
+
+  const phone =
+    document.getElementById("reg-phone").value.trim();
+
+  if (!name || !email || !pw || !pw2 || !school) {
     showToast(
       "Missing Fields",
-      "Please fill in all required fields.",
-      "warning",
+      "Please complete all required fields.",
+      "warning"
     );
     return;
   }
+
   if (pw.length < 6) {
     showToast(
       "Weak Password",
@@ -250,7 +295,7 @@ async function handleRegister(event) {
     showToast("Password Mismatch", "Passwords do not match.", "error");
     return;
   }
-  if (!/^[a-zA-Z-]+$/.test(course)) {
+  if (course && !/^[a-zA-Z-]+$/.test(course)) {
     showToast(
       "Invalid Course",
       "Course can only contain letters or hyphens (e.g., BSIT, BS-CS).",
@@ -258,7 +303,12 @@ async function handleRegister(event) {
     );
     return;
   }
+
+  let phoneCleaned = null;
+
+  if (phone) {
   const phoneDigits = phone.replace(/\D/g, "");
+
   if (!/^9\d{9}$/.test(phoneDigits)) {
     showToast(
       "Invalid Phone",
@@ -267,7 +317,9 @@ async function handleRegister(event) {
     );
     return;
   }
-  const phoneCleaned = "+63" + phoneDigits;
+
+  phoneCleaned = "+63" + phoneDigits;
+  }
 
   try {
     const res = await fetch(`${API}/api/auth/register`, {
@@ -278,7 +330,7 @@ async function handleRegister(event) {
         email,
         password: pw,
         school,
-        course_code: course,
+        course_code: course || "",
         phone: phoneCleaned,
       }),
     });
