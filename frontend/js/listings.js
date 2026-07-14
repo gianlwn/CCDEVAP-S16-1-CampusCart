@@ -1,5 +1,19 @@
 let allListings = [];
 
+function syncCategoryExclusivity(ids) {
+  const selects = ids.map((id) => document.getElementById(id));
+  const values = selects.map((s) => s.value);
+  selects.forEach((s, i) => {
+    Array.from(s.options).forEach((opt) => {
+      if (!opt.value) {
+        opt.disabled = false;
+        return;
+      }
+      opt.disabled = values.some((v, j) => j !== i && v === opt.value);
+    });
+  });
+}
+
 const STATUS_LABEL = {
   active: "Active",
   pending_review: "Pending Review",
@@ -109,6 +123,7 @@ function editListing(id) {
   document.getElementById("edit-inp-category").value = cats[0] || "";
   document.getElementById("edit-inp-category-2").value = cats[1] || "";
   document.getElementById("edit-inp-category-3").value = cats[2] || "";
+  syncCategoryExclusivity(["edit-inp-category", "edit-inp-category-2", "edit-inp-category-3"]);
   document.getElementById("edit-inp-condition").value = item.condition || "";
   document.getElementById("edit-inp-location").value = item.location || "";
   document.getElementById("edit-inp-desc").value = item.description || "";
@@ -372,6 +387,11 @@ document.addEventListener("DOMContentLoaded", function () {
         primary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
         secondary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
         tertiary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
+      });
+      const editCategoryIds = ["edit-inp-category", "edit-inp-category-2", "edit-inp-category-3"];
+      syncCategoryExclusivity(editCategoryIds);
+      editCategoryIds.forEach((id) => {
+        document.getElementById(id).addEventListener("change", () => syncCategoryExclusivity(editCategoryIds));
       });
     })
     .catch(() => {});

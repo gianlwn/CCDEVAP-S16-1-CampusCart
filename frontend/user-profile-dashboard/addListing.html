@@ -177,6 +177,7 @@
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/main.js"></script>
+  <script src="../js/customSelect.js"></script>
   <script src="../js/addListing.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -190,6 +191,7 @@
           secondary.insertAdjacentHTML('beforeend', `<option>${name}</option>`);
           tertiary.insertAdjacentHTML('beforeend', `<option>${name}</option>`);
         });
+        syncCategoryExclusivity(['inp-category', 'inp-category-2', 'inp-category-3']);
       }).catch(() => {
         showToast('Error', 'Could not load categories.', 'error');
       });

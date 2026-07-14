@@ -1,4 +1,6 @@
 const Category = require("../models/Category");
+const ListingCategory = require("../models/ListingCategory");
+const Listing = require("../models/Listing");
 const generateId = require("../utils/generateId");
 
 exports.list = async (req, res) => {
@@ -73,6 +75,21 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    const links = await ListingCategory.find(
+      { category_id: req.params.category_id },
+      "listing_id",
+    );
+    if (links.length) {
+      const listingIds = [...new Set(links.map((l) => l.listing_id))];
+      const inUseCount = await Listing.countDocuments({
+        listings_id: { $in: listingIds },
+        is_deleted: { $ne: true },
+      });
+      if (inUseCount > 0) {
+        return res.status(409).json({ error: "category_in_use" });
+      }
+    }
+
     const updated = await Category.findOneAndUpdate(
       { category_id: req.params.category_id },
       { is_removed: true },

@@ -18,18 +18,10 @@ function toggleTheme() {
 
 function _updateThemeBtn() {
   const isDark = document.body.classList.contains("darkMode");
+  const icon = isDark ? ICONS.sun : ICONS.moon;
   const btn = document.getElementById("theme-toggle");
-  if (btn) {
-    btn.innerHTML =
-      typeof ICONS !== "undefined"
-        ? isDark
-          ? ICONS.sun
-          : ICONS.moon
-        : isDark
-          ? "☀️"
-          : "🌙";
-  }
+  if (btn) btn.innerHTML = icon;
 
   const floatBtn = document.getElementById("theme-toggle-float");
-  if (floatBtn) floatBtn.textContent = isDark ? "☀️" : "🌙";
+  if (floatBtn) floatBtn.innerHTML = icon;
 }

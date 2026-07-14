@@ -1,5 +1,19 @@
 let uploadedImages = [];
 
+function syncCategoryExclusivity(ids) {
+  const selects = ids.map((id) => document.getElementById(id));
+  const values = selects.map((s) => s.value);
+  selects.forEach((s, i) => {
+    Array.from(s.options).forEach((opt) => {
+      if (!opt.value) {
+        opt.disabled = false;
+        return;
+      }
+      opt.disabled = values.some((v, j) => j !== i && v === opt.value);
+    });
+  });
+}
+
 function updatePreview() {
   const name = document.getElementById('inp-name').value.trim();
   const price = document.getElementById('inp-price').value;
@@ -117,10 +131,16 @@ document.addEventListener('DOMContentLoaded', function () {
     counterEl.className = 'char-counter' + (n >= 500 ? ' at-limit' : n >= 450 ? ' near-limit' : '');
   });
 
+  const categoryIds = ['inp-category', 'inp-category-2', 'inp-category-3'];
+
   ['inp-name', 'inp-price', 'inp-category', 'inp-category-2', 'inp-category-3', 'inp-condition'].forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener('input', updatePreview);
     el.addEventListener('change', updatePreview);
+  });
+
+  categoryIds.forEach(id => {
+    document.getElementById(id).addEventListener('change', () => syncCategoryExclusivity(categoryIds));
   });
 
   bindNumberSpinner('inp-price');

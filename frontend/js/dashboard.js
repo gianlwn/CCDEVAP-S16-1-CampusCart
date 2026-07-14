@@ -22,9 +22,9 @@ const centerTextPlugin = {
       ctx.globalAlpha = 0.55;
       ctx.fillText('satisfied', cx, cy + 10);
     } else if (total === 0) {
-      ctx.font = '11px Segoe UI, sans-serif';
+      ctx.font = '14px Segoe UI, sans-serif';
       ctx.fillStyle = t.text;
-      ctx.globalAlpha = 0.5;
+      ctx.globalAlpha = 0.65;
       ctx.fillText(chart.config.options._centerEmptyLabel || 'No reports', cx, cy);
     } else {
       ctx.fillStyle = t.text;
@@ -131,15 +131,21 @@ function buildCharts(data) {
     }
   });
 
-  const hasReports = data.reportsOnListing.length > 0;
+  const satisfiedCount = data.reportsOnListing.find(d => d.label === 'Satisfied')?.value ?? 0;
+  const unsatisfiedCount = data.reportsOnListing.find(d => d.label === 'Unsatisfied')?.value ?? 0;
+  const hasSold = satisfiedCount + unsatisfiedCount > 0;
+  const hasReports = unsatisfiedCount > 0;
   charts.reports = new Chart(document.getElementById('chart-reports'), {
     type: 'doughnut',
     _centerText: true,
-    data: hasReports ? {
-      labels: data.reportsOnListing.map(d => d.label),
+    data: !hasSold ? {
+      labels: [],
+      datasets: [{ data: [], backgroundColor: [], borderColor: t.cardBg, borderWidth: 3 }]
+    } : hasReports ? {
+      labels: ['Unsatisfied', 'Satisfied'],
       datasets: [{
-        data: data.reportsOnListing.map(d => d.value),
-        backgroundColor: REPORT_COLORS,
+        data: [unsatisfiedCount, satisfiedCount],
+        backgroundColor: [REPORT_COLORS[2], REPORT_COLORS[0]],
         borderColor: t.cardBg,
         borderWidth: 3,
       }]
@@ -157,7 +163,10 @@ function buildCharts(data) {
       maintainAspectRatio: false,
       cutout: '64%',
       _centerText: true,
-      _satisfied: !hasReports,
+      _satisfied: hasSold && !hasReports,
+      _emptyTotal: hasSold ? unsatisfiedCount : 0,
+      _centerLabel: 'reports',
+      _centerEmptyLabel: 'No sales yet',
       plugins: {
         legend: { display: false },
         tooltip: { enabled: hasReports, callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } }
@@ -166,15 +175,23 @@ function buildCharts(data) {
   });
 
   const legend = document.getElementById('reports-legend');
-  legend.innerHTML = !hasReports
+  legend.style.display = hasSold ? '' : 'none';
+  legend.innerHTML = !hasSold
+    ? ''
+    : !hasReports
     ? `<div class="legend-item"><span class="legend-dot" style="background:${REPORT_COLORS[0]}"></span><span class="legend-label">Satisfied</span><strong class="legend-val">100%</strong></div>`
-    : data.reportsOnListing.map((d, i) => `
+    : `
     <div class="legend-item">
-      <span class="legend-dot" style="background:${REPORT_COLORS[i]}"></span>
-      <span class="legend-label">${d.label}</span>
-      <strong class="legend-val">${d.value}</strong>
+      <span class="legend-dot" style="background:${REPORT_COLORS[2]}"></span>
+      <span class="legend-label">Unsatisfied</span>
+      <strong class="legend-val">${unsatisfiedCount}</strong>
     </div>
-  `).join('');
+    <div class="legend-item">
+      <span class="legend-dot" style="background:${REPORT_COLORS[0]}"></span>
+      <span class="legend-label">Satisfied</span>
+      <strong class="legend-val">${satisfiedCount}</strong>
+    </div>
+  `;
 
   const soldData = data.itemsSoldMonthly;
   const lastSoldI = soldData.length - 1;
@@ -210,6 +227,7 @@ function buildCharts(data) {
   });
 
   const statusLegend = document.getElementById('listing-status-legend');
+  statusLegend.style.display = data.listingStatus.length ? '' : 'none';
   statusLegend.innerHTML = data.listingStatus.map((d, i) => `
     <div class="legend-item">
       <span class="legend-dot" style="background:${STATUS_COLORS[i]}"></span>

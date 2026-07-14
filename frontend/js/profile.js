@@ -1,6 +1,8 @@
-function syncSummaryName(val) {
+function syncSummaryName() {
+  const first = document.getElementById("prof-first-name").value.trim();
+  const last = document.getElementById("prof-last-name").value.trim();
   document.getElementById("summary-name").textContent =
-    val.trim() || "Your Name";
+    `${first} ${last}`.trim() || "Your Name";
 }
 
 const SCHOOL_PRESETS = [
@@ -69,12 +71,13 @@ function handleRemovePicture() {
 }
 
 function handleSaveProfile() {
-  const fullName = document.getElementById("prof-name").value.trim();
+  const first_name = document.getElementById("prof-first-name").value.trim();
+  const last_name = document.getElementById("prof-last-name").value.trim();
   const pw = document.getElementById("prof-pw").value;
   const pw2 = document.getElementById("prof-pw2").value;
 
-  if (!fullName) {
-    showToast("Missing Field", "Full name cannot be empty.", "warning");
+  if (!first_name || !last_name) {
+    showToast("Missing Field", "First and last name cannot be empty.", "warning");
     return;
   }
   if (pw && !pw2) {
@@ -107,10 +110,6 @@ function handleSaveProfile() {
     );
     return;
   }
-
-  const parts = fullName.split(" ");
-  const last_name = parts.length > 1 ? parts.pop() : "";
-  const first_name = parts.join(" ");
 
   const data = {
     first_name,
@@ -278,9 +277,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetchMyProfile()
     .then((data) => {
+      document.getElementById("prof-first-name").value = data.first_name || "";
+      document.getElementById("prof-last-name").value = data.last_name || "";
       const fullName = `${data.first_name} ${data.last_name}`.trim();
-
-      document.getElementById("prof-name").value = fullName;
       document.getElementById("summary-name").textContent =
         fullName || "Your Name";
       document.getElementById("prof-phone").value = (

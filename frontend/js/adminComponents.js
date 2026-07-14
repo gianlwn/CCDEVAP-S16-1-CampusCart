@@ -729,8 +729,14 @@ function handleCategory(action, categoryId) {
       'Delete this Category?',
       `Remove "${category.category_name}"? This action cannot be undone.`,
       () => {
-        deleteCategoryAPI(categoryId).then(({ ok }) => {
-          if (!ok) { showToast('Error', 'Could not delete category.', 'error'); return; }
+        deleteCategoryAPI(categoryId).then(({ ok, data }) => {
+          if (!ok) {
+            const message = data?.error === 'category_in_use'
+              ? `"${category.category_name}" is still used by active listings. Reassign or remove those listings first.`
+              : 'Could not delete category.';
+            showToast('Error', message, 'error');
+            return;
+          }
           _categoriesData = _categoriesData.filter(c => c.category_id !== categoryId);
           showToast('Deleted', `"${category.category_name}" removed.`, 'success');
           renderCategoryPage();

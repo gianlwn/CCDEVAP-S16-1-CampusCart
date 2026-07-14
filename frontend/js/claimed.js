@@ -16,7 +16,7 @@ function goToItem(id) {
 function renderClaimed() {
   const el = document.getElementById("claimed-list");
   if (!claimedItems.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛍️</div><p>No bought items yet.</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">${ICONS.bag}</div><p>No bought items yet.</p></div>`;
     return;
   }
   el.innerHTML = claimedItems.map((item) => {
@@ -50,7 +50,7 @@ function renderClaimed() {
         <div class="item-info" style="flex:1;min-width:0;cursor:pointer;" onclick="goToItem('${item.listing_id}')">
           <p class="item-name">${item.name}</p>
           <p class="item-meta">${item.total || item.price} (${item.price} × ${item.quantity ?? 1}) · ${item.category} · ${item.seller || ""} · ${item.date}</p>
-          <p class="item-meta">📍 ${item.location || "Location not set"}${item.seller_contact ? ` · 📞 ${item.seller_contact}` : ""}${item.seller_email ? ` · ✉️ ${item.seller_email}` : ""}</p>
+          <p class="item-meta"><span class="meta-icon">${ICONS.pin}</span> ${item.location || "Location not set"}${item.seller_contact ? ` · <span class="meta-icon">${ICONS.phone}</span> ${item.seller_contact}` : ""}${item.seller_email ? ` · <span class="meta-icon">${ICONS.mail}</span> ${item.seller_email}` : ""}</p>
           ${awaitingSeller ? `<p class="item-meta" style="color:var(--warning-text);">You've confirmed receipt. Waiting for the seller to confirm before this is marked completed — you can still cancel if needed.</p>` : ""}
           ${hasReview && item.userComment ? `<p class="item-review">"${item.userComment}"</p>` : ""}
         </div>

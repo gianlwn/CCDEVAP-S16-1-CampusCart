@@ -252,7 +252,8 @@ async function handleConfirm(event) {
 async function handleRegister(event) {
   if (event) event.preventDefault();
 
-  const name = document.getElementById("reg-name").value.trim();
+  const firstName = document.getElementById("reg-first-name").value.trim();
+  const lastName = document.getElementById("reg-last-name").value.trim();
   const email = document.getElementById("reg-email").value.trim();
   const pw = document.getElementById("reg-pw").value;
   const pw2 = document.getElementById("reg-pw2").value;
@@ -274,7 +275,7 @@ async function handleRegister(event) {
   const phone =
     document.getElementById("reg-phone").value.trim();
 
-  if (!name || !email || !pw || !pw2 || !school) {
+  if (!firstName || !lastName || !email || !pw || !pw2 || !school) {
     showToast(
       "Missing Fields",
       "Please complete all required fields.",
@@ -326,7 +327,8 @@ async function handleRegister(event) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name,
+        first_name: firstName,
+        last_name: lastName,
         email,
         password: pw,
         school,

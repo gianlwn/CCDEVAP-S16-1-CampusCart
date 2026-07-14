@@ -29,11 +29,18 @@
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
 
-        <div class="form-group" style="grid-column:1/-1;">
+        <div class="form-group">
           <label class="form-label">
-            Full Name <span class="required-mark">*</span>
+            First Name <span class="required-mark">*</span>
           </label>
-          <input type="text" class="form-input" id="reg-name" placeholder="Juan Dela Cruz" autocomplete="name" required>
+          <input type="text" class="form-input" id="reg-first-name" placeholder="Juan" autocomplete="given-name" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            Last Name <span class="required-mark">*</span>
+          </label>
+          <input type="text" class="form-input" id="reg-last-name" placeholder="Dela Cruz" autocomplete="family-name" required>
         </div>
 
         <div class="form-group" style="grid-column:1/-1;">
@@ -141,6 +148,7 @@
   </div>
 
   <script src="../js/auth.js"></script>
+  <script src="../js/icons.js"></script>
   <script src="../js/toggleTheme.js"></script>
   <script src="../js/toastNotification.js"></script>
   <script src="../js/login.js"></script>

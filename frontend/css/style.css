@@ -68,6 +68,23 @@ body.darkMode {
 }
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 body {
@@ -175,7 +192,7 @@ img {
   background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
+  padding: 12px 22px 12px 14px;
   box-shadow: var(--shadow);
   transition:
     background-color var(--transition),
@@ -206,7 +223,7 @@ img {
 
 .item-name {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 1.8vh;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -214,7 +231,7 @@ img {
 }
 
 .item-meta {
-  font-size: 13px;
+  font-size: 1.6vh;
   color: var(--text-muted);
   margin-top: 2px;
 }
@@ -284,7 +301,6 @@ img {
 }
 
 .reports-modal-dialog {
-  max-width: 520px;
   text-align: left;
   align-items: stretch;
 }
@@ -766,7 +782,7 @@ body.darkMode .big-number {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 1.4vh;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -783,7 +799,7 @@ body.darkMode .big-number {
   border-radius: var(--radius-sm);
   background: var(--card-bg);
   color: var(--text);
-  font-size: 14px;
+  font-size: 1.7vh;
   font-family: inherit;
   outline: none;
   transition:
@@ -799,6 +815,113 @@ body.darkMode .big-number {
 .form-textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.form-select option {
+  background: var(--card-bg);
+  color: var(--text);
+  padding: 8px;
+}
+
+.form-select option:checked,
+.form-select option:hover {
+  background: var(--accent) linear-gradient(0deg, var(--accent) 0%, var(--accent) 100%);
+  color: #fff;
+}
+
+.custom-select {
+  position: relative;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.7vh;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.custom-select-trigger svg {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform var(--transition);
+}
+
+.custom-select-trigger:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.custom-select.open .custom-select-trigger svg {
+  transform: rotate(180deg);
+}
+
+.custom-select-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.custom-select-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  padding: 6px;
+  display: none;
+}
+
+.custom-select.open .custom-select-panel {
+  display: block;
+}
+
+.custom-select-option {
+  padding: 8px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 1.7vh;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.custom-select-option:hover,
+.custom-select-option:focus {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.custom-select-option.selected {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.custom-select-option.disabled {
+  color: var(--text-muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .form-input::placeholder,
@@ -997,6 +1120,11 @@ body.darkMode .big-number {
   transform: translateY(-1px);
 }
 
+.reports-modal-dialog {
+  width: min(92vw, 640px);
+  max-width: 640px;
+}
+
 @media (max-width: 768px) {
   .confirm-overlay {
     padding: 12px;
@@ -1015,6 +1143,10 @@ body.darkMode .big-number {
   .confirm-ok {
     padding: 12px;
     font-size: 15px;
+  }
+  .reports-modal-dialog {
+    width: 100%;
+    max-width: 100%;
   }
 }
 

@@ -66,12 +66,12 @@ exports.verifyCode = (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, school, course_code, phone } = req.body;
-    if (!name || !email || !password || !school || !phone) {
+    const { first_name: firstNameInput, last_name: lastNameInput, email, password, school, course_code, phone } = req.body;
+    if (!firstNameInput || !lastNameInput || !email || !password || !school || !phone) {
       return res.status(400).json({ error: "missing_fields" });
     }
     const nameRegex = /^[a-zA-Z\s]+$/;
-    if (!nameRegex.test(name.trim())) {
+    if (!nameRegex.test(firstNameInput.trim()) || !nameRegex.test(lastNameInput.trim())) {
       return res.status(400).json({ error: "invalid_name_format" });
     }
     let phoneDigits = phone.trim().replace(/\D/g, "");
@@ -86,9 +86,8 @@ exports.register = async (req, res) => {
     const existing = await User.findOne({ email: email.toLowerCase() });
     if (existing && !existing.is_deleted)
       return res.status(409).json({ error: "email_taken" });
-    const nameParts = name.trim().split(" ");
-    const last_name = titleCase(nameParts.length > 1 ? nameParts.pop() : "");
-    const first_name = titleCase(nameParts.join(" "));
+    const first_name = titleCase(firstNameInput.trim());
+    const last_name = titleCase(lastNameInput.trim());
     const password_hash = await bcrypt.hash(password, 10);
     const contact_number = `+63${phoneDigits}`;
 

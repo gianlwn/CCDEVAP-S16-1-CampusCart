@@ -230,7 +230,7 @@ function openFiltersPanel() {
   panel.innerHTML = `
     <div class="hp-afp-header">
       <span class="hp-afp-title">Advanced Filters</span>
-      <button class="hp-afp-close" onclick="document.getElementById('hp-adv-filters').remove()">✕</button>
+      <button class="hp-afp-close" onclick="document.getElementById('hp-adv-filters').remove()">${ICONS.close}</button>
     </div>
     <div class="hp-afp-section">
       <p class="hp-afp-label">Condition</p>

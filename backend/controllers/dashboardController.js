@@ -155,16 +155,22 @@ exports.getDashboard = async (req, res) => {
       value,
     }));
 
-    const myReports = await Report.find({
-      reported_listing_id: { $in: myListingIds },
-    });
-    const reasonCount = {};
-    myReports.forEach((r) => {
-      reasonCount[r.reason] = (reasonCount[r.reason] || 0) + 1;
-    });
-    const reportsOnListing = Object.entries(reasonCount).map(
-      ([label, value]) => ({ label, value }),
+    const myReports = await Report.find(
+      { reported_listing_id: { $in: myListingIds } },
+      "reported_listing_id",
     );
+    const reportedListingIds = new Set(
+      myReports.map((r) => r.reported_listing_id),
+    );
+    const unsatisfiedSoldCount = soldClaims.reduce(
+      (s, c) => s + (reportedListingIds.has(c.listing_id) ? 1 : 0),
+      0,
+    );
+    const satisfiedSoldCount = soldClaims.length - unsatisfiedSoldCount;
+    const reportsOnListing = [
+      { label: "Satisfied", value: satisfiedSoldCount },
+      { label: "Unsatisfied", value: unsatisfiedSoldCount },
+    ];
 
     const boughtClaims = await Claim.find({
       buyer_id: user_id,

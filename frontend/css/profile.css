@@ -117,7 +117,7 @@
 .profile-rating-row {
   color: var(--star-fill);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 1.7vh;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -173,7 +173,7 @@
 }
 
 .form-section-title {
-  font-size: 11px;
+  font-size: 1.4vh;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.7px;

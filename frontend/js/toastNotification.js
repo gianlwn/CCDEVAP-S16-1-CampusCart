@@ -10,10 +10,10 @@
   }
 
   var META = {
-    success: { icon: "✓" },
-    warning: { icon: "⚠" },
-    error: { icon: "✕" },
-    info: { icon: "ℹ" },
+    success: { icon: ICONS.check },
+    warning: { icon: ICONS.alert },
+    error: { icon: ICONS.close },
+    info: { icon: ICONS.info },
   };
 
   function dismiss(toast) {
@@ -45,7 +45,9 @@
       "</p>" +
       (message ? '<p class="toast-message">' + message + "</p>" : "") +
       "</div>" +
-      '<button class="toast-close" aria-label="Close">✕</button>';
+      '<button class="toast-close" aria-label="Close">' +
+      ICONS.close +
+      "</button>";
 
     toast.querySelector(".toast-close").addEventListener("click", function () {
       dismiss(toast);
