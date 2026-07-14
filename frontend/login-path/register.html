@@ -118,13 +118,13 @@
 
         <div class="form-group">
           <label class="form-label">
-            Phone <span class="optional-label">(optional)</span>
+            Phone <span class="required-mark">*</span>
           </label>
           <div class="phone-input-wrap">
             <span class="phone-prefix">+63</span>
             <input type="tel" class="form-input with-phone-prefix" id="reg-phone" inputmode="numeric"
               placeholder="9XXXXXXXXX" maxlength="10"
-              oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)">
+              oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" required>
           </div>
         </div>
 
