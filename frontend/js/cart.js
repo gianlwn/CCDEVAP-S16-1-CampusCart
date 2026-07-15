@@ -126,13 +126,12 @@ async function claimItem(id, maxQuantity) {
   try {
     const { ok, data } = await claimCartItemAPI(id, quantity);
     if (ok) {
-      const contactParts = [];
-      if (item.seller_contact) contactParts.push(`<span class="meta-icon">${ICONS.phone}</span> ${item.seller_contact}`);
-      if (item.seller_email) contactParts.push(`<span class="meta-icon">${ICONS.mail}</span> ${item.seller_email}`);
-      const contactStr = contactParts.length ? ` · ${contactParts.join(" · ")}` : "";
+      const contactLines = [`Contact: ${item.seller}`];
+      if (item.seller_contact) contactLines.push(`<span class="meta-icon">${ICONS.phone}</span> ${item.seller_contact}`);
+      if (item.seller_email) contactLines.push(`<span class="meta-icon">${ICONS.mail}</span> ${item.seller_email}`);
       showToast(
         "Bought!",
-        `${quantity}× "${item.name}" reserved. Pickup at <span class="meta-icon">${ICONS.pin}</span> ${item.location || "location not set"}. Contact ${item.seller}${contactStr}`,
+        `${quantity}× "${item.name}" reserved.<br><span class="meta-icon">${ICONS.pin}</span> ${item.location || "location not set"}<br>${contactLines.join("<br>")}`,
         "success",
         6000,
       );
