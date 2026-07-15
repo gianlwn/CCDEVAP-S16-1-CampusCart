@@ -275,7 +275,7 @@ async function handleRegister(event) {
   const phone =
     document.getElementById("reg-phone").value.trim();
 
-  if (!firstName || !lastName || !email || !pw || !pw2 || !school) {
+  if (!firstName || !lastName || !email || !pw || !pw2 || !school || !phone) {
     showToast(
       "Missing Fields",
       "Please complete all required fields.",
