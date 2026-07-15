@@ -4,6 +4,7 @@ const listingSchema = new mongoose.Schema(
     listings_id: { type: String, required: true, unique: true },
     product_name: { type: String, required: true },
     price: { type: Number, required: true },
+    quantity: { type: Number, default: 1 },
     status: {
       type: String,
       enum: ["active", "pending_review", "rejected"],
@@ -14,9 +15,8 @@ const listingSchema = new mongoose.Schema(
     description: { type: String },
     location: { type: String },
     images: [{ type: String }],
-    quantity: { type: Number, default: 1 },
-    created: { type: Date, default: Date.now },
     is_deleted: { type: Boolean, default: false },
+    created: { type: Date, default: Date.now },
   },
   { versionKey: false },
 );

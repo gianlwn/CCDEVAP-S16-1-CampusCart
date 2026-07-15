@@ -11,9 +11,9 @@ const claimSchema = new mongoose.Schema(
       enum: ["pending", "completed", "cancelled"],
       default: "pending",
     },
-    claim_date: { type: Date, default: Date.now },
     buyer_completed: { type: Boolean, default: false },
     seller_completed: { type: Boolean, default: false },
+    claim_date: { type: Date, default: Date.now },
   },
   { versionKey: false },
 );

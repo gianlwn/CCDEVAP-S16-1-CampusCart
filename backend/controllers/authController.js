@@ -66,12 +66,30 @@ exports.verifyCode = (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const { first_name: firstNameInput, last_name: lastNameInput, email, password, school, course_code, phone } = req.body;
-    if (!firstNameInput || !lastNameInput || !email || !password || !school || !phone) {
+    const {
+      first_name: firstNameInput,
+      last_name: lastNameInput,
+      email,
+      password,
+      school,
+      course_code,
+      phone,
+    } = req.body;
+    if (
+      !firstNameInput ||
+      !lastNameInput ||
+      !email ||
+      !password ||
+      !school ||
+      !phone
+    ) {
       return res.status(400).json({ error: "missing_fields" });
     }
     const nameRegex = /^[a-zA-Z\s]+$/;
-    if (!nameRegex.test(firstNameInput.trim()) || !nameRegex.test(lastNameInput.trim())) {
+    if (
+      !nameRegex.test(firstNameInput.trim()) ||
+      !nameRegex.test(lastNameInput.trim())
+    ) {
       return res.status(400).json({ error: "invalid_name_format" });
     }
     let phoneDigits = phone.trim().replace(/\D/g, "");
@@ -92,8 +110,6 @@ exports.register = async (req, res) => {
     const contact_number = `+63${phoneDigits}`;
 
     if (existing) {
-      // Reactivate a previously soft-deleted account instead of creating a
-      // duplicate document, since email must remain unique.
       existing.password_hash = password_hash;
       existing.first_name = first_name;
       existing.last_name = last_name;
@@ -106,7 +122,7 @@ exports.register = async (req, res) => {
       existing.suspended_until = null;
       existing.is_banned = false;
       existing.warning_count = 0;
-      existing.bio = undefined;
+      existing.bio = null;
       existing.profile_picture = "default_pfp.jpg";
       await existing.save();
       return res.status(201).json({ message: "Account created" });
@@ -145,9 +161,10 @@ exports.login = async (req, res) => {
       return res.status(403).json({ error: "account_banned" });
     await liftExpiredSuspension(user);
     if (user.is_suspended)
-      return res
-        .status(403)
-        .json({ error: "account_suspended", suspended_until: user.suspended_until });
+      return res.status(403).json({
+        error: "account_suspended",
+        suspended_until: user.suspended_until,
+      });
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: "invalid_credentials" });
     res.json({
