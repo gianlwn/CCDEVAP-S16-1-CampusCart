@@ -142,7 +142,11 @@ function refreshNotifs() {
           .slice(0, 5)
           .map(
             (n) => `
-          <div class="notif-item${n.is_read ? "" : " unread"}" data-id="${n.notification_id}">
+          <div 
+            class="notif-item${n.is_read ? "" : " unread"}" 
+            data-id="${n.notification_id}"
+            onclick="handleNotificationClick(event, '${n.notification_id}')"
+          >
             <span class="notif-icon">${ICONS[NOTIF_ICON[n.type]] || ICONS.bell}</span>
             <div class="notif-content">
               <p class="notif-text">${n.message}</p>
@@ -170,6 +174,26 @@ function refreshNotifs() {
         list.innerHTML =
           '<p class="notif-empty">Could not load notifications.</p>';
     });
+}
+
+async function handleNotificationClick(event, notificationId) {
+  event.stopPropagation();
+
+  const item = event.currentTarget;
+
+  if (!item.classList.contains("unread")) {
+    return;
+  }
+
+  try {
+    await markNotificationReadAPI(notificationId);
+
+    item.classList.remove("unread");
+
+    refreshNotifs();
+  } catch (error) {
+    console.error("Failed to mark notification as read:", error);
+  }
 }
 
 function loadTopNav() {
@@ -205,6 +229,7 @@ function loadTopNav() {
     </nav>
   `;
   document.getElementById("top-nav").innerHTML = html;
+  document.getElementById("notif-panel")?.addEventListener("click", (event) => {event.stopPropagation();});
 
   refreshNotifs();
   if (window._notifPollInterval) clearInterval(window._notifPollInterval);
