@@ -219,13 +219,14 @@ exports.claim = async (req, res) => {
         claim_id,
       ).catch(() => {});
 
-      const contactLines = [`Contact: ${sellerName}`];
-      if (seller?.contact_number) contactLines.push(`📞 ${seller.contact_number}`);
-      if (seller?.email) contactLines.push(`✉️ ${seller.email}`);
+      const contactParts = [];
+      if (seller?.contact_number) contactParts.push(`📞 ${seller.contact_number}`);
+      if (seller?.email) contactParts.push(`✉️ ${seller.email}`);
+      const contactStr = contactParts.length ? ` · ${contactParts.join(" · ")}` : "";
       createNotification(
         cartDoc.buyer_id,
         "claim_submitted",
-        `You claimed "${listing.product_name}"!<br>📍 ${listing.location || "location not set"}<br>${contactLines.join("<br>")}`,
+        `You claimed "${listing.product_name}"! Pickup at 📍 ${listing.location || "location not set"}. Contact ${sellerName}${contactStr}`,
         claim_id,
       ).catch(() => {});
     } catch (_) {}
