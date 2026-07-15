@@ -59,7 +59,11 @@ function previewProfilePicture(dataUrl) {
   document.getElementById("profile-avatar-el").innerHTML =
     `<img src="${dataUrl}" alt="Profile photo">`;
   setRemoveBtnVisible(true);
-  showToast("Photo Selected", "Press Save Changes to apply your new photo.", "info");
+  showToast(
+    "Photo Selected",
+    "Press Save Changes to apply your new photo.",
+    "info",
+  );
 }
 
 function handleRemovePicture() {
@@ -77,15 +81,27 @@ function handleSaveProfile() {
   const pw2 = document.getElementById("prof-pw2").value;
 
   if (!first_name || !last_name) {
-    showToast("Missing Field", "First and last name cannot be empty.", "warning");
+    showToast(
+      "Missing Field",
+      "First and last name cannot be empty.",
+      "warning",
+    );
     return;
   }
   if (pw && !pw2) {
-    showToast("Confirm Password", "Please confirm your new password.", "warning");
+    showToast(
+      "Confirm Password",
+      "Please confirm your new password.",
+      "warning",
+    );
     return;
   }
   if (!pw && pw2) {
-    showToast("New Password", "Please enter a new password to confirm.", "warning");
+    showToast(
+      "New Password",
+      "Please enter a new password to confirm.",
+      "warning",
+    );
     return;
   }
   if (pw && pw !== pw2) {
@@ -191,7 +207,7 @@ function togglePw(inputId, btn) {
 function handleHelp() {
   showToast(
     "Help",
-    "For support, contact campuscart@support.edu.ph",
+    "For support, contact ccdevap.s16.1.campuscart@gmail.com",
     "info",
     6000,
   );
@@ -260,7 +276,9 @@ function openReportsModal() {
     </div>
   `;
   const close = () => overlay.remove();
-  overlay.querySelector(".reports-modal-close").addEventListener("click", close);
+  overlay
+    .querySelector(".reports-modal-close")
+    .addEventListener("click", close);
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) close();
   });
@@ -315,16 +333,18 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(() => showToast("Error", "Failed to load profile.", "error"));
 
-  document.getElementById("profile-img-input").addEventListener("change", function (e) {
-    const file = e.target.files[0];
-    this.value = "";
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      showToast("Invalid File", "Please select an image file.", "error");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => previewProfilePicture(ev.target.result);
-    reader.readAsDataURL(file);
-  });
+  document
+    .getElementById("profile-img-input")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      this.value = "";
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        showToast("Invalid File", "Please select an image file.", "error");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => previewProfilePicture(ev.target.result);
+      reader.readAsDataURL(file);
+    });
 });

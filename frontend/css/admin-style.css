@@ -45,10 +45,10 @@ body {
 }
 
 .sub-header h2 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
   margin-bottom: 2px;
 }
 
@@ -74,10 +74,10 @@ body {
 
 .page-toolbar-title,
 .toolbar-left-panel h3 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
   margin-bottom: 2px;
 }
 
@@ -182,10 +182,10 @@ body {
 
 .badge-pill {
   display: inline-block;
-  padding: 4px 12px;
+  padding: 3px 9px;
   border-radius: 999px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.1px;
 }
 

@@ -29,7 +29,7 @@
   border-radius: var(--radius-sm);
   text-decoration: none;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 1.6vh;
   font-weight: 600;
   transition:
     background var(--transition),
@@ -85,6 +85,12 @@
   opacity: 1;
 }
 
+@media (max-width: 1024px) {
+  #admin-side-nav {
+    width: 180px;
+  }
+}
+
 @media (max-width: 768px) {
   #admin-side-nav {
     position: fixed;
@@ -136,7 +142,7 @@
 
   .nav-item-label {
     display: block;
-      width: 100%;
+    width: 100%;
     font-size: 10px;
     line-height: 1.05;
     text-align: center;
