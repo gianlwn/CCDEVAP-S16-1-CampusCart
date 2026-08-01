@@ -401,6 +401,7 @@ function handleSignOut() {
   localStorage.removeItem("session_email");
   localStorage.removeItem("session_role");
   localStorage.removeItem("session_user_id");
+  localStorage.removeItem("campuscart-theme");
   sessionStorage.setItem("cc_signout", "1");
   window.location.replace("../login-path/login.html");
 }

@@ -185,6 +185,7 @@ exports.update = async (req, res) => {
       password,
       profile_picture,
       remove_picture,
+      theme,
     } = req.body;
     const nameRegex = /^[a-zA-Z\s]+$/;
     if (first_name !== undefined && !nameRegex.test(first_name.trim())) {
@@ -193,6 +194,9 @@ exports.update = async (req, res) => {
     if (last_name !== undefined && !nameRegex.test(last_name.trim())) {
       return res.status(400).json({ error: "invalid_last_name" });
     }
+    if (theme !== undefined && !["light", "dark"].includes(theme)) {
+      return res.status(400).json({ error: "invalid_theme" });
+    }
     const update = {};
     if (first_name !== undefined) update.first_name = titleCase(first_name);
     if (last_name !== undefined) update.last_name = titleCase(last_name);
@@ -200,6 +204,7 @@ exports.update = async (req, res) => {
     if (bio !== undefined) update.bio = bio;
     if (school !== undefined) update.school = school;
     if (course_code !== undefined) update.course_code = course_code;
+    if (theme !== undefined) update.theme = theme;
     if (password) update.password_hash = await bcrypt.hash(password, 10);
 
     let previousPicture = null;

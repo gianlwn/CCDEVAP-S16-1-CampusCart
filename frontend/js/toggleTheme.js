@@ -1,19 +1,31 @@
-function storeTheme() {
-  const saved = localStorage.getItem("campuscart-theme");
-  if (saved === "darkMode") {
-    document.body.classList.add("darkMode");
-  }
+function applyTheme(isDark) {
+  document.body.classList.toggle("darkMode", isDark);
+  localStorage.setItem("campuscart-theme", isDark ? "darkMode" : "lightMode");
   _updateThemeBtn();
 }
 
+function storeTheme() {
+  // Apply the locally cached theme immediately so there's no flash of the
+  // wrong theme, then reconcile with the account's saved theme (source of
+  // truth) in case it was changed on another device/browser.
+  const saved = localStorage.getItem("campuscart-theme");
+  applyTheme(saved === "darkMode");
+
+  if (typeof fetchMeAPI !== "function" || !getSessionUserId()) return;
+  fetchMeAPI()
+    .then((me) => applyTheme(me.theme === "dark"))
+    .catch(() => {});
+}
+
 function toggleTheme() {
-  document.body.classList.toggle("darkMode");
-  const isDark = document.body.classList.contains("darkMode");
-  localStorage.setItem("campuscart-theme", isDark ? "darkMode" : "lightMode");
-  _updateThemeBtn();
+  const isDark = !document.body.classList.contains("darkMode");
+  applyTheme(isDark);
   document.dispatchEvent(
     new CustomEvent("themeChanged", { detail: { isDark } }),
   );
+  if (typeof updateThemeAPI === "function") {
+    updateThemeAPI(isDark ? "dark" : "light");
+  }
 }
 
 function _updateThemeBtn() {

@@ -114,6 +114,10 @@ async function handleLogin() {
 
     showToast("Logging in…", "Redirecting to your dashboard.", "info", 1500);
     setSession(data.email, data.role, data.user_id);
+    localStorage.setItem(
+      "campuscart-theme",
+      data.theme === "dark" ? "darkMode" : "lightMode",
+    );
     setTimeout(() => {
       window.location.href = getLoginRedirect(data.role);
     }, 1200);

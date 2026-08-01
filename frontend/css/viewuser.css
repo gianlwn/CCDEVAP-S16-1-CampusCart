@@ -191,6 +191,17 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* ~4 rows (.item-row) + 3 gaps before scrolling */
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+#vu-reviews-list {
+  /* review rows carry an extra line of text; ~4 rows + 3 gaps before scrolling */
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 6px;
 }
 
 .vu-reviews-header {

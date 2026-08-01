@@ -178,6 +178,7 @@ function handleDeleteAccount() {
         localStorage.removeItem("session_email");
         localStorage.removeItem("session_role");
         localStorage.removeItem("session_user_id");
+        localStorage.removeItem("campuscart-theme");
         showToast(
           "Account Deleted",
           "Your account has been removed.",

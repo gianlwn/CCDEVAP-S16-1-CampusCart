@@ -360,6 +360,13 @@
   margin-bottom: 14px;
 }
 
+#ip-reviews-list {
+  /* review rows carry an extra line of text; ~4 rows + 3 gaps before scrolling */
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
 .ip-reviews-header h3 {
   font-size: 16px;
   font-weight: 800;

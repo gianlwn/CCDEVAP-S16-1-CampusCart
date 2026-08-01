@@ -8,6 +8,23 @@ function logoutAPI() {
   return fetch(`${API}/api/auth/logout`, { method: "POST" }).catch(() => {});
 }
 
+function fetchMeAPI() {
+  return fetch(`${API}/api/auth/me`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function updateThemeAPI(theme) {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve();
+  return fetch(`${API}/api/users/${encodeURIComponent(userId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ theme }),
+  }).catch(() => {});
+}
+
 function fetchListings() {
   return fetch(`${API}/api/listings`).then((r) => {
     if (!r.ok) throw new Error();

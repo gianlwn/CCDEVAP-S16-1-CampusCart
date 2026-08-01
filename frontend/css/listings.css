@@ -508,3 +508,18 @@
     gap: 8px;
   }
 }
+
+/* ~4 rows (.item-row) + 3 gaps before scrolling */
+#listings-list,
+#seller-claimed-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* review rows carry an extra line of text, so they run a bit taller */
+#seller-reviews-list {
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 6px;
+}

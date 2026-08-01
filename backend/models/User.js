@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     contact_number: { type: String, required: true },
     role: { type: String, enum: ["student", "admin"], default: "student" },
     profile_picture: { type: String, default: "default_pfp.jpg" },
+    theme: { type: String, enum: ["light", "dark"], default: "light" },
     warning_count: { type: Number, default: 0 },
     is_suspended: { type: Boolean, default: false },
     suspended_until: { type: Date, default: null },

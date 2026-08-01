@@ -125,6 +125,7 @@ exports.register = async (req, res) => {
       existing.warning_count = 0;
       existing.bio = null;
       existing.profile_picture = "default_pfp.jpg";
+      existing.theme = "light";
       await existing.save();
       return res.status(201).json({ message: "Account created" });
     }
@@ -175,6 +176,7 @@ exports.login = async (req, res) => {
       first_name: user.first_name,
       last_name: user.last_name,
       role: user.role,
+      theme: user.theme,
     });
   } catch (err) {
     console.error(err);
@@ -200,6 +202,7 @@ exports.me = async (req, res) => {
       first_name: user.first_name,
       last_name: user.last_name,
       role: user.role,
+      theme: user.theme,
     });
   } catch (err) {
     console.error(err);
