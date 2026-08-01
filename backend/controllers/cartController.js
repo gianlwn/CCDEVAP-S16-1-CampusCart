@@ -54,8 +54,7 @@ async function cartDocToFrontend(cartDoc) {
 
 exports.list = async (req, res) => {
   try {
-    const { user_id } = req.query;
-    if (!user_id) return res.status(400).json({ error: "missing_user_id" });
+    const user_id = req.user.user_id;
 
     const cartDocs = await Cart.find({ buyer_id: user_id, does_exist: true });
     const items = (await Promise.all(cartDocs.map(cartDocToFrontend))).filter(
@@ -70,8 +69,9 @@ exports.list = async (req, res) => {
 
 exports.add = async (req, res) => {
   try {
-    const { user_id, listing_id } = req.body;
-    if (!user_id || !listing_id)
+    const user_id = req.user.user_id;
+    const { listing_id } = req.body;
+    if (!listing_id)
       return res.status(400).json({ error: "missing_fields" });
 
     const listing = await Listing.findOne({ listings_id: listing_id });
@@ -98,11 +98,13 @@ exports.add = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    const result = await Cart.findOneAndUpdate(
-      { cart_id: req.params.cart_id },
-      { does_exist: false },
-    );
-    if (!result) return res.status(404).json({ error: "not_found" });
+    const cartDoc = await Cart.findOne({ cart_id: req.params.cart_id });
+    if (!cartDoc) return res.status(404).json({ error: "not_found" });
+    if (cartDoc.buyer_id !== req.user.user_id) {
+      return res.status(403).json({ error: "forbidden" });
+    }
+    cartDoc.does_exist = false;
+    await cartDoc.save();
     res.json({ message: "Removed from cart" });
   } catch (err) {
     console.error(err);
@@ -122,6 +124,9 @@ exports.updateQuantity = async (req, res) => {
       does_exist: true,
     });
     if (!cartDoc) return res.status(404).json({ error: "not_found" });
+    if (cartDoc.buyer_id !== req.user.user_id) {
+      return res.status(403).json({ error: "forbidden" });
+    }
 
     const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
     if (!listing || listing.is_deleted)
@@ -159,6 +164,9 @@ exports.claim = async (req, res) => {
       does_exist: true,
     });
     if (!cartDoc) return res.status(404).json({ error: "not_found" });
+    if (cartDoc.buyer_id !== req.user.user_id) {
+      return res.status(403).json({ error: "forbidden" });
+    }
 
     const listing = await Listing.findOne({ listings_id: cartDoc.listing_id });
     if (!listing || listing.is_deleted)

@@ -43,8 +43,7 @@ function monthKey(date) {
 
 exports.getDashboard = async (req, res) => {
   try {
-    const user_id = req.query.user_id;
-    if (!user_id) return res.status(400).json({ error: "user_id required" });
+    const user_id = req.user.user_id;
 
     const months = last6Months();
     const monthMap = Object.fromEntries(

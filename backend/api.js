@@ -4,6 +4,10 @@ function getSessionUserId() {
   return localStorage.getItem("session_user_id");
 }
 
+function logoutAPI() {
+  return fetch(`${API}/api/auth/logout`, { method: "POST" }).catch(() => {});
+}
+
 function fetchListings() {
   return fetch(`${API}/api/listings`).then((r) => {
     if (!r.ok) throw new Error();

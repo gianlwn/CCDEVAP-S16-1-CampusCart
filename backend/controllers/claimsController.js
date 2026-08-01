@@ -33,6 +33,10 @@ exports.list = async (req, res) => {
     const { buyer_id, seller_id } = req.query;
     if (!buyer_id && !seller_id)
       return res.status(400).json({ error: "buyer_id or seller_id required" });
+    const requestedId = seller_id || buyer_id;
+    if (req.user.role !== "admin" && requestedId !== req.user.user_id) {
+      return res.status(403).json({ error: "forbidden" });
+    }
 
     if (seller_id) {
       const claims = await Claim.find({
@@ -148,6 +152,9 @@ exports.buyerComplete = async (req, res) => {
   try {
     const claim = await Claim.findOne({ claim_id: req.params.id });
     if (!claim) return res.status(404).json({ error: "not_found" });
+    if (claim.buyer_id !== req.user.user_id && req.user.role !== "admin") {
+      return res.status(403).json({ error: "forbidden" });
+    }
     claim.buyer_completed = true;
     if (claim.seller_completed) {
       claim.status = "completed";
@@ -195,6 +202,9 @@ exports.sellerComplete = async (req, res) => {
   try {
     const claim = await Claim.findOne({ claim_id: req.params.id });
     if (!claim) return res.status(404).json({ error: "not_found" });
+    if (claim.seller_id !== req.user.user_id && req.user.role !== "admin") {
+      return res.status(403).json({ error: "forbidden" });
+    }
     claim.seller_completed = true;
     if (claim.buyer_completed) {
       claim.status = "completed";
@@ -249,6 +259,13 @@ exports.cancel = async (req, res) => {
   try {
     const claim = await Claim.findOne({ claim_id: req.params.id });
     if (!claim) return res.status(404).json({ error: "not_found" });
+    if (
+      claim.buyer_id !== req.user.user_id &&
+      claim.seller_id !== req.user.user_id &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({ error: "forbidden" });
+    }
     if (claim.status === "completed") {
       return res.status(403).json({ error: "already_completed" });
     }

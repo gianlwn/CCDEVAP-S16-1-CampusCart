@@ -4,6 +4,7 @@ const User = require("../models/User");
 const generateId = require("../utils/generateId");
 const { liftExpiredSuspension } = require("../utils/suspension");
 const titleCase = require("../utils/titleCase");
+const { issueSession, clearSession } = require("../middleware/auth");
 
 const otpStore = new Map();
 const recoveryVerified = new Set();
@@ -167,6 +168,32 @@ exports.login = async (req, res) => {
       });
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: "invalid_credentials" });
+    issueSession(res, user);
+    res.json({
+      user_id: user.user_id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.logout = (req, res) => {
+  clearSession(res);
+  res.json({ success: true });
+};
+
+exports.me = async (req, res) => {
+  try {
+    const user = await User.findOne({ user_id: req.user.user_id });
+    if (!user || user.is_deleted) {
+      clearSession(res);
+      return res.status(401).json({ error: "not_authenticated" });
+    }
     res.json({
       user_id: user.user_id,
       email: user.email,

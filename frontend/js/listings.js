@@ -40,8 +40,8 @@ function renderListings() {
     <div class="listing-row" id="listing-${item.id}">
       <div class="listing-thumb" style="cursor:pointer;" onclick="goToItem('${item.id}')">${CATEGORY_ICONS[item.category] || ICONS.package}</div>
       <div class="item-info" style="cursor:pointer;" onclick="goToItem('${item.id}')">
-        <p class="item-name">${item.name}</p>
-        <p class="item-meta">₱${Number(item.price).toLocaleString()} · ${item.category}${item.condition ? " · " + item.condition : ""} · ${item.quantity ?? 1} left</p>
+        <p class="item-name">${escapeHtml(item.name)}</p>
+        <p class="item-meta">₱${Number(item.price).toLocaleString()} · ${escapeHtml(item.category)}${item.condition ? " · " + escapeHtml(item.condition) : ""} · ${item.quantity ?? 1} left</p>
         ${isRejected ? `<p class="item-meta" style="color:var(--danger-text, #dc2626);">This listing was rejected by an admin and can no longer be edited. Remove it to list a new item.</p>` : ""}
       </div>
       <span class="badge-status ${item.status}">${STATUS_LABEL[item.status] || item.status}</span>
@@ -70,9 +70,9 @@ function renderSellerReviews(reviews) {
     <div class="item-row">
       <div class="item-thumb">${CATEGORY_ICONS[r.category] || ICONS.package}</div>
       <div class="item-info">
-        <p class="item-name">${r.item}</p>
-        <p class="item-meta">from <strong>${r.buyer}</strong> · ${r.date}</p>
-        ${r.review ? `<p class="item-review">"${r.review}"</p>` : ""}
+        <p class="item-name">${escapeHtml(r.item)}</p>
+        <p class="item-meta">from <strong>${escapeHtml(r.buyer)}</strong> · ${r.date}</p>
+        ${r.review ? `<p class="item-review">"${escapeHtml(r.review)}"</p>` : ""}
       </div>
       ${renderStars(r.rating)}
       <button class="btn-icon" title="Report Review" onclick="reportReview('${r.id}')" style="color:var(--warning-text);flex-shrink:0;">${ICONS.alert}</button>
@@ -330,8 +330,8 @@ function renderSellerClaims() {
       <div class="listing-row" id="seller-claim-${item.id}">
         <div class="listing-thumb">${icon}</div>
         <div class="item-info" style="flex:1;min-width:0;">
-          <p class="item-name">${item.name}</p>
-          <p class="item-meta">${item.price} · Qty: ${item.quantity ?? 1} · ${item.category} · Buyer: <strong>${item.buyer}</strong> · ${item.date}</p>
+          <p class="item-name">${escapeHtml(item.name)}</p>
+          <p class="item-meta">${item.price} · Qty: ${item.quantity ?? 1} · ${escapeHtml(item.category)} · Buyer: <strong>${escapeHtml(item.buyer)}</strong> · ${item.date}</p>
         </div>
         <span class="badge-status ${item.status}">${STATUS_LABEL[item.status] || item.status}</span>
         <div style="display:flex;gap:3px;flex-shrink:0;">${markBtn}</div>
@@ -384,9 +384,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const secondary = document.getElementById("edit-inp-category-2");
       const tertiary = document.getElementById("edit-inp-category-3");
       names.forEach((name) => {
-        primary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
-        secondary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
-        tertiary.insertAdjacentHTML("beforeend", `<option>${name}</option>`);
+        const safeName = escapeHtml(name);
+        primary.insertAdjacentHTML("beforeend", `<option>${safeName}</option>`);
+        secondary.insertAdjacentHTML("beforeend", `<option>${safeName}</option>`);
+        tertiary.insertAdjacentHTML("beforeend", `<option>${safeName}</option>`);
       });
       const editCategoryIds = ["edit-inp-category", "edit-inp-category-2", "edit-inp-category-3"];
       syncCategoryExclusivity(editCategoryIds);

@@ -33,8 +33,8 @@ function _renderCartPage() {
         ${CATEGORY_ICONS[item.category] || CATEGORY_ICONS.Others}
       </div>
       <div class="cart-item-info" style="cursor:pointer;" onclick="viewCartItem('${item.listing_id}')">
-        <p class="cart-item-name">${item.name}</p>
-        <p class="cart-item-meta">${item.category}${item.seller ? " · " + item.seller : ""}</p>
+        <p class="cart-item-name">${escapeHtml(item.name)}</p>
+        <p class="cart-item-meta">${escapeHtml(item.category)}${item.seller ? " · " + escapeHtml(item.seller) : ""}</p>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
         <label style="font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;">Qty</label>

@@ -231,7 +231,7 @@ function buildCharts(data) {
   statusLegend.innerHTML = data.listingStatus.map((d, i) => `
     <div class="legend-item">
       <span class="legend-dot" style="background:${STATUS_COLORS[i]}"></span>
-      <span class="legend-label">${d.label}</span>
+      <span class="legend-label">${escapeHtml(d.label)}</span>
       <strong class="legend-val">${d.value}</strong>
     </div>
   `).join('');

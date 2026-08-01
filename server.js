@@ -1,12 +1,66 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 const connectDB = require("./backend/db");
+const sanitizeInput = require("./backend/middleware/sanitize");
 
 const app = express();
-app.use(cors());
+
+app.disable("x-powered-by");
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        // The UI relies on inline onclick="" handlers throughout; removing
+        // 'unsafe-inline' would break the app. escaping in the render layer
+        // (see frontend/js) is the real XSS defense, this is defense-in-depth.
+        // scriptSrcAttr must be set explicitly too - helmet defaults it to
+        // 'none' even when scriptSrc allows 'unsafe-inline', which silently
+        // blocks every onclick="" attribute in the app.
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+        scriptSrcAttr: ["'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+        baseUri: ["'self'"],
+      },
+    },
+    crossOriginResourcePolicy: { policy: "same-site" },
+  }),
+);
+
+const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:3000";
+app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+
+app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
+app.use(sanitizeInput);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "too_many_requests" },
+});
+app.use("/api/auth", authLimiter);
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "too_many_requests" },
+});
+app.use("/api", apiLimiter);
+
 app.use("/uploads", express.static(path.join(__dirname, "backend", "uploads")));
 
 connectDB();
@@ -24,7 +78,14 @@ app.use("/api/notifications", require("./backend/routes/notifications"));
 app.use("/api/admin", require("./backend/routes/admin"));
 
 app.use(express.static("frontend"));
-app.use("/backend", express.static("backend"));
+// Only these two browser-facing scripts are exposed under /backend; the rest of
+// the backend/ tree (controllers, models, middleware, db.js) must stay private.
+app.get("/backend/api.js", (req, res) =>
+  res.sendFile(path.join(__dirname, "backend", "api.js")),
+);
+app.get("/backend/search.js", (req, res) =>
+  res.sendFile(path.join(__dirname, "backend", "search.js")),
+);
 app.use("/data", express.static("data"));
 app.get("/", (req, res) =>
   res.sendFile(__dirname + "/frontend/login-path/login.html"),

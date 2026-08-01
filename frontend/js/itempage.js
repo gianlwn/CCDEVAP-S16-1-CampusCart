@@ -66,7 +66,7 @@ function renderItemPage(item) {
     item.seller_profile_picture &&
     item.seller_profile_picture.startsWith("/uploads/");
   const sellerAvatarHtml = sellerHasPhoto
-    ? `<img src="${API}${item.seller_profile_picture}" alt="${item.seller || "Seller"}">`
+    ? `<img src="${API}${item.seller_profile_picture}" alt="${escapeHtml(item.seller || "Seller")}">`
     : sellerInitial;
   const isOwn = item.seller_id && item.seller_id === getSessionUserId();
   const createdDate = item.created
@@ -91,7 +91,7 @@ function renderItemPage(item) {
       <div class="ip-gallery">
         <div class="ip-main-img" style="background:${bg}">
           ${images.length
-            ? `<img id="ip-main-photo" class="ip-main-photo" src="${images[0]}" alt="${item.name}">`
+            ? `<img id="ip-main-photo" class="ip-main-photo" src="${images[0]}" alt="${escapeHtml(item.name)}">`
             : `<div id="ip-main-img-inner" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">${mainIcon}</div>`}
           ${images.length > 1 ? `<span class="ip-img-label" id="ip-img-label">Photo 1 of ${images.length}</span>` : ""}
         </div>
@@ -113,9 +113,9 @@ function renderItemPage(item) {
       <div class="ip-info-panel">
         <div>
           <div class="ip-cat-pills">
-            ${(item.categories || [item.category]).map(c => `<span class="ip-cat-pill">${c}</span>`).join("")}
+            ${(item.categories || [item.category]).map(c => `<span class="ip-cat-pill">${escapeHtml(c)}</span>`).join("")}
           </div>
-          <h1 class="ip-title">${item.name}</h1>
+          <h1 class="ip-title">${escapeHtml(item.name)}</h1>
         </div>
 
         <div class="ip-price-row">
@@ -128,7 +128,7 @@ function renderItemPage(item) {
         <div class="ip-seller-card" style="cursor:pointer;" onclick="window.location.href='viewUser.html?seller_id=${encodeURIComponent(item.seller_id || "")}'">
           <div class="ip-seller-avatar">${sellerAvatarHtml}</div>
           <div class="ip-seller-info">
-            <p class="ip-seller-name">${item.seller || "Campus Seller"}</p>
+            <p class="ip-seller-name">${escapeHtml(item.seller || "Campus Seller")}</p>
             <p class="ip-seller-meta">Seller · Tap to view profile</p>
           </div>
           <span style="color:var(--text-muted);font-size:12px;flex-shrink:0;">View →</span>
@@ -136,13 +136,13 @@ function renderItemPage(item) {
 
         <div class="ip-desc-section">
           <h3>Description</h3>
-          <p class="ip-desc-text">${item.description || "No description provided."}</p>
+          <p class="ip-desc-text">${escapeHtml(item.description || "No description provided.")}</p>
         </div>
 
         <div class="ip-details-grid">
           <div class="ip-detail-item">
             <p class="ip-detail-label">Category</p>
-            <p class="ip-detail-value">${(item.categories || [item.category]).join(", ")}</p>
+            <p class="ip-detail-value">${(item.categories || [item.category]).map(escapeHtml).join(", ")}</p>
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Condition</p>
@@ -158,7 +158,7 @@ function renderItemPage(item) {
           </div>
           <div class="ip-detail-item">
             <p class="ip-detail-label">Pickup Location</p>
-            <p class="ip-detail-value">${item.location || "—"}</p>
+            <p class="ip-detail-value">${escapeHtml(item.location || "—")}</p>
           </div>
         </div>
 
@@ -216,9 +216,9 @@ function renderSellerReviews(reviews) {
     <div class="item-row">
       <div class="item-thumb">${ICONS.package}</div>
       <div class="item-info">
-        <p class="item-name">${r.item}</p>
-        <p class="item-meta">by <strong>${r.buyer}</strong> · ${r.date}</p>
-        ${r.review ? `<p class="item-review">"${r.review}"</p>` : ""}
+        <p class="item-name">${escapeHtml(r.item)}</p>
+        <p class="item-meta">by <strong>${escapeHtml(r.buyer)}</strong> · ${r.date}</p>
+        ${r.review ? `<p class="item-review">"${escapeHtml(r.review)}"</p>` : ""}
       </div>
       ${renderStars(r.rating)}
       ${isAdmin ? `<button class="btn-icon danger" title="Delete Review" onclick="adminDeleteReview('${r.id}')">${ICONS.trash}</button>` : ""}

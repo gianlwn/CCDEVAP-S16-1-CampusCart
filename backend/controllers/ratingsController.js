@@ -73,8 +73,9 @@ exports.listBySeller = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { listing_id, rater_id, rating, review } = req.body;
-    if (!listing_id || !rater_id || !rating)
+    const rater_id = req.user.user_id;
+    const { listing_id, rating, review } = req.body;
+    if (!listing_id || !rating)
       return res.status(400).json({ error: "missing_fields" });
 
     const listing = await Listing.findOne(
@@ -120,6 +121,12 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
+    const existing = await Rating.findOne({ rating_id: req.params.id });
+    if (!existing) return res.status(404).json({ error: "not_found" });
+    if (existing.rater_id !== req.user.user_id && req.user.role !== "admin") {
+      return res.status(403).json({ error: "forbidden" });
+    }
+
     const { rating, review } = req.body;
     const update = {};
     if (rating !== undefined) update.rating = Number(rating);
@@ -140,6 +147,12 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    const existing = await Rating.findOne({ rating_id: req.params.id });
+    if (!existing) return res.status(404).json({ error: "not_found" });
+    if (existing.rater_id !== req.user.user_id && req.user.role !== "admin") {
+      return res.status(403).json({ error: "forbidden" });
+    }
+
     const updated = await Rating.findOneAndUpdate(
       { rating_id: req.params.id },
       { is_removed: true },

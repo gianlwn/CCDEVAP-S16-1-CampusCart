@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const claimsController = require("../controllers/claimsController");
+const { requireAuth } = require("../middleware/auth");
+
+router.use(requireAuth);
 
 router.get("/", claimsController.list);
 router.patch("/:id/buyer-complete", claimsController.buyerComplete);

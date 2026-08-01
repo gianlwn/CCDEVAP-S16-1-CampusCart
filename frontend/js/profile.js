@@ -174,6 +174,7 @@ function handleDeleteAccount() {
           );
           return;
         }
+        logoutAPI();
         localStorage.removeItem("session_email");
         localStorage.removeItem("session_role");
         localStorage.removeItem("session_user_id");
@@ -250,11 +251,11 @@ function reportRowHtml(r) {
   return `
       <div class="report-entry-card">
         <div class="report-entry-header">
-          <p class="report-entry-subject">${r.subject}</p>
-          <span class="badge-status ${statusClass}">${r.status}</span>
+          <p class="report-entry-subject">${escapeHtml(r.subject)}</p>
+          <span class="badge-status ${statusClass}">${escapeHtml(r.status)}</span>
         </div>
-        <p class="report-entry-meta">${r.reportType} · Reason: ${r.reason} · ${r.date}</p>
-        ${r.status === "Resolved" && r.actionTaken ? `<div class="report-entry-outcome"><span class="outcome-tag ${outcomeClass}">${r.actionTaken}</span></div>` : ""}
+        <p class="report-entry-meta">${escapeHtml(r.reportType)} · Reason: ${escapeHtml(r.reason)} · ${r.date}</p>
+        ${r.status === "Resolved" && r.actionTaken ? `<div class="report-entry-outcome"><span class="outcome-tag ${outcomeClass}">${escapeHtml(r.actionTaken)}</span></div>` : ""}
       </div>
     `;
 }

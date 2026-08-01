@@ -2,8 +2,7 @@ const Notification = require("../models/Notification");
 
 exports.list = async (req, res) => {
   try {
-    const { user_id } = req.query;
-    if (!user_id) return res.status(400).json({ error: "missing_user_id" });
+    const user_id = req.user.user_id;
     const notifications = await Notification.find({ user_id })
       .sort({ created_at: -1 })
       .limit(50);
@@ -16,8 +15,7 @@ exports.list = async (req, res) => {
 
 exports.readAll = async (req, res) => {
   try {
-    const { user_id } = req.query;
-    if (!user_id) return res.status(400).json({ error: "missing_user_id" });
+    const user_id = req.user.user_id;
     await Notification.updateMany(
       { user_id, is_read: false },
       { is_read: true },
@@ -31,6 +29,11 @@ exports.readAll = async (req, res) => {
 
 exports.markRead = async (req, res) => {
   try {
+    const existing = await Notification.findOne({ notification_id: req.params.id });
+    if (!existing) return res.status(404).json({ error: "not_found" });
+    if (existing.user_id !== req.user.user_id) {
+      return res.status(403).json({ error: "forbidden" });
+    }
     const updated = await Notification.findOneAndUpdate(
       { notification_id: req.params.id },
       { is_read: true },

@@ -128,9 +128,7 @@ exports.list = async (req, res) => {
 
 exports.mine = async (req, res) => {
   try {
-    const { reporter_id } = req.query;
-    if (!reporter_id)
-      return res.status(400).json({ error: "missing_reporter_id" });
+    const reporter_id = req.user.user_id;
     const reports = await Report.find({ reporter_id }).sort({
       created_at: -1,
     });
@@ -144,7 +142,8 @@ exports.mine = async (req, res) => {
 
 exports.resolve = async (req, res) => {
   try {
-    const { action, note, reviewed_by } = req.body;
+    const { action, note } = req.body;
+    const reviewed_by = req.user.user_id;
     if (!Object.keys(RESOLVE_ACTION_LABELS).includes(action)) {
       return res.status(400).json({ error: "invalid_action" });
     }
@@ -289,9 +288,10 @@ exports.resolve = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { reporter_id, reported_listing_id, reported_user_id, reported_rating_id, reason } =
+    const reporter_id = req.user.user_id;
+    const { reported_listing_id, reported_user_id, reported_rating_id, reason } =
       req.body;
-    if (!reporter_id || !reason)
+    if (!reason)
       return res.status(400).json({ error: "missing_fields" });
 
     const report_id = await generateId(Report, "report_id", "report_id_");

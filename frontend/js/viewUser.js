@@ -60,9 +60,9 @@ function buildReviewsHtml(reviews) {
     <div class="item-row">
       <div class="item-thumb">${ICONS.package}</div>
       <div class="item-info">
-        <p class="item-name">${r.item}</p>
-        <p class="item-meta">by <strong>${r.buyer}</strong> · ${r.date}</p>
-        ${r.review ? `<p class="item-review">"${r.review}"</p>` : ""}
+        <p class="item-name">${escapeHtml(r.item)}</p>
+        <p class="item-meta">by <strong>${escapeHtml(r.buyer)}</strong> · ${r.date}</p>
+        ${r.review ? `<p class="item-review">"${escapeHtml(r.review)}"</p>` : ""}
       </div>
       ${renderStars(r.rating)}
       ${isAdmin ? `<button class="btn-icon danger" title="Delete Review" onclick="adminDeleteReview('${r.id}')">${ICONS.trash}</button>` : ""}
@@ -95,8 +95,8 @@ function renderSellerProfile(user, listings, reviews) {
   const initial = (user.name || "?").charAt(0).toUpperCase();
   const hasPhoto = user.profile_picture && user.profile_picture.startsWith("/uploads/");
   const avatarHtml = hasPhoto
-    ? `<img src="${API}${user.profile_picture}" alt="${user.name}">`
-    : initial;
+    ? `<img src="${API}${user.profile_picture}" alt="${escapeHtml(user.name)}">`
+    : escapeHtml(initial);
   const starSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
 
   const activeListings = listings.filter((l) => l.status === "active");
@@ -110,8 +110,8 @@ function renderSellerProfile(user, listings, reviews) {
           <div class="item-row" style="cursor:pointer;" onclick="window.location.href='itempage.html?id=${item.id}'">
             <div class="item-thumb" style="background:${bg};color:var(--accent);">${icon}</div>
             <div class="item-info">
-              <p class="item-name">${item.name}</p>
-              <p class="item-meta">₱${Number(item.price).toLocaleString()} · ${item.category} · ${item.condition || ""}</p>
+              <p class="item-name">${escapeHtml(item.name)}</p>
+              <p class="item-meta">₱${Number(item.price).toLocaleString()} · ${escapeHtml(item.category)} · ${escapeHtml(item.condition || "")}</p>
             </div>
             <button class="btn-outline" style="margin: 0;" onclick="event.stopPropagation();window.location.href='itempage.html?id=${item.id}'">View</button>
           </div>`;
@@ -137,13 +137,13 @@ function renderSellerProfile(user, listings, reviews) {
 
       <div class="vu-profile-card">
         <div class="vu-avatar">${avatarHtml}</div>
-        <div class="vu-name">${user.name}</div>
+        <div class="vu-name">${escapeHtml(user.name)}</div>
         <div class="vu-rating-row">
           ${starSvg}
           ${user.rating ? user.rating.toFixed(1) + " / 5.0" : "No ratings yet"}
         </div>
-        <p class="vu-school">${user.school || "CampusCart Member"}</p>
-        ${user.bio ? `<p class="vu-bio">"${user.bio}"</p>` : ""}
+        <p class="vu-school">${escapeHtml(user.school || "CampusCart Member")}</p>
+        ${user.bio ? `<p class="vu-bio">"${escapeHtml(user.bio)}"</p>` : ""}
         <div class="vu-stats-row">
           <div class="vu-stat-item">
             <span class="vu-stat-value">${user.itemsSold || 0}</span>

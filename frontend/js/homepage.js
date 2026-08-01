@@ -57,7 +57,7 @@ function _renderHpPage() {
             ${cond}
           </span>
           ${images.length
-            ? `<img class="hp-thumb-img" src="${images[0]}" alt="${item.name}">`
+            ? `<img class="hp-thumb-img" src="${images[0]}" alt="${escapeHtml(item.name)}">`
             : icon}
           ${images.length > 1
             ? `
@@ -68,10 +68,10 @@ function _renderHpPage() {
         </div>
         <div class="hp-item-info">
           <div class="hp-cat-pills">
-            ${(item.categories || [item.category]).map(c => `<span class="hp-cat-pill">${c}</span>`).join("")}
+            ${(item.categories || [item.category]).map(c => `<span class="hp-cat-pill">${escapeHtml(c)}</span>`).join("")}
           </div>
-          <p class="hp-item-name">${item.name}</p>
-          <p class="hp-item-seller">${ICONS.user} ${seller}</p>
+          <p class="hp-item-name">${escapeHtml(item.name)}</p>
+          <p class="hp-item-seller">${ICONS.user} ${escapeHtml(seller)}</p>
           <div class="hp-item-footer">
             <div>
               <p class="hp-item-price">₱${item.price}</p>

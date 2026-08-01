@@ -1,4 +1,5 @@
 function handleAdminSignOut() {
+  logoutAPI();
   localStorage.removeItem("session_email");
   localStorage.removeItem("session_role");
   localStorage.removeItem("session_user_id");
@@ -223,8 +224,8 @@ function renderAdminPage() {
       <div class="admin-identity-row-card responsive-row-card">
         <div class="avatar-wireframe-box"></div>
         <div class="admin-text-details">
-          <span class="admin-display-name">${admin.username}</span>
-          <span class="admin-display-email">${admin.email}</span>
+          <span class="admin-display-name">${escapeHtml(admin.username)}</span>
+          <span class="admin-display-email">${escapeHtml(admin.email)}</span>
         </div>
         <div class="action-button-group">
           <button class="action-trigger revoke-trigger-btn"
@@ -342,10 +343,10 @@ function renderUsersPage() {
           <div class="avatar-wireframe-box"></div>
           <div class="user-text-details">
             <div class="user-name-row">
-              <span class="user-display-name">${user.username}</span>
+              <span class="user-display-name">${escapeHtml(user.username)}</span>
               ${user.role === 'admin' ? `<span class="badge-pill pill-role-admin">Admin</span>` : ''}
             </div>
-            <span class="user-display-email">${user.email}</span>
+            <span class="user-display-email">${escapeHtml(user.email)}</span>
           </div>
           <div class="user-info-extra">
             <span class="info-label">Joined:</span>
@@ -398,10 +399,10 @@ function handleUser(action, userId, btn) {
       <h3 style="${MS.title}">User Profile</h3>
       <div style="${MS.body}">
         <div style="display:flex;align-items:center;gap:14px;">
-          <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:var(--accent);flex-shrink:0;">${user.username.charAt(0).toUpperCase()}</div>
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:var(--accent);flex-shrink:0;">${escapeHtml(user.username.charAt(0).toUpperCase())}</div>
           <div>
-            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;">${user.username}${user.role === 'admin' ? ' <span class="badge-pill pill-role-admin">Admin</span>' : ''}</div>
-            <div style="font-size:12px;color:var(--text-muted);">${user.email}</div>
+            <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px;">${escapeHtml(user.username)}${user.role === 'admin' ? ' <span class="badge-pill pill-role-admin">Admin</span>' : ''}</div>
+            <div style="font-size:12px;color:var(--text-muted);">${escapeHtml(user.email)}</div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding-top:4px;">
@@ -431,8 +432,8 @@ function renderUserEditModal(userId) {
     <div style="${MS.body}">
       <div style="${MS.row}">
         <label style="${MS.label}">User</label>
-        <div style="font-size:13px;color:var(--text);font-weight:600;">${user.username}</div>
-        <div style="font-size:11px;color:var(--text-muted);">${user.email}</div>
+        <div style="font-size:13px;color:var(--text);font-weight:600;">${escapeHtml(user.username)}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${escapeHtml(user.email)}</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="${MS.row}">
@@ -538,9 +539,9 @@ function renderApprovalPage() {
       <div class="card-top">
         <div class="listing-image${thumb ? ' has-image' : ''}"${thumb ? ` style="background-image:url('${thumb}');background-size:cover;background-position:center;"` : ''}></div>
         <div class="listing-info">
-          <h2>${listing.name}</h2>
+          <h2>${escapeHtml(listing.name)}</h2>
           <p>PHP ${listing.price.toFixed(2)}</p>
-          <p>${listing.seller}</p>
+          <p>${escapeHtml(listing.seller)}</p>
           <span class="status-badge">Pending Approval</span>
         </div>
       </div>
@@ -579,13 +580,13 @@ function viewListingDetails(listingId) {
     <h3 style="${MS.title}">Listing Details</h3>
     <div style="${MS.body}">
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">${photosHtml}</div>
-      <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.name}</span></div>
+      <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${escapeHtml(listing.name)}</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
-        <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${(listing.categories || [listing.category]).join(", ")}</span></div>
-        <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
-        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
-        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description || 'No description provided.'}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${(listing.categories || [listing.category]).map(escapeHtml).join(", ")}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${escapeHtml(listing.condition)}</span></div>
+        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${escapeHtml(listing.seller)}</span></div>
+        <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${escapeHtml(listing.description || 'No description provided.')}</span></div>
       </div>
     </div>
     <div style="${MS.footer}">
@@ -716,7 +717,7 @@ function handleCategory(action, categoryId) {
       <div style="${MS.body}">
         <div style="${MS.row}">
           <label style="${MS.label}">Category Name</label>
-          <input id="modal-edit-cat-name" type="text" value="${category.category_name}" style="${MS.input}">
+          <input id="modal-edit-cat-name" type="text" value="${escapeHtml(category.category_name)}" style="${MS.input}">
         </div>
       </div>
       <div style="${MS.footer}">
@@ -791,17 +792,17 @@ function renderReportsPage() {
     <div class="report-row-card" data-report-id="${report.reportId}">
       <div class="avatar-wireframe-box"></div>
       <div class="report-text-details">
-        <span class="report-type">${report.reportType}</span>
-        <span class="report-reporter">${report.reporter}</span>
+        <span class="report-type">${escapeHtml(report.reportType)}</span>
+        <span class="report-reporter">${escapeHtml(report.reporter)}</span>
       </div>
       <div class="report-status-zone">
-        <span class="report-status-badge status-${report.status === 'Resolved' ? 'resolved' : 'pending'}">${report.status}</span>
+        <span class="report-status-badge status-${report.status === 'Resolved' ? 'resolved' : 'pending'}">${escapeHtml(report.status)}</span>
       </div>
       <div class="report-reason-section">
         <span class="info-label">Reported</span>
-        <span class="info-value" style="margin-bottom:8px;">${report.subject}</span>
+        <span class="info-value" style="margin-bottom:8px;">${escapeHtml(report.subject)}</span>
         <span class="reason-title">Reason</span>
-        <span class="reason-content">${report.reason}</span>
+        <span class="reason-content">${escapeHtml(report.reason)}</span>
       </div>
       <div class="report-meta-col">
         <span class="info-label">Date Filed</span>
@@ -843,14 +844,14 @@ function viewReportedListing(listingId) {
       <h3 style="${MS.title}">Reported Listing</h3>
       <div style="${MS.body}">
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;">${photosHtml}</div>
-        <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${listing.name}</span></div>
+        <div style="${MS.row}"><span style="${MS.label}">Product Name</span><span style="font-size:14px;font-weight:700;color:var(--text);">${escapeHtml(listing.name)}</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="${MS.row}"><span style="${MS.label}">Price</span><span style="font-size:13px;color:var(--text);font-weight:600;">₱${listing.price.toFixed(2)}</span></div>
-          <div style="${MS.row}"><span style="${MS.label}">Status</span><span style="font-size:13px;color:var(--text);text-transform:capitalize;">${listing.status}</span></div>
-          <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${(listing.categories || [listing.category]).join(", ")}</span></div>
-          <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${listing.condition}</span></div>
-          <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${listing.seller}</span></div>
-          <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${listing.description || 'No description provided.'}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Status</span><span style="font-size:13px;color:var(--text);text-transform:capitalize;">${escapeHtml(listing.status)}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Category</span><span style="font-size:13px;color:var(--text);">${(listing.categories || [listing.category]).map(escapeHtml).join(", ")}</span></div>
+          <div style="${MS.row}"><span style="${MS.label}">Condition</span><span style="font-size:13px;color:var(--text);">${escapeHtml(listing.condition)}</span></div>
+          <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Seller</span><span style="font-size:13px;color:var(--text);">${escapeHtml(listing.seller)}</span></div>
+          <div style="${MS.row};grid-column:1/-1;"><span style="${MS.label}">Description</span><span style="font-size:13px;color:var(--text);line-height:1.5;">${escapeHtml(listing.description || 'No description provided.')}</span></div>
         </div>
       </div>
       <div style="${MS.footer}">
@@ -879,8 +880,8 @@ function openResolveReportModal(reportId) {
     <h3 style="${MS.title}">Resolve Report</h3>
     <div style="${MS.body}">
       <div style="${MS.row}">
-        <span style="font-size:13px;color:var(--text);font-weight:600;">${report.subject}</span>
-        <span style="font-size:12px;color:var(--text-muted);">Reported by ${report.reporter}</span>
+        <span style="font-size:13px;color:var(--text);font-weight:600;">${escapeHtml(report.subject)}</span>
+        <span style="font-size:12px;color:var(--text-muted);">Reported by ${escapeHtml(report.reporter)}</span>
         ${report.reportedRatingId ? `
           <button type="button" id="modal-delete-review-btn" onclick="deleteReportedReview('${reportId}')" style="
             margin-top:8px;align-self:flex-start;display:inline-flex;align-items:center;gap:6px;

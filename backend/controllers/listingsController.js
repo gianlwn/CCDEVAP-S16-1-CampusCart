@@ -86,11 +86,20 @@ async function enrichListings(listings) {
 
 exports.list = async (req, res) => {
   try {
+    const isAdmin = req.user.role === "admin";
+    const isSelf = req.query.seller_id && req.query.seller_id === req.user.user_id;
+
     let filter;
     if (req.query.status) {
+      if (req.query.status !== "active" && !isAdmin && !isSelf) {
+        return res.status(403).json({ error: "forbidden" });
+      }
       filter = { status: req.query.status };
       if (req.query.seller_id) filter.seller_id = req.query.seller_id;
     } else if (req.query.seller_id) {
+      if (!isAdmin && !isSelf) {
+        return res.status(403).json({ error: "forbidden" });
+      }
       filter = { seller_id: req.query.seller_id };
     } else {
       filter = { status: "active" };
@@ -121,6 +130,7 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
+    const seller_id = req.user.user_id;
     const {
       product_name,
       price,
@@ -129,11 +139,10 @@ exports.create = async (req, res) => {
       description,
       location,
       images,
-      seller_id,
       categories,
     } = req.body;
 
-    if (!product_name || price === undefined || !condition || !seller_id) {
+    if (!product_name || price === undefined || !condition) {
       return res.status(400).json({ error: "missing_fields" });
     }
 
@@ -194,6 +203,9 @@ exports.update = async (req, res) => {
     const existing = await Listing.findOne({ listings_id: req.params.id });
     if (!existing || existing.is_deleted) {
       return res.status(404).json({ error: "not_found" });
+    }
+    if (existing.seller_id !== req.user.user_id && req.user.role !== "admin") {
+      return res.status(403).json({ error: "forbidden" });
     }
     if (existing.status === "rejected") {
       return res.status(403).json({ error: "listing_rejected" });
@@ -304,6 +316,14 @@ exports.updateStatus = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
+    const existing = await Listing.findOne({ listings_id: req.params.id });
+    if (!existing || existing.is_deleted) {
+      return res.status(404).json({ error: "not_found" });
+    }
+    if (existing.seller_id !== req.user.user_id && req.user.role !== "admin") {
+      return res.status(403).json({ error: "forbidden" });
+    }
+
     const listing = await Listing.findOneAndUpdate(
       { listings_id: req.params.id },
       { is_deleted: true },
