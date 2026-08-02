@@ -77,6 +77,10 @@ exports.create = async (req, res) => {
     const { listing_id, rating, review } = req.body;
     if (!listing_id || !rating)
       return res.status(400).json({ error: "missing_fields" });
+    const numericRating = Number(rating);
+    if (!Number.isInteger(numericRating) || numericRating < 1 || numericRating > 5) {
+      return res.status(400).json({ error: "invalid_rating" });
+    }
 
     const listing = await Listing.findOne(
       { listings_id: listing_id },
@@ -104,7 +108,7 @@ exports.create = async (req, res) => {
       listing_id,
       rated_user_id,
       rater_id,
-      rating: Number(rating),
+      rating: numericRating,
       review: review || "",
     }).save();
 
@@ -143,7 +147,13 @@ exports.update = async (req, res) => {
 
     const { rating, review } = req.body;
     const update = {};
-    if (rating !== undefined) update.rating = Number(rating);
+    if (rating !== undefined) {
+      const numericRating = Number(rating);
+      if (!Number.isInteger(numericRating) || numericRating < 1 || numericRating > 5) {
+        return res.status(400).json({ error: "invalid_rating" });
+      }
+      update.rating = numericRating;
+    }
     if (review !== undefined) update.review = review;
 
     const updated = await Rating.findOneAndUpdate(

@@ -293,6 +293,9 @@ exports.create = async (req, res) => {
       req.body;
     if (!reason)
       return res.status(400).json({ error: "missing_fields" });
+    if (!reported_listing_id && !reported_user_id && !reported_rating_id) {
+      return res.status(400).json({ error: "missing_target" });
+    }
 
     const report_id = await generateId(Report, "report_id", "report_id_");
     await new Report({

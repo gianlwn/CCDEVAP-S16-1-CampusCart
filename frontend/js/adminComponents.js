@@ -273,6 +273,10 @@ function openAddAdminModal() {
 function saveNewAdmin() {
   const email = document.getElementById('modal-new-admin-email')?.value.trim();
   if (!email) { showToast('Error', 'Email is required.', 'error'); return; }
+  if (!email.toLowerCase().endsWith('.edu.ph')) {
+    showToast('Error', 'Please enter a valid .edu.ph address.', 'error');
+    return;
+  }
   promoteAdminAPI(email).then(({ ok, status, data }) => {
     if (!ok) {
       const msg = status === 404
@@ -952,6 +956,10 @@ function submitResolveReport(reportId) {
   const selected = document.querySelector('#modal-resolve-choices .resolve-action-btn.active');
   const action = selected ? selected.dataset.action : 'warning';
   const note = document.getElementById('modal-resolve-note').value.trim();
+  if (!note) {
+    showToast('Error', 'Please describe the action taken before resolving.', 'error');
+    return;
+  }
 
   resolveReportAPI(reportId, action, note).then(({ ok, data }) => {
     if (!ok) {

@@ -53,17 +53,25 @@ exports.sendCode = async (req, res) => {
 };
 
 exports.verifyCode = (req, res) => {
-  const { email, code } = req.body;
-  const record = otpStore.get(email.toLowerCase());
-  if (!record) return res.status(400).json({ error: "no_code_sent" });
-  if (Date.now() > record.expiresAt) {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    const record = otpStore.get(email.toLowerCase());
+    if (!record) return res.status(400).json({ error: "no_code_sent" });
+    if (Date.now() > record.expiresAt) {
+      otpStore.delete(email.toLowerCase());
+      return res.status(400).json({ error: "code_expired" });
+    }
+    if (record.code !== code)
+      return res.status(400).json({ error: "invalid_code" });
     otpStore.delete(email.toLowerCase());
-    return res.status(400).json({ error: "code_expired" });
+    res.json({ verified: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
   }
-  if (record.code !== code)
-    return res.status(400).json({ error: "invalid_code" });
-  otpStore.delete(email.toLowerCase());
-  res.json({ verified: true });
 };
 
 exports.register = async (req, res) => {
@@ -113,12 +121,13 @@ exports.register = async (req, res) => {
     const last_name = titleCase(lastNameInput.trim());
     const password_hash = await bcrypt.hash(password, 10);
     const contact_number = `+63${phoneDigits}`;
+    const normalizedCourseCode = course_code ? course_code.toUpperCase() : course_code;
 
     if (existing) {
       existing.password_hash = password_hash;
       existing.first_name = first_name;
       existing.last_name = last_name;
-      existing.course_code = course_code.toUpperCase();
+      existing.course_code = normalizedCourseCode;
       existing.school = school;
       existing.contact_number = contact_number;
       existing.role = "student";
@@ -141,7 +150,7 @@ exports.register = async (req, res) => {
       password_hash,
       first_name,
       last_name,
-      course_code: course_code.toUpperCase(),
+      course_code: normalizedCourseCode,
       school,
       contact_number,
       role: "student",
@@ -233,18 +242,26 @@ exports.sendRecovery = async (req, res) => {
 };
 
 exports.verifyRecovery = (req, res) => {
-  const { email, code } = req.body;
-  const record = otpStore.get(`rec_${email.toLowerCase()}`);
-  if (!record) return res.status(400).json({ error: "no_code_sent" });
-  if (Date.now() > record.expiresAt) {
+  try {
+    const { email, code } = req.body;
+    if (!email || !code) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    const record = otpStore.get(`rec_${email.toLowerCase()}`);
+    if (!record) return res.status(400).json({ error: "no_code_sent" });
+    if (Date.now() > record.expiresAt) {
+      otpStore.delete(`rec_${email.toLowerCase()}`);
+      return res.status(400).json({ error: "code_expired" });
+    }
+    if (record.code !== code)
+      return res.status(400).json({ error: "invalid_code" });
     otpStore.delete(`rec_${email.toLowerCase()}`);
-    return res.status(400).json({ error: "code_expired" });
+    recoveryVerified.add(email.toLowerCase());
+    res.json({ verified: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
   }
-  if (record.code !== code)
-    return res.status(400).json({ error: "invalid_code" });
-  otpStore.delete(`rec_${email.toLowerCase()}`);
-  recoveryVerified.add(email.toLowerCase());
-  res.json({ verified: true });
 };
 
 exports.resetPassword = async (req, res) => {

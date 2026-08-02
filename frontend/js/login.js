@@ -1,4 +1,7 @@
-const API = "http://localhost:3000";
+// Frontend and API are always served from the same Express app/origin
+// (see server.js), so a relative base works in local dev and in any
+// deployed environment without needing a build-time config value.
+const API = "";
 
 let codeSent = false;
 let recCodeSent = false;

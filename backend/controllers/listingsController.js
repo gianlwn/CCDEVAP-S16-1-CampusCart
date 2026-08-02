@@ -8,6 +8,8 @@ const generateId = require("../utils/generateId");
 const { saveListingImage, saveListingImages, deleteListingImages } = require("../utils/imageStorage");
 const createNotification = require("../utils/createNotification");
 
+const VALID_CONDITIONS = ["New", "Good", "Used"];
+
 function toFrontendShape(listing, sellerName, sellerId, categoryNames, availableQty, sellerProfilePicture) {
   const cats =
     categoryNames && categoryNames.length ? categoryNames : ["Others"];
@@ -145,6 +147,13 @@ exports.create = async (req, res) => {
     if (!product_name || price === undefined || !condition) {
       return res.status(400).json({ error: "missing_fields" });
     }
+    if (!VALID_CONDITIONS.includes(condition)) {
+      return res.status(400).json({ error: "invalid_condition" });
+    }
+    const parsedPrice = parseFloat(price);
+    if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+      return res.status(400).json({ error: "invalid_price" });
+    }
 
     const listings_id = await generateId(Listing, "listings_id", "listing_id_");
 
@@ -156,7 +165,7 @@ exports.create = async (req, res) => {
     const listing = await Listing.create({
       listings_id,
       product_name,
-      price: parseFloat(price),
+      price: parsedPrice,
       quantity: parseInt(quantity) || 1,
       condition,
       description: description || "",
@@ -213,12 +222,23 @@ exports.update = async (req, res) => {
 
     const update = {};
     if (product_name !== undefined) update.product_name = product_name;
-    if (price !== undefined) update.price = parseFloat(price);
+    if (price !== undefined) {
+      const parsedPrice = parseFloat(price);
+      if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+        return res.status(400).json({ error: "invalid_price" });
+      }
+      update.price = parsedPrice;
+    }
     if (quantity !== undefined) {
       const parsedQty = parseInt(quantity);
       update.quantity = Number.isNaN(parsedQty) ? 1 : parsedQty;
     }
-    if (condition !== undefined) update.condition = condition;
+    if (condition !== undefined) {
+      if (!VALID_CONDITIONS.includes(condition)) {
+        return res.status(400).json({ error: "invalid_condition" });
+      }
+      update.condition = condition;
+    }
     if (description !== undefined) update.description = description;
     if (location !== undefined) update.location = location;
 
