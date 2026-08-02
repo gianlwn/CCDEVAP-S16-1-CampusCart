@@ -5,6 +5,7 @@ const generateId = require("../utils/generateId");
 const { liftExpiredSuspension } = require("../utils/suspension");
 const titleCase = require("../utils/titleCase");
 const { issueSession, clearSession } = require("../middleware/auth");
+const { isValidPassword } = require("../utils/passwordPolicy");
 
 const otpStore = new Map();
 const recoveryVerified = new Set();
@@ -92,6 +93,9 @@ exports.register = async (req, res) => {
       !nameRegex.test(lastNameInput.trim())
     ) {
       return res.status(400).json({ error: "invalid_name_format" });
+    }
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ error: "weak_password" });
     }
     let phoneDigits = phone.trim().replace(/\D/g, "");
     if (phoneDigits.length === 12 && phoneDigits.startsWith("63")) {
@@ -248,6 +252,9 @@ exports.resetPassword = async (req, res) => {
     const { email, password } = req.body;
     if (!recoveryVerified.has(email.toLowerCase())) {
       return res.status(403).json({ error: "not_verified" });
+    }
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ error: "weak_password" });
     }
     const password_hash = await bcrypt.hash(password, 10);
     await User.updateOne({ email: email.toLowerCase() }, { password_hash });

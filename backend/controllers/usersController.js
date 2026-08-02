@@ -9,6 +9,7 @@ const issueWarning = require("../utils/issueWarning");
 const { saveProfilePicture, deleteProfilePicture } = require("../utils/imageStorage");
 const { suspendUser } = require("../utils/suspension");
 const titleCase = require("../utils/titleCase");
+const { isValidPassword } = require("../utils/passwordPolicy");
 
 function statusOf(user) {
   if (user.is_banned) return "banned";
@@ -196,6 +197,9 @@ exports.update = async (req, res) => {
     }
     if (theme !== undefined && !["light", "dark"].includes(theme)) {
       return res.status(400).json({ error: "invalid_theme" });
+    }
+    if (password && !isValidPassword(password)) {
+      return res.status(400).json({ error: "weak_password" });
     }
     const update = {};
     if (first_name !== undefined) update.first_name = titleCase(first_name);

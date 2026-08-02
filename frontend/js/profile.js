@@ -108,6 +108,14 @@ function handleSaveProfile() {
     showToast("Password Mismatch", "Passwords do not match.", "error");
     return;
   }
+  if (pw && (pw.length < 8 || !/[a-zA-Z]/.test(pw) || !/\d/.test(pw))) {
+    showToast(
+      "Weak Password",
+      "Password must be at least 8 characters and include a letter and a number.",
+      "warning",
+    );
+    return;
+  }
 
   const schoolSelect = document.getElementById("prof-school").value;
   const schoolOther = document.getElementById("prof-school-other").value.trim();

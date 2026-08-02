@@ -82,7 +82,21 @@ exports.create = async (req, res) => {
       { listings_id: listing_id },
       "seller_id product_name",
     );
-    const rated_user_id = listing ? listing.seller_id : null;
+    if (!listing) return res.status(404).json({ error: "listing_not_found" });
+    if (listing.seller_id === rater_id) {
+      return res.status(403).json({ error: "cannot_rate_own_listing" });
+    }
+
+    const alreadyRated = await Rating.findOne({
+      listing_id,
+      rater_id,
+      is_removed: false,
+    });
+    if (alreadyRated) {
+      return res.status(409).json({ error: "already_rated" });
+    }
+
+    const rated_user_id = listing.seller_id;
 
     const rating_id = await generateId(Rating, "rating_id", "rating_id_");
     await new Rating({
