@@ -5,4 +5,3 @@ scripts/backfill.js
 scripts/README.md
 scripts/backup.js
 scripts/verify.js
-import-images/
