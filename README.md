@@ -220,8 +220,8 @@ The API originally trusted whatever identity the client claimed (a plain `user_i
 - All user-controlled text (listing titles/descriptions, bios, reviews, report reasons, etc.) is HTML-escaped at render time (`escapeHtml()` in `components.js`/`adminComponents.js`) before being written via `innerHTML`, closing a stored-XSS hole that affected every page rendering API data — including the admin panel.
 
 **Other hardening**
-- `helmet` sets security headers and a Content-Security-Policy (script/style restricted to same-origin + the one Chart.js CDN in use). Note: `script-src`/`script-src-attr` allow `'unsafe-inline'` because the UI relies on inline `onclick=""` throughout — the escaping above is the actual XSS defense, CSP here is defense-in-depth, not the primary control.
-- `express-rate-limit` throttles `/api/auth/*` (20 req/15 min) and the rest of the API (300 req/min) to blunt brute-force and abuse.
+- `helmet` sets security headers and a Content-Security-Policy (script/style restricted to same-origin + the one Chart.js CDN in use). Note: `script-src`/`script-src-attr` allow `'unsafe-inline'` because the UI relies on inline `onclick=""` throughout — the escaping above is the actual XSS defense, CSP here is defense-in-depth, not the primary control. Helmet's `upgrade-insecure-requests` CSP default is explicitly disabled — left on, it forces every request (subresources and navigations alike) to `https`, which silently breaks the app on the plain-`http` CCS Cloud deployment.
+- `express-rate-limit` throttles `/api/auth/*` (100 req/15 min — high enough that a shared-WiFi demo audience on one IP doesn't get walled off) and the rest of the API (300 req/min) to blunt brute-force and abuse.
 - CORS is restricted to `CLIENT_ORIGIN` instead of wide open.
 - Only `backend/api.js` and `backend/search.js` are served to the browser under `/backend` — the rest of `backend/` (controllers, models, middleware, `db.js`) is no longer web-accessible (it previously was, via a blanket static mount).
 
