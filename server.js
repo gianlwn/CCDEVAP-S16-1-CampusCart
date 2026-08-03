@@ -27,6 +27,13 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
+        // Helmet's CSP defaults (merged in unless disabled) include
+        // upgrade-insecure-requests, which forces every request on the page
+        // — subresources and full navigations alike — to https regardless
+        // of the browser's own settings. This deployment is plain http only
+        // (CCS Cloud gives no TLS on this port), so that default silently
+        // breaks every asset load and link click. Explicitly null it out.
+        upgradeInsecureRequests: null,
         // The UI relies on inline onclick="" handlers throughout; removing
         // 'unsafe-inline' would break the app. escaping in the render layer
         // (see frontend/js) is the real XSS defense, this is defense-in-depth.
