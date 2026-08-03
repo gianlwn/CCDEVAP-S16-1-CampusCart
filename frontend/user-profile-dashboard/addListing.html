@@ -63,8 +63,10 @@
 
         <div class="add-listing-form-col">
           <div class="form-group">
-            <label class="form-label">Item Name</label>
-            <input type="text" class="form-input" id="inp-name" placeholder="e.g. Casio FX-991EX">
+            <label class="form-label">
+              <span class="label-text">Item Name <span class="required-mark">*</span></span>
+            </label>
+            <input type="text" class="form-input" id="inp-name" placeholder="e.g. Casio FX-991EX" required>
           </div>
 
           <div class="form-group">
@@ -79,10 +81,12 @@
 
           <div class="form-row-two">
             <div class="form-group">
-              <label class="form-label">Price</label>
+              <label class="form-label">
+                <span class="label-text">Price <span class="required-mark">*</span></span>
+              </label>
               <div class="input-prefix-wrap number-spinner-wrap">
                 <span class="input-prefix">₱</span>
-                <input type="number" class="form-input with-prefix has-spinner" id="inp-price" placeholder="0.00" min="0" step="0.01">
+                <input type="number" class="form-input with-prefix has-spinner" id="inp-price" placeholder="0.00" min="0" step="0.01" required>
                 <div class="number-spinner">
                   <button type="button" class="spinner-btn spinner-up" tabindex="-1" aria-label="Increase price">
                     <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
@@ -110,8 +114,10 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Primary Category</label>
-            <select class="form-select" id="inp-category">
+            <label class="form-label">
+              <span class="label-text">Primary Category <span class="required-mark">*</span></span>
+            </label>
+            <select class="form-select" id="inp-category" required>
               <option value="">Select…</option>
             </select>
           </div>
@@ -132,8 +138,10 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Condition</label>
-            <select class="form-select" id="inp-condition">
+            <label class="form-label">
+              <span class="label-text">Condition <span class="required-mark">*</span></span>
+            </label>
+            <select class="form-select" id="inp-condition" required>
               <option value="">Select…</option>
               <option>New</option>
               <option>Good</option>
@@ -142,12 +150,17 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Pickup Location <span style="color:var(--danger-text,#c0392b);">*</span></label>
+            <label class="form-label">
+              <span class="label-text">Pickup Location <span class="required-mark">*</span></span>
+            </label>
             <input type="text" class="form-input" id="inp-location" placeholder="e.g. Manila, Quezon City" required>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Images <span style="text-transform:none;letter-spacing:0;font-weight:500;opacity:.75;">(at least 1, max 5)</span></label>
+            <label class="form-label">
+              <span class="label-text">Images <span class="required-mark">*</span></span>
+              <span class="label-hint">(at least 1, max 5)</span>
+            </label>
             <div class="img-upload-area" id="img-upload-area"
               onclick="document.getElementById('img-file-input').click()">
               <div class="img-upload-inner">

@@ -790,6 +790,23 @@ body.darkMode .big-number {
   margin-bottom: 6px;
 }
 
+.label-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.required-mark {
+  color: var(--danger-text, #c0392b);
+}
+
+.label-hint {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: 0.75;
+}
+
 .form-input,
 .form-select,
 .form-textarea {
