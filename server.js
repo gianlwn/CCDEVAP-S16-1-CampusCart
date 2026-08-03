@@ -99,7 +99,11 @@ app.get("/backend/search.js", (req, res) =>
 );
 app.use("/data", express.static("data"));
 app.get("/", (req, res) =>
-  res.sendFile(__dirname + "/frontend/login-path/login.html"),
+  // A relative (no leading slash) redirect target so the browser lands on
+  // login-path/login.html relative to wherever this app is actually mounted
+  // (root, or a reverse-proxy path prefix) — res.sendFile() here would leave
+  // the address bar at "/", breaking every relative asset path on that page.
+  res.redirect("login-path/login.html"),
 );
 
 const PORT = process.env.PORT || 3000;
