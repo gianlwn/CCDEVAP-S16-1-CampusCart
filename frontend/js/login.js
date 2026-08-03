@@ -295,10 +295,16 @@ async function handleRegister(event) {
     return;
   }
 
-  if (pw.length < 8 || !/[a-zA-Z]/.test(pw) || !/\d/.test(pw)) {
+  if (
+    pw.length < 8 ||
+    !/[a-z]/.test(pw) ||
+    !/[A-Z]/.test(pw) ||
+    !/\d/.test(pw) ||
+    !/[^a-zA-Z0-9]/.test(pw)
+  ) {
     showToast(
       "Weak Password",
-      "Password must be at least 8 characters and include a letter and a number.",
+      "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a symbol.",
       "warning",
     );
     return;
@@ -494,10 +500,17 @@ async function handlePasswordResetSubmit(event) {
   const pw = document.getElementById("rec-pw").value;
   const pw2 = document.getElementById("rec-pw2").value;
 
-  if (!pw || pw.length < 8 || !/[a-zA-Z]/.test(pw) || !/\d/.test(pw)) {
+  if (
+    !pw ||
+    pw.length < 8 ||
+    !/[a-z]/.test(pw) ||
+    !/[A-Z]/.test(pw) ||
+    !/\d/.test(pw) ||
+    !/[^a-zA-Z0-9]/.test(pw)
+  ) {
     showToast(
       "Weak Password",
-      "Password must be at least 8 characters and include a letter and a number.",
+      "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a symbol.",
       "warning",
     );
     return;

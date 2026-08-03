@@ -4,8 +4,10 @@ function isValidPassword(password) {
   return (
     typeof password === "string" &&
     password.length >= MIN_LENGTH &&
-    /[a-zA-Z]/.test(password) &&
-    /\d/.test(password)
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /\d/.test(password) &&
+    /[^a-zA-Z0-9]/.test(password)
   );
 }
 

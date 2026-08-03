@@ -209,6 +209,7 @@ The API originally trusted whatever identity the client claimed (a plain `user_i
 - Login/register issue a signed, `httpOnly`, `SameSite=Lax` JWT cookie (`backend/middleware/auth.js`) — the server verifies identity from the cookie on every request instead of trusting client-supplied IDs.
 - `requireAuth`, `requireAdmin`, and `requireSelfOrAdmin` middleware gate every route; controllers derive the acting user from `req.user`, not from `req.body`/`req.query`.
 - `POST /api/auth/logout` clears the cookie server-side; `GET /api/auth/me` lets the client re-sync (e.g. for cross-device theme sync) without re-sending credentials.
+- Password policy (`backend/utils/passwordPolicy.js`) is enforced server-side on register, reset, and change-password (`400 { error: "weak_password" }` if it fails) and mirrored client-side for instant feedback: minimum 8 characters, with at least one uppercase letter, one lowercase letter, one digit, and one symbol.
 
 **Access control**
 - All `/api/admin/*` routes (promote/revoke admin, admin dashboard) require `role: admin` — previously anyone could call these unauthenticated.
