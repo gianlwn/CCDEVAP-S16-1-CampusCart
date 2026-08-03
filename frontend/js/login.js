@@ -1,6 +1,4 @@
-// This page doesn't load backend/api.js, so it needs its own copy of the
-// base-path detection (see backend/api.js for why "" doesn't work behind a
-// reverse proxy that mounts the app under a path prefix).
+// Duplicated from backend/api.js since this page doesn't load that file.
 const API = (() => {
   const src = document.currentScript && document.currentScript.src;
   if (!src) return "";

@@ -10,12 +10,8 @@ const sanitizeInput = require("./backend/middleware/sanitize");
 
 const app = express();
 
-// When deployed behind a reverse proxy (Apache/Nginx in front of this Node
-// process), Express needs to know how many hops to trust so req.ip and the
-// X-Forwarded-For header are read correctly — express-rate-limit throws on
-// every request without this once a proxy is in the path. Left unset (the
-// local-dev default) so a spoofed X-Forwarded-For can't be trusted blindly
-// when nothing is actually proxying.
+// Needed behind a reverse proxy so req.ip reads the real client, not
+// Apache — express-rate-limit throws without it. Left unset locally.
 if (process.env.TRUST_PROXY) {
   const hops = Number(process.env.TRUST_PROXY);
   app.set("trust proxy", Number.isNaN(hops) ? process.env.TRUST_PROXY : hops);
@@ -27,12 +23,8 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        // Helmet's CSP defaults (merged in unless disabled) include
-        // upgrade-insecure-requests, which forces every request on the page
-        // — subresources and full navigations alike — to https regardless
-        // of the browser's own settings. This deployment is plain http only
-        // (CCS Cloud gives no TLS on this port), so that default silently
-        // breaks every asset load and link click. Explicitly null it out.
+        // Helmet's CSP defaults include this, forcing every request to
+        // https regardless of browser settings — breaks a plain-http deploy.
         upgradeInsecureRequests: null,
         // The UI relies on inline onclick="" handlers throughout; removing
         // 'unsafe-inline' would break the app. escaping in the render layer
@@ -63,7 +55,9 @@ app.use(sanitizeInput);
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 20,
+  // Per-IP, and everyone on the same WiFi shares one IP server-side —
+  // a demo audience on one network can burn through a low limit fast.
+  limit: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "too_many_requests" },
@@ -106,10 +100,8 @@ app.get("/backend/search.js", (req, res) =>
 );
 app.use("/data", express.static("data"));
 app.get("/", (req, res) =>
-  // A relative (no leading slash) redirect target so the browser lands on
-  // login-path/login.html relative to wherever this app is actually mounted
-  // (root, or a reverse-proxy path prefix) — res.sendFile() here would leave
-  // the address bar at "/", breaking every relative asset path on that page.
+  // Redirect (not sendFile) so the address bar matches login.html's real
+  // location — otherwise its relative asset paths resolve one level too high.
   res.redirect("login-path/login.html"),
 );
 
