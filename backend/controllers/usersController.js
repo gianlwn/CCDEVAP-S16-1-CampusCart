@@ -249,13 +249,21 @@ exports.remove = async (req, res) => {
     const listings = await Listing.find({ seller_id: user_id }, "listings_id");
     const listingIds = listings.map((l) => l.listings_id);
 
+    // Soft-delete everything (instead of removing docs outright) so that if
+    // this .edu email registers again, authController.register reactivates
+    // the same user_id and all of this reappears automatically.
     await Promise.all([
       User.findOneAndUpdate({ user_id }, { is_deleted: true }),
-      Listing.deleteMany({ seller_id: user_id }),
-      Cart.deleteMany({ buyer_id: user_id }),
-      Rating.deleteMany({ rater_id: user_id }),
+      Listing.updateMany({ seller_id: user_id }, { is_deleted: true }),
+      Cart.updateMany({ buyer_id: user_id }, { does_exist: false }),
+      Rating.updateMany({ rater_id: user_id }, { is_removed: true }),
       ...(listingIds.length
-        ? [Rating.deleteMany({ listing_id: { $in: listingIds } })]
+        ? [
+            Rating.updateMany(
+              { listing_id: { $in: listingIds } },
+              { is_removed: true },
+            ),
+          ]
         : []),
     ]);
 

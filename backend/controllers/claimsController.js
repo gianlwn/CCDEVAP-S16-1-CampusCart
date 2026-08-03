@@ -54,27 +54,30 @@ exports.list = async (req, res) => {
       );
 
       return res.json(
-        claims.map((c) => {
-          const listing = listingById[c.listing_id];
-          return {
-            id: c.claim_id,
-            listing_id: c.listing_id,
-            name: listing ? listing.product_name : "Unknown Item",
-            price: listing ? `₱${Number(listing.price).toLocaleString()}` : "—",
-            category: listingCatMap[c.listing_id] || "Others",
-            buyer: buyerNameById[c.buyer_id] || "Buyer",
-            buyer_id: c.buyer_id,
-            date: new Date(c.claim_date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            }),
-            status: c.status,
-            quantity: c.quantity ?? 1,
-            buyer_completed: c.buyer_completed,
-            seller_completed: c.seller_completed,
-          };
-        }),
+        claims
+          .map((c) => {
+            const listing = listingById[c.listing_id];
+            if (!listing || listing.is_deleted) return null;
+            return {
+              id: c.claim_id,
+              listing_id: c.listing_id,
+              name: listing.product_name,
+              price: `₱${Number(listing.price).toLocaleString()}`,
+              category: listingCatMap[c.listing_id] || "Others",
+              buyer: buyerNameById[c.buyer_id] || "Buyer",
+              buyer_id: c.buyer_id,
+              date: new Date(c.claim_date).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
+              status: c.status,
+              quantity: c.quantity ?? 1,
+              buyer_completed: c.buyer_completed,
+              seller_completed: c.seller_completed,
+            };
+          })
+          .filter(Boolean),
       );
     }
 
@@ -110,37 +113,39 @@ exports.list = async (req, res) => {
     );
 
     return res.json(
-      claims.map((c) => {
-        const listing = listingById[c.listing_id];
-        const existingRating = ratingByListing[c.listing_id];
-        return {
-          id: c.claim_id,
-          listing_id: c.listing_id,
-          rating_id: existingRating ? existingRating.rating_id : null,
-          name: listing ? listing.product_name : "Unknown Item",
-          price: listing ? `₱${Number(listing.price).toLocaleString()}` : "—",
-          total: listing
-            ? `₱${(Number(listing.price) * (c.quantity ?? 1)).toLocaleString()}`
-            : "—",
-          category: listingCatMap[c.listing_id] || "Others",
-          seller: sellerNameById[listing?.seller_id] || "Campus Seller",
-          seller_id: listing?.seller_id || "",
-          seller_email: sellerContactById[listing?.seller_id]?.email || "",
-          seller_contact: sellerContactById[listing?.seller_id]?.contact_number || "",
-          location: listing?.location || "",
-          date: new Date(c.claim_date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }),
-          status: c.status,
-          quantity: c.quantity ?? 1,
-          buyer_completed: c.buyer_completed,
-          seller_completed: c.seller_completed,
-          userRating: existingRating ? existingRating.rating : null,
-          userComment: existingRating ? existingRating.review || "" : null,
-        };
-      }),
+      claims
+        .map((c) => {
+          const listing = listingById[c.listing_id];
+          if (!listing || listing.is_deleted) return null;
+          const existingRating = ratingByListing[c.listing_id];
+          return {
+            id: c.claim_id,
+            listing_id: c.listing_id,
+            rating_id: existingRating ? existingRating.rating_id : null,
+            name: listing.product_name,
+            price: `₱${Number(listing.price).toLocaleString()}`,
+            total: `₱${(Number(listing.price) * (c.quantity ?? 1)).toLocaleString()}`,
+            category: listingCatMap[c.listing_id] || "Others",
+            seller: sellerNameById[listing.seller_id] || "Campus Seller",
+            seller_id: listing.seller_id || "",
+            seller_email: sellerContactById[listing.seller_id]?.email || "",
+            seller_contact:
+              sellerContactById[listing.seller_id]?.contact_number || "",
+            location: listing.location || "",
+            date: new Date(c.claim_date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            status: c.status,
+            quantity: c.quantity ?? 1,
+            buyer_completed: c.buyer_completed,
+            seller_completed: c.seller_completed,
+            userRating: existingRating ? existingRating.rating : null,
+            userComment: existingRating ? existingRating.review || "" : null,
+          };
+        })
+        .filter(Boolean),
     );
   } catch (err) {
     console.error(err);

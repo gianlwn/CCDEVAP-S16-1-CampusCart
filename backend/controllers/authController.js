@@ -1,6 +1,9 @@
 const bcrypt = require("bcryptjs");
 const emailjs = require("@emailjs/nodejs");
 const User = require("../models/User");
+const Listing = require("../models/Listing");
+const Cart = require("../models/Cart");
+const Rating = require("../models/Rating");
 const generateId = require("../utils/generateId");
 const { liftExpiredSuspension } = require("../utils/suspension");
 const titleCase = require("../utils/titleCase");
@@ -124,6 +127,11 @@ exports.register = async (req, res) => {
     const normalizedCourseCode = course_code ? course_code.toUpperCase() : course_code;
 
     if (existing) {
+      // Reactivating a previously-deleted account: keep the same user_id
+      // (and its suspension/warning/ban history, so a ban can't be evaded
+      // by deleting and re-registering) so everything soft-deleted on
+      // account removal — listings, ratings, cart — reappears, including
+      // to other users who reference it.
       existing.password_hash = password_hash;
       existing.first_name = first_name;
       existing.last_name = last_name;
@@ -132,14 +140,28 @@ exports.register = async (req, res) => {
       existing.contact_number = contact_number;
       existing.role = "student";
       existing.is_deleted = false;
-      existing.is_suspended = false;
-      existing.suspended_until = null;
-      existing.is_banned = false;
-      existing.warning_count = 0;
-      existing.bio = null;
-      existing.profile_picture = "default_pfp.jpg";
-      existing.theme = "light";
       await existing.save();
+
+      const user_id = existing.user_id;
+      const listings = await Listing.find(
+        { seller_id: user_id },
+        "listings_id",
+      );
+      const listingIds = listings.map((l) => l.listings_id);
+      await Promise.all([
+        Listing.updateMany({ seller_id: user_id }, { is_deleted: false }),
+        Cart.updateMany({ buyer_id: user_id }, { does_exist: true }),
+        Rating.updateMany({ rater_id: user_id }, { is_removed: false }),
+        ...(listingIds.length
+          ? [
+              Rating.updateMany(
+                { listing_id: { $in: listingIds } },
+                { is_removed: false },
+              ),
+            ]
+          : []),
+      ]);
+
       return res.status(201).json({ message: "Account created" });
     }
 
