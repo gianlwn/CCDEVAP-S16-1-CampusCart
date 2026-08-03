@@ -510,8 +510,7 @@
 }
 
 /* ~4 rows (.item-row) + 3 gaps before scrolling */
-#listings-list,
-#seller-claimed-list {
+#listings-list {
   max-height: 320px;
   overflow-y: auto;
   padding-right: 6px;
