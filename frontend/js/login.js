@@ -1,7 +1,13 @@
-// Frontend and API are always served from the same Express app/origin
-// (see server.js), so a relative base works in local dev and in any
-// deployed environment without needing a build-time config value.
-const API = "";
+// This page doesn't load backend/api.js, so it needs its own copy of the
+// base-path detection (see backend/api.js for why "" doesn't work behind a
+// reverse proxy that mounts the app under a path prefix).
+const API = (() => {
+  const src = document.currentScript && document.currentScript.src;
+  if (!src) return "";
+  const marker = "js/login.js";
+  const idx = src.indexOf(marker);
+  return idx === -1 ? "" : src.slice(0, idx).replace(/\/$/, "");
+})();
 
 let codeSent = false;
 let recCodeSent = false;
