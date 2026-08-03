@@ -5,4 +5,9 @@ scripts/backfill.js
 scripts/README.md
 scripts/backup.js
 scripts/verify.js
+scripts/seedMoreData.js
+scripts/ban-suspend-rollback.json
+scripts/fixRegistrations.js
+scripts/fixTimestamps.js
+scripts/fixPendingListings.js
 server.env
