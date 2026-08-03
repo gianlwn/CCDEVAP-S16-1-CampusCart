@@ -57,7 +57,7 @@ function _renderHpPage() {
             ${cond}
           </span>
           ${images.length
-            ? `<img class="hp-thumb-img" src="${images[0]}" alt="${escapeHtml(item.name)}">`
+            ? `<img class="hp-thumb-img" src="${resolveImageSrc(images[0])}" alt="${escapeHtml(item.name)}">`
             : icon}
           ${images.length > 1
             ? `

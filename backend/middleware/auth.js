@@ -19,7 +19,10 @@ function issueSession(res, user) {
   );
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Tied to an explicit flag, not NODE_ENV: a "production" deploy served
+    // over plain http (no TLS) would otherwise get a Secure cookie the
+    // browser silently refuses to send, breaking every login/session check.
+    secure: process.env.COOKIE_SECURE === "true",
     sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",

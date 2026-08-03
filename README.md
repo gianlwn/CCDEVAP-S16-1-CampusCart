@@ -132,6 +132,17 @@ JWT_SECRET=a-long-random-string
 # Origin the frontend is served from (used for the CORS allow-list)
 CLIENT_ORIGIN=http://localhost:3000
 
+# Only set to "true" when the site is actually served over https — it makes
+# the session cookie Secure-only, which browsers silently refuse to send
+# over plain http (this would break every login). Leave unset for local dev
+# and for the CCS Cloud deployment (plain http).
+COOKIE_SECURE=false
+
+# Only set when running behind a reverse proxy (Apache/Nginx in front of
+# this Node process, e.g. the CCS Cloud deployment). Number of proxy hops
+# to trust for X-Forwarded-For — usually 1. Leave unset for local dev.
+TRUST_PROXY=
+
 EMAILJS_SERVICE_ID=team-emailjs-service-id
 EMAILJS_TEMPLATE_ID=team-emailjs-template-id
 EMAILJS_PUBLIC_KEY=team-emailjs-public-key
@@ -155,6 +166,38 @@ The app (frontend + API) is served together at **http://localhost:3000**.
 ### Scripts
 
 `scripts/` holds one-off local DB maintenance scripts (gitignored, not part of the app). Run with `node scripts/<name>.js`. Example: `backfill.js` sets a default value on existing user rows for a schema field that was added after data already existed (e.g. `theme`).
+
+---
+
+## Deployment (CCS Cloud / Proxmox)
+
+The app is a single Node/Express process serving both the frontend and the API — there is no separate build step. To deploy on a CCS Cloud VM at a URL like `http://ccscloud.dlsu.edu.ph:<port>/<repo-name>/`:
+
+1. **Clone and install** on the VM (e.g. into `/var/www/html/CCDEVAP-S16-1-CampusCart`):
+   ```bash
+   git clone <repo-url> /var/www/html/CCDEVAP-S16-1-CampusCart
+   cd /var/www/html/CCDEVAP-S16-1-CampusCart
+   npm install --omit=dev
+   ```
+2. **Create `.env` on the server** (it's gitignored, so it never comes from `git pull`) — use the template above. Set `MONGO_URI`/`JWT_SECRET`/EmailJS keys, and:
+   - `CLIENT_ORIGIN` = the real public URL's origin, e.g. `http://ccscloud.dlsu.edu.ph:60143`
+   - `COOKIE_SECURE=false` unless the site is actually served over `https://`
+   - `TRUST_PROXY=1` if Apache/Nginx sits in front of the Node process (see below)
+3. **MongoDB Atlas network access** — add the VM's public IP to the Atlas cluster's IP allow-list (Network Access tab), or the app can't reach the database from the VM even with a correct `MONGO_URI`.
+4. **Run Node as a persistent service** so it survives SSH disconnects/reboots — e.g. with `pm2`:
+   ```bash
+   npm install -g pm2
+   pm2 start server.js --name campuscart
+   pm2 save
+   pm2 startup   # follow the printed command to enable on boot
+   ```
+5. **Reverse proxy the URL path to the Node port.** The app expects to own its entire origin — it doesn't know about the `/<repo-name>/` path segment. Apache needs to strip that prefix before forwarding to Node (the app already derives its own base path from the browser, so this needs to be consistent, not stripped-then-re-added):
+   ```apache
+   ProxyPreserveHost On
+   ProxyPass /CCDEVAP-S16-1-CampusCart/ http://127.0.0.1:3000/
+   ProxyPassReverse /CCDEVAP-S16-1-CampusCart/ http://127.0.0.1:3000/
+   ```
+   (requires `a2enmod proxy proxy_http` on Debian/Ubuntu). If Apache is only serving this one app on its assigned port, proxying the whole vhost root (`ProxyPass / http://127.0.0.1:3000/`) instead is simpler and avoids path-prefix edge cases entirely.
 
 ---
 

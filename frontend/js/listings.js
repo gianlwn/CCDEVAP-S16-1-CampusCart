@@ -91,7 +91,7 @@ function renderEditThumbs() {
     .map(
       (src, i) => `
     <div class="img-thumb-item">
-      <img src="${src}" alt="img ${i + 1}">
+      <img src="${resolveImageSrc(src)}" alt="img ${i + 1}">
       <button class="img-thumb-remove" title="Remove" onclick="removeEditImage(${i})">×</button>
     </div>
   `,

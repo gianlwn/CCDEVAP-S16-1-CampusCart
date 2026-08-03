@@ -538,7 +538,7 @@ function renderApprovalPage() {
     return;
   }
   container.innerHTML = slice.map(listing => {
-    const thumb = listing.images[0];
+    const thumb = resolveImageSrc(listing.images[0]);
     return `
     <div class="listing-card" id="listing-card-${listing.id}">
       <div class="card-top">
@@ -578,7 +578,7 @@ function viewListingDetails(listingId) {
   if (!listing) return;
   const photosHtml = listing.images.length
     ? listing.images.map((src, i) =>
-        `<img src="${src}" alt="Photo ${i + 1}" style="width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);">`
+        `<img src="${resolveImageSrc(src)}" alt="Photo ${i + 1}" style="width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);">`
       ).join('')
     : `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">No Photo</div>`;
   openModal(`
@@ -842,7 +842,7 @@ function viewReportedListing(listingId) {
     const images = Array.isArray(listing.images) ? listing.images.filter(Boolean) : [];
     const photosHtml = images.length
       ? images.map((src, i) =>
-          `<img src="${src}" alt="Photo ${i + 1}" style="width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);">`
+          `<img src="${resolveImageSrc(src)}" alt="Photo ${i + 1}" style="width:72px;height:72px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);">`
         ).join('')
       : `<div style="width:72px;height:72px;border-radius:var(--radius-sm);background:var(--accent-light);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:10px;font-weight:700;">No Photo</div>`;
     openModal(`

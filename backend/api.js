@@ -1,7 +1,23 @@
 // Frontend and API are always served from the same Express app/origin
-// (see server.js), so a relative base works in local dev and in any
-// deployed environment without needing a build-time config value.
-const API = "";
+// (see server.js). Deployments can sit behind a reverse proxy that mounts
+// the whole app under a path prefix (e.g. /CCDEVAP-S16-1-CampusCart), so a
+// hardcoded "" base breaks there. Derive the real base from where this
+// script itself was loaded from instead of assuming root.
+const API = (() => {
+  const src = document.currentScript && document.currentScript.src;
+  if (!src) return "";
+  const marker = "backend/api.js";
+  const idx = src.indexOf(marker);
+  return idx === -1 ? "" : src.slice(0, idx).replace(/\/$/, "");
+})();
+
+// Listing/profile images come back from the API as server-relative paths
+// (e.g. "/uploads/listings/xyz.jpg"); they need the same base prefix as API
+// calls once the app is deployed under a path prefix. Anything else (data:
+// URLs from unsaved file previews) is passed through unchanged.
+function resolveImageSrc(src) {
+  return src && src.startsWith("/uploads/") ? `${API}${src}` : src;
+}
 
 function getSessionUserId() {
   return localStorage.getItem("session_user_id");

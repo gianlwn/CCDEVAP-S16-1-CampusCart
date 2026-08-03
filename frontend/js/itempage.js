@@ -19,7 +19,7 @@ function _setActiveThumb(idx) {
     t.classList.toggle("active", i === idx);
   });
   const mainPhoto = document.getElementById("ip-main-photo");
-  if (mainPhoto) mainPhoto.src = images[idx];
+  if (mainPhoto) mainPhoto.src = resolveImageSrc(images[idx]);
   const label = document.getElementById("ip-img-label");
   if (label) label.textContent = `Photo ${idx + 1} of ${images.length}`;
 }
@@ -91,7 +91,7 @@ function renderItemPage(item) {
       <div class="ip-gallery">
         <div class="ip-main-img" style="background:${bg}">
           ${images.length
-            ? `<img id="ip-main-photo" class="ip-main-photo" src="${images[0]}" alt="${escapeHtml(item.name)}">`
+            ? `<img id="ip-main-photo" class="ip-main-photo" src="${resolveImageSrc(images[0])}" alt="${escapeHtml(item.name)}">`
             : `<div id="ip-main-img-inner" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;">${mainIcon}</div>`}
           ${images.length > 1 ? `<span class="ip-img-label" id="ip-img-label">Photo 1 of ${images.length}</span>` : ""}
         </div>
@@ -101,7 +101,7 @@ function renderItemPage(item) {
             .map(
               (src, i) => `
             <div class="ip-thumb${i === 0 ? " active" : ""}" onclick="_setActiveThumb(${i})">
-              <img src="${src}" alt="Photo ${i + 1}">
+              <img src="${resolveImageSrc(src)}" alt="Photo ${i + 1}">
             </div>
           `,
             )

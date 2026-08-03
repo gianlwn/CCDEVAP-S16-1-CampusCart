@@ -10,6 +10,17 @@ const sanitizeInput = require("./backend/middleware/sanitize");
 
 const app = express();
 
+// When deployed behind a reverse proxy (Apache/Nginx in front of this Node
+// process), Express needs to know how many hops to trust so req.ip and the
+// X-Forwarded-For header are read correctly — express-rate-limit throws on
+// every request without this once a proxy is in the path. Left unset (the
+// local-dev default) so a spoofed X-Forwarded-For can't be trusted blindly
+// when nothing is actually proxying.
+if (process.env.TRUST_PROXY) {
+  const hops = Number(process.env.TRUST_PROXY);
+  app.set("trust proxy", Number.isNaN(hops) ? process.env.TRUST_PROXY : hops);
+}
+
 app.disable("x-powered-by");
 app.use(
   helmet({
