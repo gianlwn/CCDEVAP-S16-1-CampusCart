@@ -10,6 +10,16 @@ const createNotification = require("../utils/createNotification");
 
 const VALID_CONDITIONS = ["New", "Good", "Used"];
 
+function isSellerBlocked(user) {
+  if (!user) return false;
+  if (user.is_banned) return true;
+  if (user.is_suspended) {
+    if (user.suspended_until && user.suspended_until <= new Date()) return false;
+    return true;
+  }
+  return false;
+}
+
 function toFrontendShape(listing, sellerName, sellerId, categoryNames, availableQty, sellerProfilePicture) {
   const cats =
     categoryNames && categoryNames.length ? categoryNames : ["Others"];
@@ -107,7 +117,20 @@ exports.list = async (req, res) => {
       filter = { status: "active" };
     }
     filter.is_deleted = { $ne: true };
-    const listings = await Listing.find(filter).sort({ created: -1 });
+    let listings = await Listing.find(filter).sort({ created: -1 });
+
+    if (!isAdmin && !isSelf) {
+      const sellerIds = [...new Set(listings.map((l) => l.seller_id))];
+      const sellers = await User.find(
+        { user_id: { $in: sellerIds } },
+        "user_id is_banned is_suspended suspended_until",
+      );
+      const blockedSellerIds = new Set(
+        sellers.filter(isSellerBlocked).map((u) => u.user_id),
+      );
+      listings = listings.filter((l) => !blockedSellerIds.has(l.seller_id));
+    }
+
     const result = await enrichListings(listings);
     res.json(result);
   } catch (err) {
@@ -122,6 +145,16 @@ exports.getOne = async (req, res) => {
     if (!listing || listing.is_deleted) {
       return res.status(404).json({ error: "not_found" });
     }
+
+    const isAdmin = req.user.role === "admin";
+    const isSelf = listing.seller_id === req.user.user_id;
+    if (!isAdmin && !isSelf) {
+      const seller = await User.findOne({ user_id: listing.seller_id });
+      if (isSellerBlocked(seller)) {
+        return res.status(404).json({ error: "not_found" });
+      }
+    }
+
     const [enriched] = await enrichListings([listing]);
     res.json(enriched);
   } catch (err) {
