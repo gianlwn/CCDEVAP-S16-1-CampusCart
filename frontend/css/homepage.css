@@ -159,7 +159,7 @@
 
 .hp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 280px));
   gap: 16px;
 }
 
@@ -393,7 +393,7 @@ body.darkMode .hp-condition-badge {
 
 @media (max-width: 1024px) {
   .hp-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 240px));
   }
 }
 

@@ -119,7 +119,15 @@ exports.list = async (req, res) => {
     filter.is_deleted = { $ne: true };
     let listings = await Listing.find(filter).sort({ created: -1 });
 
-    if (!isAdmin && !isSelf) {
+    // The public storefront feed (active listings, not scoped to a specific
+    // seller) hides banned/suspended sellers' listings from everyone,
+    // including admins browsing it as a shopper. Admin moderation views
+    // (e.g. pending-review queue, a specific seller's listings) still need
+    // full visibility, so those stay exempt via isAdmin/isSelf.
+    const isPublicBrowse = filter.status === "active" && !filter.seller_id;
+    const skipBlockedSellerFilter = isSelf || (isAdmin && !isPublicBrowse);
+
+    if (!skipBlockedSellerFilter) {
       const sellerIds = [...new Set(listings.map((l) => l.seller_id))];
       const sellers = await User.find(
         { user_id: { $in: sellerIds } },
