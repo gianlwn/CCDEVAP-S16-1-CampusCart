@@ -13,3 +13,4 @@ scripts/fixPendingListings.js
 server.env
 backend/uploads/listings/*
 !backend/uploads/listings/.gitkeep
+
