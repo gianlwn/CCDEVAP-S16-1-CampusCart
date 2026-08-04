@@ -1219,35 +1219,6 @@ body.darkMode .big-number {
   user-select: none;
 }
 
-.pg-wrap {
-  --pagination-box-size: 36px;
-
-  display: grid;
-  grid-template-columns:
-    repeat(7, var(--pagination-box-size));
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-}
-
-.pg-btn {
-  width: var(--pagination-box-size);
-  min-width: var(--pagination-box-size);
-  height: var(--pagination-box-size);
-  padding: 0;
-}
-
-.pg-btn.pg-placeholder {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.pg-btn.pg-ellipsis {
-  cursor: default;
-  pointer-events: none;
-  user-select: none;
-}
-
 .admin-pagination {
   display: flex;
   flex-direction: column;
@@ -1258,8 +1229,12 @@ body.darkMode .big-number {
 
 @media (max-width: 480px) {
   .pg-wrap {
-    --pagination-box-size: 32px;
     gap: 4px;
+  }
+  .pg-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
   }
 }
 

@@ -88,13 +88,6 @@ function renderPagination(
     totalPages,
     currentPage,
   ).forEach((item) => {
-    if (item === "placeholder") {
-      controls.appendChild(
-        createSpecialSlot("placeholder"),
-      );
-      return;
-    }
-
     if (item === "ellipsis") {
       controls.appendChild(
         createSpecialSlot("ellipsis", "…"),

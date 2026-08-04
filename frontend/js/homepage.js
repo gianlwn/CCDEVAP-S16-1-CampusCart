@@ -150,16 +150,6 @@ function _renderHpPagination(pag) {
     totalPages,
     _hpPage,
   ).forEach((item) => {
-    if (item === "placeholder") {
-      btns += `
-        <span
-          class="pg-btn pg-placeholder"
-          aria-hidden="true"
-        ></span>
-      `;
-      return;
-    }
-  
     if (item === "ellipsis") {
       btns += `
         <span

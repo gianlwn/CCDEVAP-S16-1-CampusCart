@@ -38,16 +38,10 @@ function getCompactPaginationItems(totalPages, currentPage) {
   );
 
   if (total <= visibleSlots) {
-    const items = Array.from(
+    return Array.from(
       { length: total },
       (_, index) => index + 1,
     );
-
-    while (items.length < visibleSlots) {
-      items.push("placeholder");
-    }
-
-    return items;
   }
 
   if (current <= 3) {
