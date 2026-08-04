@@ -13,3 +13,4 @@ scripts/fixPendingListings.js
 server.env
 backend/uploads/**/*
 !backend/uploads/**/.gitkeep
+hash.js
