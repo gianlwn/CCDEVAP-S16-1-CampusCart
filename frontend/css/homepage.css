@@ -564,6 +564,14 @@ body.darkMode .hp-condition-badge {
   gap: 8px;
 }
 
+.hp-afp-checks-scroll {
+  max-height: 132px;
+  overflow-y: auto;
+  align-content: flex-start;
+  padding-right: 4px;
+  margin-right: -4px;
+}
+
 .hp-afp-check {
   display: flex;
   align-items: center;

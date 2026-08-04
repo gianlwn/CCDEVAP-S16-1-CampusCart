@@ -15,6 +15,7 @@ let _advCategories = [];
 let _advMinPrice = 0;
 let _advMaxPrice = Infinity;
 let _personalizedCategories = [];
+let _allCategories = [];
 
 function renderGrid(items) {
   _filteredItems = items;
@@ -278,7 +279,9 @@ function openFiltersPanel() {
     )
     .join("");
 
-  const catOpts = Object.keys(CATEGORY_BG);
+  const catOpts = _allCategories.length
+    ? _allCategories
+    : Object.keys(CATEGORY_BG);
   const catChecks = catOpts
     .map(
       (c) =>
@@ -293,7 +296,7 @@ function openFiltersPanel() {
     </div>
     <div class="hp-afp-section">
       <p class="hp-afp-label">Category</p>
-      <div class="hp-afp-checks">${catChecks}</div>
+      <div class="hp-afp-checks hp-afp-checks-scroll">${catChecks}</div>
     </div>
     <div class="hp-afp-section">
       <p class="hp-afp-label">Condition</p>
@@ -415,6 +418,12 @@ document.addEventListener("DOMContentLoaded", function () {
       renderGrid(allItems);
     })
     .catch(() => showToast("Error", "Could not load listings.", "error"));
+
+  fetchCategories()
+    .then((categories) => {
+      _allCategories = categories.map((c) => c.category_name);
+    })
+    .catch(() => {});
 
   if (getSessionUserId()) {
     fetchClaims()
