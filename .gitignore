@@ -11,6 +11,5 @@ scripts/fixRegistrations.js
 scripts/fixTimestamps.js
 scripts/fixPendingListings.js
 server.env
-backend/uploads/listings/*
-!backend/uploads/listings/.gitkeep
-
+backend/uploads/**/*
+!backend/uploads/**/.gitkeep
