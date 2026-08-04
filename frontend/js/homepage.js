@@ -146,14 +146,32 @@ function _renderHpPagination(pag) {
     </button>
   `;
 
-  getCompactPaginationItems(totalPages, _hpPage).forEach((item) => {
-    if (item === "ellipsis") {
+  getCompactPaginationItems(
+    totalPages,
+    _hpPage,
+  ).forEach((item) => {
+    if (item === "placeholder") {
       btns += `
-        <span class="pg-btn pg-ellipsis">…</span>
+        <span
+          class="pg-btn pg-placeholder"
+          aria-hidden="true"
+        ></span>
       `;
       return;
     }
-
+  
+    if (item === "ellipsis") {
+      btns += `
+        <span
+          class="pg-btn pg-ellipsis"
+          aria-hidden="true"
+        >
+          …
+        </span>
+      `;
+      return;
+    }
+  
     btns += `
       <button
         class="pg-btn${item === _hpPage ? " pg-active" : ""}"

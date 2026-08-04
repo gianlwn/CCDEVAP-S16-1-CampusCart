@@ -25,33 +25,51 @@ function formatNotificationMessage(value) {
 }
 
 function getCompactPaginationItems(totalPages, currentPage) {
-  if (totalPages <= 7) {
-    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  const visibleSlots = 5;
+
+  const total = Math.max(
+    1,
+    Number(totalPages) || 1,
+  );
+
+  const current = Math.min(
+    Math.max(1, Number(currentPage) || 1),
+    total,
+  );
+
+  if (total <= visibleSlots) {
+    const items = Array.from(
+      { length: total },
+      (_, index) => index + 1,
+    );
+
+    while (items.length < visibleSlots) {
+      items.push("placeholder");
+    }
+
+    return items;
   }
 
-  if (currentPage <= 3) {
-    return [1, 2, 3, 4, "ellipsis", totalPages];
+  if (current <= 3) {
+    return [1, 2, 3, "ellipsis", total];
   }
 
-  if (currentPage >= totalPages - 2) {
+  if (current >= total - 2) {
     return [
       1,
       "ellipsis",
-      totalPages - 3,
-      totalPages - 2,
-      totalPages - 1,
-      totalPages,
+      total - 2,
+      total - 1,
+      total,
     ];
   }
 
   return [
     1,
     "ellipsis",
-    currentPage - 1,
-    currentPage,
-    currentPage + 1,
+    current,
     "ellipsis",
-    totalPages,
+    total,
   ];
 }
 
