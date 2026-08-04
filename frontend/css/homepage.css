@@ -160,6 +160,7 @@
 .hp-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 280px));
+  justify-content: center;
   gap: 16px;
 }
 
