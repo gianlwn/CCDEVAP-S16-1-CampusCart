@@ -115,7 +115,7 @@ function _hpThumbSwipe(e, itemId, dir) {
   img.addEventListener(
     "transitionend",
     () => {
-      img.src = images[idx];
+      img.src = resolveImageSrc(images[idx]);
       img.classList.remove(outClass);
       img.classList.add(inClass);
       void img.offsetWidth;
