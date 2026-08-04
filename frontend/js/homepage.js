@@ -128,17 +128,51 @@ function _hpThumbSwipe(e, itemId, dir) {
 }
 
 function _renderHpPagination(pag) {
-  const totalPages = Math.ceil(_filteredItems.length / HP_ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(
+    _filteredItems.length / HP_ITEMS_PER_PAGE,
+  );
+
   if (totalPages <= 1) {
     pag.innerHTML = "";
     return;
   }
 
-  let btns = `<button class="pg-btn${_hpPage === 1 ? " pg-disabled" : ""}" onclick="_hpPageTo(${_hpPage - 1})">&#8592;</button>`;
-  for (let p = 1; p <= totalPages; p++) {
-    btns += `<button class="pg-btn${p === _hpPage ? " pg-active" : ""}" onclick="_hpPageTo(${p})">${p}</button>`;
-  }
-  btns += `<button class="pg-btn${_hpPage === totalPages ? " pg-disabled" : ""}" onclick="_hpPageTo(${_hpPage + 1})">&#8594;</button>`;
+  let btns = `
+    <button
+      class="pg-btn${_hpPage === 1 ? " pg-disabled" : ""}"
+      onclick="_hpPageTo(${_hpPage - 1})"
+    >
+      &#8592;
+    </button>
+  `;
+
+  getCompactPaginationItems(totalPages, _hpPage).forEach((item) => {
+    if (item === "ellipsis") {
+      btns += `
+        <span class="pg-btn pg-ellipsis">…</span>
+      `;
+      return;
+    }
+
+    btns += `
+      <button
+        class="pg-btn${item === _hpPage ? " pg-active" : ""}"
+        onclick="_hpPageTo(${item})"
+      >
+        ${item}
+      </button>
+    `;
+  });
+
+  btns += `
+    <button
+      class="pg-btn${_hpPage === totalPages ? " pg-disabled" : ""}"
+      onclick="_hpPageTo(${_hpPage + 1})"
+    >
+      &#8594;
+    </button>
+  `;
+
   pag.innerHTML = `<div class="pg-wrap">${btns}</div>`;
 }
 

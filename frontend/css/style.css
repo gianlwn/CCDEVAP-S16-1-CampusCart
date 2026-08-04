@@ -1212,6 +1212,13 @@ body.darkMode .big-number {
   pointer-events: none;
 }
 
+.pg-btn.pg-ellipsis {
+  cursor: default;
+  pointer-events: none;
+  color: var(--text-muted);
+  user-select: none;
+}
+
 @media (max-width: 480px) {
   .main-content {
     padding: 14px 10px 80px;

@@ -8,25 +8,122 @@ function handleAdminSignOut() {
   window.location.replace('../login-path/login.html');
 }
 
-function renderPagination(containerId, total, currentPage, onPageChange, itemsPerPage) {
+function renderPagination(containerId, total, currentPage, onPageChange, itemsPerPage,) {
   const totalPages = Math.ceil(total / itemsPerPage);
-  if (totalPages <= 1) return;
-  const existing = document.getElementById(`${containerId}-pagination`);
-  if (existing) existing.remove();
-  const pag = document.createElement('div');
+
+  const existing = document.getElementById(
+    `${containerId}-pagination`,
+  );
+
+  if (existing) {
+    existing.remove();
+  }
+
+  if (totalPages <= 1) {
+    return;
+  }
+
+  const pag = document.createElement("div");
   pag.id = `${containerId}-pagination`;
-  pag.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:6px;margin-top:18px;flex-wrap:wrap;';
-  const btn = (label, page, disabled = false) => {
-    const b = document.createElement('button');
-    b.textContent = label;
-    b.disabled = disabled;
-    b.style.cssText = `padding:6px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:${page === currentPage ? 'var(--accent)' : 'var(--card-bg)'};color:${page === currentPage ? '#fff' : 'var(--text)'};cursor:${disabled ? 'default' : 'pointer'};font-size:12px;font-family:inherit;opacity:${disabled ? '0.45' : '1'};transition:all var(--transition);`;
-    if (!disabled && page !== currentPage) b.addEventListener('click', () => onPageChange(page));
-    return b;
+
+  pag.style.cssText = `
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  `;
+
+  const createButton = (
+    label,
+    page,
+    disabled = false,
+  ) => {
+    const button = document.createElement("button");
+
+    button.textContent = label;
+    button.disabled = disabled;
+
+    button.style.cssText = `
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: ${
+        page === currentPage
+          ? "var(--accent)"
+          : "var(--card-bg)"
+      };
+      color: ${
+        page === currentPage
+          ? "#fff"
+          : "var(--text)"
+      };
+      cursor: ${disabled ? "default" : "pointer"};
+      font-size: 12px;
+      font-family: inherit;
+      opacity: ${disabled ? "0.45" : "1"};
+      transition: all var(--transition);
+    `;
+
+    if (!disabled && page !== currentPage) {
+      button.addEventListener("click", () => {
+        onPageChange(page);
+      });
+    }
+
+    return button;
   };
-  pag.appendChild(btn('‹ Prev', currentPage - 1, currentPage === 1));
-  for (let i = 1; i <= totalPages; i++) pag.appendChild(btn(String(i), i));
-  pag.appendChild(btn('Next ›', currentPage + 1, currentPage === totalPages));
+
+  const createEllipsis = () => {
+    const ellipsis = document.createElement("span");
+
+    ellipsis.textContent = "…";
+
+    ellipsis.style.cssText = `
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-family: inherit;
+      user-select: none;
+    `;
+
+    return ellipsis;
+  };
+
+  pag.appendChild(
+    createButton(
+      "‹ Prev",
+      currentPage - 1,
+      currentPage === 1,
+    ),
+  );
+
+  getCompactPaginationItems(
+    totalPages,
+    currentPage,
+  ).forEach((item) => {
+    if (item === "ellipsis") {
+      pag.appendChild(createEllipsis());
+      return;
+    }
+
+    pag.appendChild(
+      createButton(String(item), item),
+    );
+  });
+
+  pag.appendChild(
+    createButton(
+      "Next ›",
+      currentPage + 1,
+      currentPage === totalPages,
+    ),
+  );
+
   document.getElementById(containerId).after(pag);
 }
 
