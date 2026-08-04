@@ -7,9 +7,16 @@ function handleAdminSignOut() {
   sessionStorage.setItem('cc_signout', '1');
   window.location.replace('../login-path/login.html');
 }
-
-function renderPagination(containerId, total, currentPage, onPageChange, itemsPerPage,) {
-  const totalPages = Math.ceil(total / itemsPerPage);
+function renderPagination(
+  containerId,
+  total,
+  currentPage,
+  onPageChange,
+  itemsPerPage,
+) {
+  const totalPages = Math.ceil(
+    total / itemsPerPage,
+  );
 
   const existing = document.getElementById(
     `${containerId}-pagination`,
@@ -23,48 +30,32 @@ function renderPagination(containerId, total, currentPage, onPageChange, itemsPe
     return;
   }
 
-  const pag = document.createElement("div");
-  pag.id = `${containerId}-pagination`;
+  const pagination = document.createElement("div");
+  pagination.id = `${containerId}-pagination`;
+  pagination.className = "admin-pagination";
 
-  pag.style.cssText = `
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin-top: 18px;
-    flex-wrap: wrap;
-  `;
+  const controls = document.createElement("div");
+  controls.className = "pg-wrap";
 
-  const createButton = (
+  function createButton(
     label,
     page,
     disabled = false,
-  ) => {
+  ) {
     const button = document.createElement("button");
 
+    button.type = "button";
     button.textContent = label;
-    button.disabled = disabled;
+    button.className = "pg-btn";
 
-    button.style.cssText = `
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: ${
-        page === currentPage
-          ? "var(--accent)"
-          : "var(--card-bg)"
-      };
-      color: ${
-        page === currentPage
-          ? "#fff"
-          : "var(--text)"
-      };
-      cursor: ${disabled ? "default" : "pointer"};
-      font-size: 12px;
-      font-family: inherit;
-      opacity: ${disabled ? "0.45" : "1"};
-      transition: all var(--transition);
-    `;
+    if (page === currentPage) {
+      button.classList.add("pg-active");
+    }
+
+    if (disabled) {
+      button.disabled = true;
+      button.classList.add("pg-disabled");
+    }
 
     if (!disabled && page !== currentPage) {
       button.addEventListener("click", () => {
@@ -73,30 +64,21 @@ function renderPagination(containerId, total, currentPage, onPageChange, itemsPe
     }
 
     return button;
-  };
+  }
 
-  const createEllipsis = () => {
-    const ellipsis = document.createElement("span");
+  function createSpecialSlot(type, text = "") {
+    const slot = document.createElement("span");
 
-    ellipsis.textContent = "…";
+    slot.className = `pg-btn pg-${type}`;
+    slot.textContent = text;
+    slot.setAttribute("aria-hidden", "true");
 
-    ellipsis.style.cssText = `
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--card-bg);
-      color: var(--text-muted);
-      font-size: 12px;
-      font-family: inherit;
-      user-select: none;
-    `;
+    return slot;
+  }
 
-    return ellipsis;
-  };
-
-  pag.appendChild(
+  controls.appendChild(
     createButton(
-      "‹ Prev",
+      "‹",
       currentPage - 1,
       currentPage === 1,
     ),
@@ -106,32 +88,45 @@ function renderPagination(containerId, total, currentPage, onPageChange, itemsPe
     totalPages,
     currentPage,
   ).forEach((item) => {
-    if (item === "ellipsis") {
-      pag.appendChild(createEllipsis());
+    if (item === "placeholder") {
+      controls.appendChild(
+        createSpecialSlot("placeholder"),
+      );
       return;
     }
 
-    pag.appendChild(
+    if (item === "ellipsis") {
+      controls.appendChild(
+        createSpecialSlot("ellipsis", "…"),
+      );
+      return;
+    }
+
+    controls.appendChild(
       createButton(String(item), item),
     );
   });
 
-  pag.appendChild(
+  controls.appendChild(
     createButton(
-      "Next ›",
+      "›",
       currentPage + 1,
       currentPage === totalPages,
     ),
   );
-  
+
+  pagination.appendChild(controls);
+
   appendGoToPageControl(
-    pag,
+    pagination,
     totalPages,
     currentPage,
     onPageChange,
   );
-  
-  document.getElementById(containerId).after(pag);
+
+  document
+    .getElementById(containerId)
+    .after(pagination);
 }
 
 function getItemsPerPage(type) {
