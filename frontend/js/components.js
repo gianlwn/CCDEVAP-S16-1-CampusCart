@@ -55,6 +55,109 @@ function getCompactPaginationItems(totalPages, currentPage) {
   ];
 }
 
+function appendGoToPageControl(
+  container,
+  totalPages,
+  currentPage,
+  onPageChange,
+) {
+  if (!(container instanceof HTMLElement)) return;
+  if (!Number.isSafeInteger(totalPages) || totalPages < 2) return;
+  if (typeof onPageChange !== "function") return;
+
+  const form = document.createElement("form");
+  form.className = "go-to-page";
+  form.noValidate = true;
+
+  const inputId = `${container.id || "pagination"}-go-to-page`;
+
+  const label = document.createElement("label");
+  label.className = "go-to-page-label";
+  label.htmlFor = inputId;
+  label.textContent = "Go to page:";
+
+  const input = document.createElement("input");
+  input.id = inputId;
+  input.className = "go-to-page-input";
+
+  /*
+   * Text is used instead of number because number inputs may accept
+   * characters such as e, +, -, and decimal points in some browsers.
+   */
+  input.type = "text";
+  input.inputMode = "numeric";
+  input.autocomplete = "off";
+  input.spellcheck = false;
+  input.maxLength = String(totalPages).length;
+  input.placeholder = `1-${totalPages}`;
+  input.setAttribute(
+    "aria-label",
+    `Enter a page number from 1 to ${totalPages}`,
+  );
+  input.setAttribute("aria-invalid", "false");
+
+  const button = document.createElement("button");
+  button.type = "submit";
+  button.className = "go-to-page-btn";
+  button.textContent = "Go";
+
+  const error = document.createElement("span");
+  error.className = "go-to-page-error";
+  error.setAttribute("role", "alert");
+  error.setAttribute("aria-live", "polite");
+
+  function clearError() {
+    error.textContent = "";
+    input.setAttribute("aria-invalid", "false");
+  }
+
+  function showError(message) {
+    error.textContent = message;
+    input.setAttribute("aria-invalid", "true");
+    input.focus();
+  }
+
+  input.addEventListener("input", clearError);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const rawValue = input.value.trim();
+
+    /*
+     * Only whole-number digits are accepted.
+     * Rejects letters, HTML, decimals, negatives, and scientific notation.
+     */
+    if (!/^[1-9]\d*$/.test(rawValue)) {
+      showError("Enter a valid whole page number.");
+      return;
+    }
+
+    const requestedPage = Number(rawValue);
+
+    if (
+      !Number.isSafeInteger(requestedPage) ||
+      requestedPage < 1 ||
+      requestedPage > totalPages
+    ) {
+      showError(`Page must be between 1 and ${totalPages}.`);
+      return;
+    }
+
+    clearError();
+
+    if (requestedPage === currentPage) {
+      input.value = "";
+      return;
+    }
+
+    onPageChange(requestedPage);
+  });
+
+  form.append(label, input, button, error);
+  container.appendChild(form);
+}
+
 const ICONS = {
   logo: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
   moon: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,

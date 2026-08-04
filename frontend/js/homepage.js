@@ -174,6 +174,13 @@ function _renderHpPagination(pag) {
   `;
 
   pag.innerHTML = `<div class="pg-wrap">${btns}</div>`;
+
+  appendGoToPageControl(
+    pag,
+    totalPages,
+    _hpPage,
+    _hpPageTo,
+  );
 }
 
 function _hpPageTo(p) {

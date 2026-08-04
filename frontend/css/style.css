@@ -1219,6 +1219,75 @@ body.darkMode .big-number {
   user-select: none;
 }
 
+.go-to-page {
+  flex-basis: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.go-to-page-label {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.go-to-page-input {
+  width: 72px;
+  height: 34px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  text-align: center;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.go-to-page-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+.go-to-page-input[aria-invalid="true"] {
+  border-color: var(--danger-text);
+}
+
+.go-to-page-btn {
+  height: 34px;
+  padding: 5px 14px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.go-to-page-btn:hover {
+  background: var(--accent-hover);
+}
+
+.go-to-page-error {
+  flex-basis: 100%;
+  min-height: 15px;
+  color: var(--danger-text);
+  font-size: 11px;
+  text-align: center;
+}
+
 @media (max-width: 480px) {
   .main-content {
     padding: 14px 10px 80px;

@@ -123,7 +123,14 @@ function renderPagination(containerId, total, currentPage, onPageChange, itemsPe
       currentPage === totalPages,
     ),
   );
-
+  
+  appendGoToPageControl(
+    pag,
+    totalPages,
+    currentPage,
+    onPageChange,
+  );
+  
   document.getElementById(containerId).after(pag);
 }
 
