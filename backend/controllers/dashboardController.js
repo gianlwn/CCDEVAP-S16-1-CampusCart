@@ -61,7 +61,9 @@ exports.getDashboard = async (req, res) => {
       status: "completed",
     });
 
-    const totalListings = myListings.length;
+    const totalListings = myListings.filter(
+      (l) => l.status !== "rejected",
+    ).length;
     const itemsSold = soldClaims.reduce((s, c) => s + (c.quantity || 1), 0);
     const totalEarnings = soldClaims.reduce(
       (s, c) => s + (priceById[c.listing_id] || 0) * (c.quantity || 1),
