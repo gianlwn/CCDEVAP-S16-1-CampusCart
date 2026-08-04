@@ -159,8 +159,7 @@
 
 .hp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 280px));
-  justify-content: center;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 16px;
 }
 
@@ -394,7 +393,7 @@ body.darkMode .hp-condition-badge {
 
 @media (max-width: 1024px) {
   .hp-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 240px));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
 
@@ -410,7 +409,7 @@ body.darkMode .hp-condition-badge {
     text-align: center;
   }
   .hp-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
   .hp-hero-text h2 {
@@ -464,7 +463,7 @@ body.darkMode .hp-condition-badge {
 
 @media (max-width: 480px) {
   .hp-grid {
-    grid-template-columns: repeat(auto-fit, minmax(130px, 170px));
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
   .hp-item-info {
