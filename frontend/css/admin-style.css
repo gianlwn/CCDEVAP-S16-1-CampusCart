@@ -255,8 +255,37 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  html {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+  }
+  
+  body {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .app-body {
+    height: auto !important;
+    min-height: calc(100vh - var(--nav-height));
+    overflow: visible;
+  }
+  
+  .main-container {
+    min-height: calc(100vh - var(--nav-height));
+    overflow: visible;
+  }
+  
   .main-content {
     padding: 16px 14px 72px;
+    overflow-y: visible;
   }
 
   .sub-header {
