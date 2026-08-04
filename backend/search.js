@@ -1,6 +1,6 @@
 function filterListings(
   items,
-  { category, query, conditions, minPrice, maxPrice },
+  { category, query, conditions, categories, minPrice, maxPrice },
 ) {
   let results = items;
   if (category && category !== "all") {
@@ -8,13 +8,19 @@ function filterListings(
   }
   if (query) {
     results = results.filter((i) => {
-      const categories = i.categories?.length ? i.categories : [i.category];
+      const itemCategories = i.categories?.length ? i.categories : [i.category];
       return (
         i.name.toLowerCase().includes(query) ||
         (i.description?.toLowerCase() || "").includes(query) ||
         (i.seller?.toLowerCase() || "").includes(query) ||
-        categories.some((c) => (c || "").toLowerCase().includes(query))
+        itemCategories.some((c) => (c || "").toLowerCase().includes(query))
       );
+    });
+  }
+  if (categories && categories.length) {
+    results = results.filter((i) => {
+      const itemCategories = i.categories?.length ? i.categories : [i.category];
+      return itemCategories.some((c) => categories.includes(c));
     });
   }
   if (conditions && conditions.length) {

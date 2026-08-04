@@ -11,6 +11,7 @@ let _hpPage = 1;
 let activeFilter = "all";
 
 let _advConditions = [];
+let _advCategories = [];
 let _advMinPrice = 0;
 let _advMaxPrice = Infinity;
 let _personalizedCategories = [];
@@ -251,6 +252,7 @@ function applyFilters() {
       category,
       query: q,
       conditions: _advConditions,
+      categories: _advCategories,
       minPrice: _advMinPrice,
       maxPrice: _advMaxPrice,
     }),
@@ -272,7 +274,15 @@ function openFiltersPanel() {
   const checks = condOpts
     .map(
       (c) =>
-        `<label class="hp-afp-check"><input type="checkbox" value="${c}" ${_advConditions.includes(c) ? "checked" : ""}> ${c}</label>`,
+        `<label class="hp-afp-check"><input type="checkbox" data-filter-group="condition" value="${c}" ${_advConditions.includes(c) ? "checked" : ""}> ${c}</label>`,
+    )
+    .join("");
+
+  const catOpts = Object.keys(CATEGORY_BG);
+  const catChecks = catOpts
+    .map(
+      (c) =>
+        `<label class="hp-afp-check"><input type="checkbox" data-filter-group="category" value="${c}" ${_advCategories.includes(c) ? "checked" : ""}> ${c}</label>`,
     )
     .join("");
 
@@ -280,6 +290,10 @@ function openFiltersPanel() {
     <div class="hp-afp-header">
       <span class="hp-afp-title">Advanced Filters</span>
       <button class="hp-afp-close" onclick="document.getElementById('hp-adv-filters').remove()">${ICONS.close}</button>
+    </div>
+    <div class="hp-afp-section">
+      <p class="hp-afp-label">Category</p>
+      <div class="hp-afp-checks">${catChecks}</div>
     </div>
     <div class="hp-afp-section">
       <p class="hp-afp-label">Condition</p>
@@ -322,7 +336,12 @@ function openFiltersPanel() {
 function applyAdvFilters() {
   _advConditions = [
     ...document.querySelectorAll(
-      "#hp-adv-filters input[type=checkbox]:checked",
+      '#hp-adv-filters input[data-filter-group="condition"]:checked',
+    ),
+  ].map((c) => c.value);
+  _advCategories = [
+    ...document.querySelectorAll(
+      '#hp-adv-filters input[data-filter-group="category"]:checked',
     ),
   ].map((c) => c.value);
   _advMinPrice = parseFloat(document.getElementById("afp-min")?.value) || 0;
@@ -334,6 +353,7 @@ function applyAdvFilters() {
 
 function resetAdvFilters() {
   _advConditions = [];
+  _advCategories = [];
   _advMinPrice = 0;
   _advMaxPrice = Infinity;
   document
