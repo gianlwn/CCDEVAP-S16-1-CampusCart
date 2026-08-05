@@ -61,6 +61,7 @@ CCDEVAP-S16-1-CampusCart/
 |   |-- db.js                     # MongoDB connection (Mongoose)
 |   `-- api.js / search.js        # Shared API helpers (only these two are served to the browser)
 |-- scripts/                      # One-off local DB scripts (gitignored, e.g. backfill.js)
+|-- unittesting/                  # Unit tests + results for listingsController.js (`npm test`)
 |-- server.js                     # Express app entry point (security middleware lives here)
 |-- package.json
 `-- .env                          # Local environment config (not committed)
@@ -101,6 +102,7 @@ The frontend has zero dependencies — plain HTML/CSS/JS, no npm install needed 
 | Package | Version | Purpose |
 |---|---|---|
 | `nodemon` | ^3.1.14 | Auto-restarts the server on file changes (`npm run dev`) |
+| `jest` | ^30.4.2 | Unit test runner + coverage (`npm test`) — see [`unittesting/`](unittesting/) |
 
 ---
 
@@ -149,7 +151,7 @@ EMAILJS_PUBLIC_KEY=team-emailjs-public-key
 EMAILJS_PRIVATE_KEY=team-emailjs-private-key
 ```
 
-The EmailJS template should accept `to_email`, `to_name`, and `otp_code` variables — these are what `backend/routes/auth.js` sends when generating a one-time code.
+The EmailJS template should accept `to_email`, `to_name`, and `otp_code` variables — these are what `backend/controllers/authController.js` sends when generating a one-time code.
 
 > Every teammate needs their own `JWT_SECRET` locally (any random string works — it doesn't need to match anyone else's). Sessions signed with one secret aren't valid against another, so changing it just logs everyone out and requires signing in again.
 
@@ -163,9 +165,17 @@ npm start       # plain node
 
 The app (frontend + API) is served together at **http://localhost:3000**.
 
+### 4. Run the tests
+
+```bash
+npm test    # jest --coverage
+```
+
+Runs the unit test suite for `backend/controllers/listingsController.js` (18 tests, all its functions). Test source and a plain-text results snapshot live in [`unittesting/`](unittesting/) — no database or server needs to be running, everything's mocked.
+
 ### Scripts
 
-`scripts/` holds one-off local DB maintenance scripts (gitignored, not part of the app). Run with `node scripts/<name>.js`. Example: `backfill.js` sets a default value on existing user rows for a schema field that was added after data already existed (e.g. `theme`).
+`scripts/` holds one-off local DB maintenance and seeding scripts (gitignored, not part of the app). Run with `node scripts/<name>.js`. Example: `fixTimestamps.js` corrects seeded `created_at` dates that Mongoose's `timestamps` option silently protected from an earlier update-based backdating attempt.
 
 ---
 
