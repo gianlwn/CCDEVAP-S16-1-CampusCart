@@ -39,11 +39,11 @@
   "jest": {
     "testEnvironment": "node",
     "testMatch": [
-      "<rootDir>/tests/**/*.test.js"
+      "<rootDir>/unittesting/**/*.test.js"
     ],
     "collectCoverageFrom": [
       "backend/controllers/listingsController.js"
     ],
-    "coverageDirectory": "<rootDir>/tests/coverage"
+    "coverageDirectory": "<rootDir>/unittesting/coverage"
   }
 }
