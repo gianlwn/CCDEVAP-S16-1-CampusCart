@@ -36,7 +36,11 @@ async function sendOTPEmail(toEmail, otpCode) {
 exports.sendCode = async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email || !email.toLowerCase().endsWith(".edu.ph")) {
+    if (
+      typeof email !== "string" ||
+      !email ||
+      !email.toLowerCase().endsWith(".edu.ph")
+    ) {
       return res.status(400).json({ error: "invalid_email" });
     }
     const existing = await User.findOne({ email: email.toLowerCase() });
@@ -58,7 +62,7 @@ exports.sendCode = async (req, res) => {
 exports.verifyCode = (req, res) => {
   try {
     const { email, code } = req.body;
-    if (!email || !code) {
+    if (typeof email !== "string" || typeof code !== "string" || !email || !code) {
       return res.status(400).json({ error: "missing_fields" });
     }
     const record = otpStore.get(email.toLowerCase());
@@ -89,6 +93,12 @@ exports.register = async (req, res) => {
       phone,
     } = req.body;
     if (
+      typeof firstNameInput !== "string" ||
+      typeof lastNameInput !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      typeof school !== "string" ||
+      typeof phone !== "string" ||
       !firstNameInput ||
       !lastNameInput ||
       !email ||
@@ -96,6 +106,9 @@ exports.register = async (req, res) => {
       !school ||
       !phone
     ) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    if (course_code !== undefined && typeof course_code !== "string") {
       return res.status(400).json({ error: "missing_fields" });
     }
     const nameRegex = /^[a-zA-Z\s]+$/;
@@ -188,7 +201,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password)
+    if (typeof email !== "string" || typeof password !== "string" || !email || !password)
       return res.status(400).json({ error: "missing_fields" });
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(401).json({ error: "invalid_credentials" });
@@ -248,6 +261,9 @@ exports.me = async (req, res) => {
 exports.sendRecovery = async (req, res) => {
   try {
     const { email } = req.body;
+    if (typeof email !== "string" || !email) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) return res.status(404).json({ error: "not_found" });
     const code = generateOTP();
@@ -266,7 +282,7 @@ exports.sendRecovery = async (req, res) => {
 exports.verifyRecovery = (req, res) => {
   try {
     const { email, code } = req.body;
-    if (!email || !code) {
+    if (typeof email !== "string" || typeof code !== "string" || !email || !code) {
       return res.status(400).json({ error: "missing_fields" });
     }
     const record = otpStore.get(`rec_${email.toLowerCase()}`);
@@ -289,6 +305,9 @@ exports.verifyRecovery = (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if (typeof email !== "string" || !email) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
     if (!recoveryVerified.has(email.toLowerCase())) {
       return res.status(403).json({ error: "not_verified" });
     }
