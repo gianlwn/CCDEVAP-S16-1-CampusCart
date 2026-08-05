@@ -58,6 +58,7 @@ const apiLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: "too_many_requests" },
+  skip: (req) => req.originalUrl.startsWith("/api/auth"),
 });
 app.use("/api", apiLimiter);
 
@@ -87,5 +88,9 @@ app.get("/backend/search.js", (req, res) =>
 app.use("/data", express.static("data"));
 app.get("/", (req, res) => res.redirect("login-path/login.html"));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running at ${CLIENT_ORIGIN}`));
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server running at ${CLIENT_ORIGIN}`));
+}
+
+module.exports = app;
