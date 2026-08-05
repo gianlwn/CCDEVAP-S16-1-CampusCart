@@ -573,14 +573,17 @@ function showConfirm(
           ${iconPath}
         </svg>
       </div>
-      <div class="confirm-title">${title}</div>
-      <div class="confirm-msg">${message}</div>
+      <div class="confirm-title"></div>
+      <div class="confirm-msg"></div>
       <div class="confirm-actions">
         <button class="confirm-cancel">Cancel</button>
-        <button class="confirm-ok">${okLabel}</button>
+        <button class="confirm-ok"></button>
       </div>
     </div>
   `;
+  overlay.querySelector(".confirm-title").textContent = title;
+  overlay.querySelector(".confirm-msg").textContent = message;
+  overlay.querySelector(".confirm-ok").textContent = okLabel;
 
   const close = () => document.body.removeChild(overlay);
   overlay.querySelector(".confirm-cancel").addEventListener("click", close);

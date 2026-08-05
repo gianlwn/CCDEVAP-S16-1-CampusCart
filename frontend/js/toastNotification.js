@@ -35,23 +35,37 @@
 
     var toast = document.createElement("div");
     toast.className = "toast toast-" + type;
-    toast.innerHTML =
-      '<span class="toast-icon">' +
-      meta.icon +
-      "</span>" +
-      '<div class="toast-body">' +
-      '<p class="toast-title">' +
-      title +
-      "</p>" +
-      (message ? '<p class="toast-message">' + message + "</p>" : "") +
-      "</div>" +
-      '<button class="toast-close" aria-label="Close">' +
-      ICONS.close +
-      "</button>";
 
-    toast.querySelector(".toast-close").addEventListener("click", function () {
+    var iconSpan = document.createElement("span");
+    iconSpan.className = "toast-icon";
+    iconSpan.innerHTML = meta.icon;
+
+    var body = document.createElement("div");
+    body.className = "toast-body";
+
+    var titleEl = document.createElement("p");
+    titleEl.className = "toast-title";
+    titleEl.textContent = title;
+    body.appendChild(titleEl);
+
+    if (message) {
+      var messageEl = document.createElement("p");
+      messageEl.className = "toast-message";
+      messageEl.textContent = message;
+      body.appendChild(messageEl);
+    }
+
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "toast-close";
+    closeBtn.setAttribute("aria-label", "Close");
+    closeBtn.innerHTML = ICONS.close;
+    closeBtn.addEventListener("click", function () {
       dismiss(toast);
     });
+
+    toast.appendChild(iconSpan);
+    toast.appendChild(body);
+    toast.appendChild(closeBtn);
 
     container.appendChild(toast);
 
