@@ -1,0 +1,234 @@
+﻿.users-counter-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.status-filter-dropdown {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: border-color var(--transition);
+}
+
+.status-filter-dropdown:focus {
+  border-color: var(--accent);
+}
+
+#users-stack-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-identity-row-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.user-identity-row-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card);
+}
+
+.user-text-details {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-display-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  letter-spacing: -0.1px;
+}
+
+.pill-role-admin {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.user-display-email {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.user-info-extra {
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.info-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 2px;
+}
+
+.user-right-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.user-status-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.pill-warning-count {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.user-action-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.user-action-btn {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.user-action-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.user-action-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.user-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.user-action-btn.action-warn {
+  color: var(--warning-text);
+  border-color: var(--warning-bg);
+}
+
+.user-action-btn.action-warn:hover:not(:disabled) {
+  background: var(--warning-bg);
+  border-color: var(--warning-text);
+}
+
+.user-action-btn.action-suspend {
+  color: var(--danger-text);
+  border-color: var(--danger-bg);
+}
+
+.user-action-btn.action-suspend:hover:not(:disabled) {
+  background: var(--danger-bg);
+  border-color: var(--danger-text);
+}
+
+.user-action-btn.action-ban {
+  background: var(--danger-text);
+  color: #fff;
+  border-color: var(--danger-text);
+}
+
+.user-action-btn.action-ban:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.user-action-btn.action-reactivate {
+  color: var(--success-text);
+  border-color: var(--success-bg);
+}
+
+.user-action-btn.action-reactivate:hover:not(:disabled) {
+  background: var(--success-bg);
+  border-color: var(--success-text);
+}
+
+@media (max-width: 1100px) {
+  .user-identity-row-card {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+  .avatar-wireframe-box {
+    display: none;
+  }
+  .user-text-details {
+    flex: 0 0 100%;
+    width: auto;
+    min-width: 0;
+  }
+  .user-info-extra {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+  .user-right-controls {
+    flex: 0 0 100%;
+    margin-left: 0;
+    justify-content: space-between;
+  }
+}

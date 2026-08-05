@@ -1,0 +1,68 @@
+Unit Test Results
+Target: backend/controllers/listingsController.js
+Command: npm test  (jest --coverage)
+Date: 2026-08-05
+
+==================================================
+ list()  -  3/3 PASSED
+==================================================
+[PASS] returns active listings for a normal shopper, enriched with seller/category/availability
+[PASS] blocks a non-admin from requesting another status
+[PASS] returns a 500 if the database throws
+
+==================================================
+ getOne()  -  3/3 PASSED
+==================================================
+[PASS] returns the listing when it exists
+[PASS] returns 404 when the listing doesn't exist
+[PASS] returns a 500 if the database throws
+
+==================================================
+ create()  -  3/3 PASSED
+==================================================
+[PASS] creates a listing, links its categories, and saves its images
+[PASS] rejects a request missing required fields
+[PASS] returns a 500 if the database throws
+
+==================================================
+ update()  -  3/3 PASSED
+==================================================
+[PASS] updates a listing the requester owns, including its price, images, and categories
+[PASS] forbids editing someone else's listing
+[PASS] returns a 500 if the database throws
+
+==================================================
+ updateStatus()  -  3/3 PASSED
+==================================================
+[PASS] approves a listing and notifies the seller
+[PASS] rejects an invalid status value
+[PASS] returns a 500 if the database throws
+
+==================================================
+ remove()  -  3/3 PASSED
+==================================================
+[PASS] soft-deletes a listing the requester owns
+[PASS] forbids deleting someone else's listing
+[PASS] returns a 500 if the database throws
+
+==================================================
+ OVERALL
+==================================================
+Test Suites: 1 passed, 1 total
+Tests:       18 passed, 0 failed, 18 total
+Functions covered: list, getOne, create, update, updateStatus, remove (6/6)
+
+Coverage summary (backend/controllers/listingsController.js)
+---------------------------------------------------------------
+File                   | % Stmts | % Branch | % Funcs | % Lines
+listingsController.js  |   85.57 |    63.73 |    92.30 |   89.36
+
+- Each function has exactly one happy-path test, one
+error/permission test, and one "database threw" test (18 total) -
+the happy-path tests were made a bit richer (real seller/category/
+claim data, image uploads, category linking) so they exercise more
+of the file's real logic without adding more test cases.
+
+To reproduce: run `npm test` from the project root.
+This file is a static snapshot - it will not update itself, so
+re-run the command above after changing the controller or tests.

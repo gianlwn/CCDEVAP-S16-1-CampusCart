@@ -1,0 +1,330 @@
+const bcrypt = require("bcryptjs");
+const emailjs = require("@emailjs/nodejs");
+const User = require("../models/User");
+const Listing = require("../models/Listing");
+const Cart = require("../models/Cart");
+const Rating = require("../models/Rating");
+const generateId = require("../utils/generateId");
+const { liftExpiredSuspension } = require("../utils/suspension");
+const titleCase = require("../utils/titleCase");
+const { issueSession, clearSession } = require("../middleware/auth");
+const { isValidPassword } = require("../utils/passwordPolicy");
+
+const otpStore = new Map();
+const recoveryVerified = new Set();
+
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+async function sendOTPEmail(toEmail, otpCode) {
+  await emailjs.send(
+    process.env.EMAILJS_SERVICE_ID,
+    process.env.EMAILJS_TEMPLATE_ID,
+    {
+      to_email: toEmail,
+      to_name: toEmail,
+      otp_code: otpCode,
+    },
+    {
+      publicKey: process.env.EMAILJS_PUBLIC_KEY,
+      privateKey: process.env.EMAILJS_PRIVATE_KEY,
+    },
+  );
+}
+
+exports.sendCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (
+      typeof email !== "string" ||
+      !email ||
+      !email.toLowerCase().endsWith(".edu.ph")
+    ) {
+      return res.status(400).json({ error: "invalid_email" });
+    }
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing && !existing.is_deleted)
+      return res.status(409).json({ error: "email_taken" });
+    const code = generateOTP();
+    otpStore.set(email.toLowerCase(), {
+      code,
+      expiresAt: Date.now() + 10 * 60 * 1000,
+    });
+    await sendOTPEmail(email, code);
+    res.json({ message: "Code sent" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.verifyCode = (req, res) => {
+  try {
+    const { email, code } = req.body;
+    if (typeof email !== "string" || typeof code !== "string" || !email || !code) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    const record = otpStore.get(email.toLowerCase());
+    if (!record) return res.status(400).json({ error: "no_code_sent" });
+    if (Date.now() > record.expiresAt) {
+      otpStore.delete(email.toLowerCase());
+      return res.status(400).json({ error: "code_expired" });
+    }
+    if (record.code !== code)
+      return res.status(400).json({ error: "invalid_code" });
+    otpStore.delete(email.toLowerCase());
+    res.json({ verified: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.register = async (req, res) => {
+  try {
+    const {
+      first_name: firstNameInput,
+      last_name: lastNameInput,
+      email,
+      password,
+      school,
+      course_code,
+      phone,
+    } = req.body;
+    if (
+      typeof firstNameInput !== "string" ||
+      typeof lastNameInput !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string" ||
+      typeof school !== "string" ||
+      typeof phone !== "string" ||
+      !firstNameInput ||
+      !lastNameInput ||
+      !email ||
+      !password ||
+      !school ||
+      !phone
+    ) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    if (course_code !== undefined && typeof course_code !== "string") {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    if (
+      !nameRegex.test(firstNameInput.trim()) ||
+      !nameRegex.test(lastNameInput.trim())
+    ) {
+      return res.status(400).json({ error: "invalid_name_format" });
+    }
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ error: "weak_password" });
+    }
+    let phoneDigits = phone.trim().replace(/\D/g, "");
+    if (phoneDigits.length === 12 && phoneDigits.startsWith("63")) {
+      phoneDigits = phoneDigits.slice(2);
+    } else if (phoneDigits.length === 11 && phoneDigits.startsWith("0")) {
+      phoneDigits = phoneDigits.slice(1);
+    }
+    if (!/^9\d{9}$/.test(phoneDigits)) {
+      return res.status(400).json({ error: "invalid_phone_format" });
+    }
+    const existing = await User.findOne({ email: email.toLowerCase() });
+    if (existing && !existing.is_deleted)
+      return res.status(409).json({ error: "email_taken" });
+    const first_name = titleCase(firstNameInput.trim());
+    const last_name = titleCase(lastNameInput.trim());
+    const password_hash = await bcrypt.hash(password, 10);
+    const contact_number = `+63${phoneDigits}`;
+    const normalizedCourseCode = course_code ? course_code.toUpperCase() : course_code;
+
+    if (existing) {
+      // Reactivating a previously-deleted account: keep the same user_id
+      // (and its suspension/warning/ban history, so a ban can't be evaded
+      // by deleting and re-registering) so everything soft-deleted on
+      // account removal — listings, ratings, cart — reappears, including
+      // to other users who reference it.
+      existing.password_hash = password_hash;
+      existing.first_name = first_name;
+      existing.last_name = last_name;
+      existing.course_code = normalizedCourseCode;
+      existing.school = school;
+      existing.contact_number = contact_number;
+      existing.role = "student";
+      existing.is_deleted = false;
+      await existing.save();
+
+      const user_id = existing.user_id;
+      const listings = await Listing.find(
+        { seller_id: user_id },
+        "listings_id",
+      );
+      const listingIds = listings.map((l) => l.listings_id);
+      await Promise.all([
+        Listing.updateMany({ seller_id: user_id }, { is_deleted: false }),
+        Cart.updateMany({ buyer_id: user_id }, { does_exist: true }),
+        Rating.updateMany({ rater_id: user_id }, { is_removed: false }),
+        ...(listingIds.length
+          ? [
+              Rating.updateMany(
+                { listing_id: { $in: listingIds } },
+                { is_removed: false },
+              ),
+            ]
+          : []),
+      ]);
+
+      return res.status(201).json({ message: "Account created" });
+    }
+
+    const user_id = await generateId(User, "user_id", "user_id_");
+    const user = new User({
+      user_id,
+      email: email.toLowerCase(),
+      password_hash,
+      first_name,
+      last_name,
+      course_code: normalizedCourseCode,
+      school,
+      contact_number,
+      role: "student",
+    });
+    await user.save();
+    res.status(201).json({ message: "Account created" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (typeof email !== "string" || typeof password !== "string" || !email || !password)
+      return res.status(400).json({ error: "missing_fields" });
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(401).json({ error: "invalid_credentials" });
+    if (user.is_deleted)
+      return res.status(401).json({ error: "invalid_credentials" });
+    if (user.is_banned)
+      return res.status(403).json({ error: "account_banned" });
+    await liftExpiredSuspension(user);
+    if (user.is_suspended)
+      return res.status(403).json({
+        error: "account_suspended",
+        suspended_until: user.suspended_until,
+      });
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (!match) return res.status(401).json({ error: "invalid_credentials" });
+    issueSession(res, user);
+    res.json({
+      user_id: user.user_id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+      theme: user.theme,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.logout = (req, res) => {
+  try {
+    clearSession(res);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.me = async (req, res) => {
+  try {
+    const user = await User.findOne({ user_id: req.user.user_id });
+    if (!user || user.is_deleted) {
+      clearSession(res);
+      return res.status(401).json({ error: "not_authenticated" });
+    }
+    res.json({
+      user_id: user.user_id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+      theme: user.theme,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.sendRecovery = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (typeof email !== "string" || !email) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ error: "not_found" });
+    const code = generateOTP();
+    otpStore.set(`rec_${email.toLowerCase()}`, {
+      code,
+      expiresAt: Date.now() + 10 * 60 * 1000,
+    });
+    await sendOTPEmail(email, code);
+    res.json({ message: "Recovery code sent" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.verifyRecovery = (req, res) => {
+  try {
+    const { email, code } = req.body;
+    if (typeof email !== "string" || typeof code !== "string" || !email || !code) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    const record = otpStore.get(`rec_${email.toLowerCase()}`);
+    if (!record) return res.status(400).json({ error: "no_code_sent" });
+    if (Date.now() > record.expiresAt) {
+      otpStore.delete(`rec_${email.toLowerCase()}`);
+      return res.status(400).json({ error: "code_expired" });
+    }
+    if (record.code !== code)
+      return res.status(400).json({ error: "invalid_code" });
+    otpStore.delete(`rec_${email.toLowerCase()}`);
+    recoveryVerified.add(email.toLowerCase());
+    res.json({ verified: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (typeof email !== "string" || !email) {
+      return res.status(400).json({ error: "missing_fields" });
+    }
+    if (!recoveryVerified.has(email.toLowerCase())) {
+      return res.status(403).json({ error: "not_verified" });
+    }
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ error: "weak_password" });
+    }
+    const password_hash = await bcrypt.hash(password, 10);
+    await User.updateOne({ email: email.toLowerCase() }, { password_hash });
+    recoveryVerified.delete(email.toLowerCase());
+    res.json({ message: "Password updated" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
+};

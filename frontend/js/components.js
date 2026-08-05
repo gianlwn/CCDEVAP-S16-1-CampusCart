@@ -1,0 +1,600 @@
+(function enforceActiveSession() {
+  function checkSession() {
+    if (!localStorage.getItem("session_user_id")) {
+      window.location.replace("../login-path/login.html");
+    }
+  }
+  checkSession();
+  window.addEventListener("pageshow", function (event) {
+    if (event.persisted) checkSession();
+  });
+})();
+
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatNotificationMessage(value) {
+  return escapeHtml(value).replace(/&lt;br\s*\/?&gt;/gi, "<br>");
+}
+
+function getCompactPaginationItems(totalPages, currentPage) {
+  const visibleSlots = 5;
+
+  const total = Math.max(
+    1,
+    Number(totalPages) || 1,
+  );
+
+  const current = Math.min(
+    Math.max(1, Number(currentPage) || 1),
+    total,
+  );
+
+  if (total <= visibleSlots) {
+    return Array.from(
+      { length: total },
+      (_, index) => index + 1,
+    );
+  }
+
+  if (current <= 3) {
+    return [1, 2, 3, "ellipsis", total];
+  }
+
+  if (current >= total - 2) {
+    return [
+      1,
+      "ellipsis",
+      total - 2,
+      total - 1,
+      total,
+    ];
+  }
+
+  return [
+    1,
+    "ellipsis",
+    current,
+    "ellipsis",
+    total,
+  ];
+}
+
+function appendGoToPageControl(
+  container,
+  totalPages,
+  currentPage,
+  onPageChange,
+) {
+  if (!(container instanceof HTMLElement)) return;
+  if (!Number.isSafeInteger(totalPages) || totalPages < 2) return;
+  if (typeof onPageChange !== "function") return;
+
+  const form = document.createElement("form");
+  form.className = "go-to-page";
+  form.noValidate = true;
+
+  const inputId = `${container.id || "pagination"}-go-to-page`;
+
+  const label = document.createElement("label");
+  label.className = "go-to-page-label";
+  label.htmlFor = inputId;
+  label.textContent = "Go to page:";
+
+  const input = document.createElement("input");
+  input.id = inputId;
+  input.className = "go-to-page-input";
+
+  /*
+   * Text is used instead of number because number inputs may accept
+   * characters such as e, +, -, and decimal points in some browsers.
+   */
+  input.type = "text";
+  input.inputMode = "numeric";
+  input.autocomplete = "off";
+  input.spellcheck = false;
+  input.maxLength = String(totalPages).length;
+  input.placeholder = `1-${totalPages}`;
+  input.setAttribute(
+    "aria-label",
+    `Enter a page number from 1 to ${totalPages}`,
+  );
+  input.setAttribute("aria-invalid", "false");
+
+  const button = document.createElement("button");
+  button.type = "submit";
+  button.className = "go-to-page-btn";
+  button.textContent = "Go";
+
+  const error = document.createElement("span");
+  error.className = "go-to-page-error";
+  error.setAttribute("role", "alert");
+  error.setAttribute("aria-live", "polite");
+
+  function clearError() {
+    error.textContent = "";
+    input.setAttribute("aria-invalid", "false");
+  }
+
+  function showError(message) {
+    error.textContent = message;
+    input.setAttribute("aria-invalid", "true");
+    input.focus();
+  }
+
+  input.addEventListener("input", clearError);
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const rawValue = input.value.trim();
+
+    /*
+     * Only whole-number digits are accepted.
+     * Rejects letters, HTML, decimals, negatives, and scientific notation.
+     */
+    if (!/^[1-9]\d*$/.test(rawValue)) {
+      showError("Enter a valid whole page number.");
+      return;
+    }
+
+    const requestedPage = Number(rawValue);
+
+    if (
+      !Number.isSafeInteger(requestedPage) ||
+      requestedPage < 1 ||
+      requestedPage > totalPages
+    ) {
+      showError(`Page must be between 1 and ${totalPages}.`);
+      return;
+    }
+
+    clearError();
+
+    if (requestedPage === currentPage) {
+      input.value = "";
+      return;
+    }
+
+    onPageChange(requestedPage);
+  });
+
+  form.append(label, input, button, error);
+  container.appendChild(form);
+}
+
+const ICONS = {
+  logo: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
+  moon: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
+  sun: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  bell: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  cart: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
+  home: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  user: `<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  logout: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+  package: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>`,
+  laptop: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  book: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  flask: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v4l3.5 9.5A2 2 0 0 1 16.6 19H7.4a2 2 0 0 1-1.9-2.5L9 7V3z"/><line x1="6.5" y1="11" x2="17.5" y2="11"/></svg>`,
+  shirt: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/></svg>`,
+  bag: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+  star: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  tag: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  search: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  message: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
+  trash: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+  edit: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  close: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  overview: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  chart: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+  check: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  alert: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  users: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  categories: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  eye: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  ban: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`,
+  shield: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  userSlash: `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" y1="2" x2="2" y2="22"/></svg>`,
+  image: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
+  help: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+  chevronUp: `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>`,
+  chevronDown: `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`,
+  pin: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+  phone: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  mail: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>`,
+  info: `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+};
+
+// Wires custom up/down buttons to a number input so it matches the app's UI
+// instead of the browser's native spinner. Expects markup:
+// <div class="number-spinner-wrap">
+//   <input type="number" class="has-spinner" id="...">
+//   <div class="number-spinner">
+//     <button type="button" class="spinner-btn spinner-up" tabindex="-1">...</button>
+//     <button type="button" class="spinner-btn spinner-down" tabindex="-1">...</button>
+//   </div>
+// </div>
+function bindNumberSpinner(inputId) {
+  const input = document.getElementById(inputId);
+  const wrap = input && input.closest(".number-spinner-wrap");
+  if (!wrap) return;
+
+  const adjust = (dir) => {
+    const step = parseFloat(input.step) || 1;
+    const min = input.min !== "" ? parseFloat(input.min) : -Infinity;
+    const max = input.max !== "" ? parseFloat(input.max) : Infinity;
+    const decimals = input.step && input.step.includes(".") ? input.step.split(".")[1].length : 0;
+    const current = parseFloat(input.value) || 0;
+    const next = Math.min(max, Math.max(min, current + dir * step));
+    input.value = decimals ? next.toFixed(decimals) : String(next);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  wrap.querySelector(".spinner-up")?.addEventListener("click", () => adjust(1));
+  wrap.querySelector(".spinner-down")?.addEventListener("click", () => adjust(-1));
+}
+
+const CATEGORY_BG = {
+  Electronics: "rgba(122,171,138,0.18)",
+  Books: "rgba(212,184,150,0.28)",
+  "Lab Tools": "rgba(122,171,215,0.18)",
+  Clothing: "rgba(210,160,60,0.14)",
+  Others: "rgba(158,144,132,0.18)",
+};
+
+const CATEGORY_ICONS = {
+  Electronics: ICONS.laptop,
+  Books: ICONS.book,
+  "Lab Tools": ICONS.flask,
+  Clothing: ICONS.shirt,
+  Others: ICONS.package,
+};
+
+function timeAgo(dateStr) {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs} hour${hrs > 1 ? "s" : ""} ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago`;
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+const NOTIF_ICON = {
+  claim_received: `tag`,
+  claim_submitted: `tag`,
+  seller_ready: `check`,
+  transaction_complete: `check`,
+  new_review: `star`,
+  warning: `alert`,
+  suspension: `userSlash`,
+  ban: `ban`,
+  reactivated: `check`,
+  listing_approved: `package`,
+  listing_rejected: `close`,
+};
+
+function refreshNotifs() {
+  if (typeof fetchNotificationsAPI !== "function") return;
+  fetchNotificationsAPI()
+    .then((notifications) => {
+      const list = document.getElementById("notif-list");
+      if (!list) return;
+
+      if (!notifications.length) {
+        list.innerHTML = '<p class="notif-empty">No notifications yet.</p>';
+      } else {
+        list.innerHTML = notifications
+          .slice(0, 5)
+          .map(
+            (n) => `
+          <div 
+            class="notif-item${n.is_read ? "" : " unread"}" 
+            data-id="${n.notification_id}"
+            onclick="handleNotificationClick(event, '${n.notification_id}')"
+          >
+            <span class="notif-icon">${ICONS[NOTIF_ICON[n.type]] || ICONS.bell}</span>
+            <div class="notif-content">
+            <p class="notif-text">${formatNotificationMessage(n.message)}</p>              <span class="notif-time">${timeAgo(n.created_at)}</span>
+            </div>
+          </div>`,
+          )
+          .join("");
+      }
+
+      const unread = notifications.filter((n) => !n.is_read).length;
+      const badge = document.getElementById("notif-badge");
+      if (badge) {
+        if (unread > 0) {
+          badge.textContent = unread > 99 ? "99+" : unread;
+          badge.style.display = "";
+        } else {
+          badge.style.display = "none";
+        }
+      }
+    })
+    .catch(() => {
+      const list = document.getElementById("notif-list");
+      if (list)
+        list.innerHTML =
+          '<p class="notif-empty">Could not load notifications.</p>';
+    });
+}
+
+async function handleNotificationClick(event, notificationId) {
+  event.stopPropagation();
+
+  const item = event.currentTarget;
+
+  if (!item.classList.contains("unread")) {
+    return;
+  }
+
+  try {
+    await markNotificationReadAPI(notificationId);
+
+    item.classList.remove("unread");
+
+    refreshNotifs();
+  } catch (error) {
+    console.error("Failed to mark notification as read:", error);
+  }
+}
+
+function loadTopNav() {
+  const isAdmin = localStorage.getItem("session_role") === "admin";
+
+  const html = `
+    <nav class="top-nav">
+      <div class="nav-brand" onclick="window.location.href='../homepage/homepage.html'" style="cursor:pointer">
+        ${ICONS.logo}
+        <span>CampusCart</span>
+      </div>
+      <div class="nav-icons">
+        ${isAdmin ? `<button onclick="window.location.href='../admin-dashboard/adminDashboard.html'" title="Admin Dashboard">${ICONS.shield}</button>` : ""}
+        <button id="theme-toggle" onclick="toggleTheme()" title="Toggle theme">${ICONS.moon}</button>
+        <div class="notif-wrapper">
+          <button id="btn-notifications" title="Notifications" onclick="toggleNotifs(event)">
+            ${ICONS.bell}<span class="nav-badge" id="notif-badge" style="display:none">0</span>
+          </button>
+          <div id="notif-panel" class="notif-panel">
+            <div class="notif-panel-header">
+              <span>Notifications</span>
+              <button class="notif-mark-all-btn" onclick="markAllNotifsRead()">Mark all as read</button>
+            </div>
+            <div class="notif-list" id="notif-list"><p class="notif-empty">Loading...</p></div>
+          </div>
+        </div>
+        <button onclick="window.location.href='../homepage/cart.html'" title="Cart" style="position:relative">
+          ${ICONS.cart}<span class="nav-badge" id="cart-badge" style="display:none">0</span>
+        </button>
+        <button onclick="window.location.href='../homepage/homepage.html'" title="Home">${ICONS.home}</button>
+        <button onclick="window.location.href='../user-profile-dashboard/dashboard.html'" title="Profile">${ICONS.user}</button>
+      </div>
+    </nav>
+  `;
+  document.getElementById("top-nav").innerHTML = html;
+  document.getElementById("notif-panel")?.addEventListener("click", (event) => {event.stopPropagation();});
+
+  refreshNotifs();
+  if (window._notifPollInterval) clearInterval(window._notifPollInterval);
+  window._notifPollInterval = setInterval(refreshNotifs, 30000);
+
+  fetchCartItems()
+    .then((items) => {
+      setCartBadgeCount(Array.isArray(items) ? items.length : 0);
+    })
+    .catch(() => {});
+}
+
+function setCartBadgeCount(count) {
+  const badge = document.getElementById("cart-badge");
+  if (!badge) return;
+  if (count > 0) {
+    badge.textContent = count > 99 ? "99+" : count;
+    badge.style.display = "";
+  } else {
+    badge.textContent = "0";
+    badge.style.display = "none";
+  }
+}
+
+function bumpCartBadge(delta) {
+  const badge = document.getElementById("cart-badge");
+  if (!badge) return;
+  const current = badge.style.display === "none" ? 0 : parseInt(badge.textContent, 10) || 0;
+  setCartBadgeCount(Math.max(0, current + delta));
+}
+
+function toggleNotifs(e) {
+  e.stopPropagation();
+  const panel = document.getElementById("notif-panel");
+  if (!panel) return;
+  const isOpen = panel.classList.contains("open");
+  panel.classList.toggle("open", !isOpen);
+  if (!isOpen) {
+    refreshNotifs();
+    const close = () => {
+      panel.classList.remove("open");
+      document.removeEventListener("click", close);
+    };
+    setTimeout(() => document.addEventListener("click", close), 0);
+  }
+}
+
+function markAllNotifsRead() {
+  if (typeof markAllNotificationsReadAPI === "function") {
+    markAllNotificationsReadAPI().catch(() => {});
+  }
+  document
+    .querySelectorAll(".notif-item.unread")
+    .forEach((el) => el.classList.remove("unread"));
+  const badge = document.getElementById("notif-badge");
+  if (badge) badge.style.display = "none";
+}
+
+function loadSideNav() {
+  const cur = window.location.pathname;
+  const a = (p) => (cur.includes(p) ? "active" : "");
+  const isAdmin = localStorage.getItem("session_role") === "admin";
+
+  const html = `
+    <aside class="side-nav">
+      <ul>
+        <li class="${a("dashboard.html")}">
+          <a href="../user-profile-dashboard/dashboard.html">
+            <span class="nav-item-icon">${ICONS.overview}</span>Overview
+          </a>
+        </li>
+        <li class="${a("userListings") || a("addListing")}">
+          <a href="../user-profile-dashboard/userListings.html">
+            <span class="nav-item-icon">${ICONS.tag}</span>Listings
+          </a>
+        </li>
+        <li class="${a("claimed")}">
+          <a href="../user-profile-dashboard/claimed.html">
+            <span class="nav-item-icon">${ICONS.bag}</span>Bought
+          </a>
+        </li>
+        <li class="${a("userProfile")}">
+          <a href="../user-profile-dashboard/userProfile.html">
+            <span class="nav-item-icon">${ICONS.user}</span>Profile
+          </a>
+        </li>
+        ${isAdmin ? `<li>
+          <a href="../admin-dashboard/adminDashboard.html">
+            <span class="nav-item-icon">${ICONS.shield}</span>Admin Dashboard
+          </a>
+        </li>` : ""}
+      </ul>
+      <div class="sidebar-bottom">
+        <button class="signout-btn" onclick="handleSignOut()">
+          ${ICONS.logout} Sign Out
+        </button>
+      </div>
+    </aside>
+  `;
+  document.getElementById("side-nav").innerHTML = html;
+}
+
+function loadBottomNav() {
+  const cur = window.location.pathname;
+  const a = (p) => (cur.includes(p) ? "active" : "");
+
+  const links = `
+    <a href="../user-profile-dashboard/dashboard.html" class="${a("dashboard.html")}">
+      <span class="nav-icon">${ICONS.overview}</span><span>Overview</span>
+    </a>
+    <a href="../user-profile-dashboard/userListings.html" class="${a("userListings") || a("addListing")}">
+      <span class="nav-icon">${ICONS.tag}</span><span>Listings</span>
+    </a>
+    <a href="../user-profile-dashboard/claimed.html" class="${a("claimed")}">
+      <span class="nav-icon">${ICONS.bag}</span><span>Bought</span>
+    </a>
+    <a href="../user-profile-dashboard/userProfile.html" class="${a("userProfile")}">
+      <span class="nav-icon">${ICONS.user}</span><span>Profile</span>
+    </a>
+  `;
+
+  const nav = document.createElement("nav");
+  nav.className = "bottom-nav";
+  nav.innerHTML = links;
+  document.body.appendChild(nav);
+}
+
+function getChartTheme() {
+  const s = getComputedStyle(document.body);
+  const get = (v) => s.getPropertyValue(v).trim();
+  return {
+    accent: get("--accent"),
+    text: get("--text"),
+    grid: get("--chart-grid"),
+    axisBorder: get("--chart-axis"),
+    barBg: get("--chart-bar"),
+    cardBg: get("--card-bg"),
+    barRgb: get("--chart-bar-rgb"),
+  };
+}
+
+function renderStars(rating, max = 5) {
+  let html = '<div class="stars">';
+  for (let i = 1; i <= max; i++) {
+    html += `<span class="star${i <= rating ? " filled" : ""}">★</span>`;
+  }
+  return html + "</div>";
+}
+
+const _CONFIRM_ICONS = {
+  trash: `<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>`,
+  ban: `<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>`,
+  unban: `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>`,
+  revoke: `<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/>`,
+};
+
+async function handleSignOut() {
+  await logoutAPI();
+  localStorage.removeItem("session_email");
+  localStorage.removeItem("session_role");
+  localStorage.removeItem("session_user_id");
+  localStorage.removeItem("campuscart-theme");
+  sessionStorage.setItem("cc_signout", "1");
+  window.location.replace("../login-path/login.html");
+}
+
+function showConfirm(
+  title,
+  message,
+  onConfirm,
+  okLabel = "Delete",
+  iconKey = "trash",
+) {
+  const iconPath = _CONFIRM_ICONS[iconKey] || _CONFIRM_ICONS.trash;
+  const overlay = document.createElement("div");
+  overlay.className = "confirm-overlay";
+  overlay.innerHTML = `
+    <div class="confirm-dialog" role="dialog" aria-modal="true">
+      <div class="confirm-icon-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          ${iconPath}
+        </svg>
+      </div>
+      <div class="confirm-title"></div>
+      <div class="confirm-msg"></div>
+      <div class="confirm-actions">
+        <button class="confirm-cancel">Cancel</button>
+        <button class="confirm-ok"></button>
+      </div>
+    </div>
+  `;
+  overlay.querySelector(".confirm-title").textContent = title;
+  overlay.querySelector(".confirm-msg").textContent = message;
+  overlay.querySelector(".confirm-ok").textContent = okLabel;
+
+  const close = () => document.body.removeChild(overlay);
+  overlay.querySelector(".confirm-cancel").addEventListener("click", close);
+  overlay.querySelector(".confirm-ok").addEventListener("click", () => {
+    close();
+    onConfirm();
+  });
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) close();
+  });
+
+  document.body.appendChild(overlay);
+  overlay.querySelector(".confirm-cancel").focus();
+}

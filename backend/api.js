@@ -1,0 +1,438 @@
+// Derived from where this script loaded from, not hardcoded to "" — a
+// reverse proxy can mount the app under a path prefix.
+const API = (() => {
+  const src = document.currentScript && document.currentScript.src;
+  if (!src) return "";
+  const marker = "backend/api.js";
+  const idx = src.indexOf(marker);
+  return idx === -1 ? "" : src.slice(0, idx).replace(/\/$/, "");
+})();
+
+// data: URLs (unsaved file previews) pass through untouched.
+function resolveImageSrc(src) {
+  return src && src.startsWith("/uploads/") ? `${API}${src}` : src;
+}
+
+function getSessionUserId() {
+  return localStorage.getItem("session_user_id");
+}
+
+function logoutAPI() {
+  return fetch(`${API}/api/auth/logout`, { method: "POST" }).catch(() => {});
+}
+
+function fetchMeAPI() {
+  return fetch(`${API}/api/auth/me`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function updateThemeAPI(theme) {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve();
+  return fetch(`${API}/api/users/${encodeURIComponent(userId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ theme }),
+  }).catch(() => {});
+}
+
+function fetchListings() {
+  return fetch(`${API}/api/listings`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function fetchCartItems() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(`${API}/api/cart?user_id=${encodeURIComponent(userId)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
+}
+
+function fetchClaimedItems() {
+  return fetchCartItems();
+}
+
+function fetchSellerProfile(user_id) {
+  return fetch(`${API}/api/users/${encodeURIComponent(user_id)}`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function fetchMyProfile() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.reject(new Error("not_logged_in"));
+  return fetchSellerProfile(userId);
+}
+
+function updateProfileAPI(data) {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.reject(new Error("not_logged_in"));
+  return fetch(`${API}/api/users/${encodeURIComponent(userId)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function deleteAccountAPI() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.reject(new Error("not_logged_in"));
+  return fetch(`${API}/api/users/${encodeURIComponent(userId)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function addToCartAPI(listing_id) {
+  const user_id = getSessionUserId();
+  if (!user_id) return Promise.reject(new Error("not_logged_in"));
+  return fetch(`${API}/api/cart`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id, listing_id }),
+  }).then((r) =>
+    r.json().then((data) => ({ ok: r.ok, status: r.status, data })),
+  );
+}
+
+function removeFromCartAPI(cart_id) {
+  return fetch(`${API}/api/cart/${encodeURIComponent(cart_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((data) => ({ ok: r.ok, data })));
+}
+
+function updateCartQuantityAPI(cart_id, quantity) {
+  return fetch(`${API}/api/cart/${encodeURIComponent(cart_id)}/quantity`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quantity }),
+  }).then((r) => r.json().then((data) => ({ ok: r.ok, data })));
+}
+
+function claimCartItemAPI(cart_id, quantity) {
+  return fetch(`${API}/api/cart/${encodeURIComponent(cart_id)}/claim`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ quantity: quantity || 1 }),
+  }).then((r) => r.json().then((data) => ({ ok: r.ok, data })));
+}
+
+function fetchDashboardData() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.reject(new Error("not_logged_in"));
+  return fetch(
+    `${API}/api/dashboard?user_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function fetchClaims() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(`${API}/api/claims?buyer_id=${encodeURIComponent(userId)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
+}
+
+function fetchSellerClaims() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(
+    `${API}/api/claims?seller_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function cancelClaimAPI(claim_id) {
+  return fetch(`${API}/api/claims/${encodeURIComponent(claim_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function markBuyerCompleteAPI(claim_id) {
+  return fetch(
+    `${API}/api/claims/${encodeURIComponent(claim_id)}/buyer-complete`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function markSellerCompleteAPI(claim_id) {
+  return fetch(
+    `${API}/api/claims/${encodeURIComponent(claim_id)}/seller-complete`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function submitRatingAPI(listing_id, rating, review) {
+  const rater_id = getSessionUserId();
+  return fetch(`${API}/api/ratings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ listing_id, rater_id, rating, review }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function updateRatingAPI(rating_id, rating, review) {
+  return fetch(`${API}/api/ratings/${encodeURIComponent(rating_id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rating, review }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchUserListings() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(
+    `${API}/api/listings?seller_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function fetchCategories() {
+  return fetch(`${API}/api/categories`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function createCategoryAPI(category_name) {
+  return fetch(`${API}/api/categories`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ category_name }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })));
+}
+
+function updateCategoryAPI(category_id, category_name) {
+  return fetch(`${API}/api/categories/${encodeURIComponent(category_id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ category_name }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })));
+}
+
+function deleteCategoryAPI(category_id) {
+  return fetch(`${API}/api/categories/${encodeURIComponent(category_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function addListingAPI(data) {
+  const seller_id = getSessionUserId();
+  if (!seller_id) return Promise.reject(new Error("not_logged_in"));
+  return fetch(`${API}/api/listings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...data, seller_id }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchListingById(listing_id) {
+  return fetch(`${API}/api/listings/${encodeURIComponent(listing_id)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
+}
+
+function updateListingAPI(listing_id, data) {
+  return fetch(`${API}/api/listings/${encodeURIComponent(listing_id)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function deleteListingAPI(listing_id) {
+  return fetch(`${API}/api/listings/${encodeURIComponent(listing_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchSellerReviews() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetchSellerReviewsByUserId(userId);
+}
+
+function fetchSellerReviewsByUserId(seller_id) {
+  if (!seller_id) return Promise.resolve([]);
+  return fetch(`${API}/api/ratings/seller/${encodeURIComponent(seller_id)}`).then(
+    (r) => {
+      if (!r.ok) throw new Error();
+      return r.json();
+    },
+  );
+}
+
+function removeRatingAPI(rating_id) {
+  return fetch(`${API}/api/ratings/${encodeURIComponent(rating_id)}`, {
+    method: "DELETE",
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchNotificationsAPI() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(
+    `${API}/api/notifications?user_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function markAllNotificationsReadAPI() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve();
+  return fetch(
+    `${API}/api/notifications/read-all?user_id=${encodeURIComponent(userId)}`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json());
+}
+
+function markNotificationReadAPI(notification_id) {
+  return fetch(
+    `${API}/api/notifications/${encodeURIComponent(notification_id)}/read`,
+    {
+      method: "PATCH",
+    },
+  ).then((r) => r.json());
+}
+
+function fetchAdminDashboardData() {
+  return fetch(`${API}/api/admin/dashboard`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function fetchPendingListings() {
+  return fetch(`${API}/api/listings?status=pending_review`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function updateListingStatusAPI(listing_id, status) {
+  return fetch(
+    `${API}/api/listings/${encodeURIComponent(listing_id)}/status`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchPendingReports() {
+  return fetch(`${API}/api/reports?status=pending`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function fetchMyReports() {
+  const userId = getSessionUserId();
+  if (!userId) return Promise.resolve([]);
+  return fetch(
+    `${API}/api/reports/mine?reporter_id=${encodeURIComponent(userId)}`,
+  ).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function resolveReportAPI(report_id, action, note) {
+  return fetch(`${API}/api/reports/${encodeURIComponent(report_id)}/resolve`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action, note, reviewed_by: getSessionUserId() }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchUsers() {
+  return fetch(`${API}/api/users`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function issueUserWarningAPI(user_id, note) {
+  return fetch(`${API}/api/users/${encodeURIComponent(user_id)}/warn`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ note }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function updateUserStatusAPI(user_id, status) {
+  return fetch(`${API}/api/users/${encodeURIComponent(user_id)}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function fetchAdmins() {
+  return fetch(`${API}/api/admin/admins`).then((r) => {
+    if (!r.ok) throw new Error();
+    return r.json();
+  });
+}
+
+function promoteAdminAPI(email) {
+  return fetch(`${API}/api/admin/admins`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  }).then((r) =>
+    r.json().then((d) => ({ ok: r.ok, status: r.status, data: d })),
+  );
+}
+
+function revokeAdminAPI(user_id) {
+  return fetch(
+    `${API}/api/admin/admins/${encodeURIComponent(user_id)}/revoke`,
+    { method: "PATCH" },
+  ).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
+
+function submitReportAPI({ reported_user_id, reported_listing_id, reason }) {
+  const reporter_id = getSessionUserId();
+  return fetch(`${API}/api/reports`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      reporter_id,
+      reported_user_id,
+      reported_listing_id: reported_listing_id || null,
+      reason,
+    }),
+  }).then((r) => r.json().then((d) => ({ ok: r.ok, data: d })));
+}
