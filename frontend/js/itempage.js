@@ -38,7 +38,7 @@ async function _addToCartFromPage() {
   try {
     const { ok, data } = await addToCartAPI(_ipItem.id);
     if (ok) {
-      showToast("Added to Cart", `"${_ipItem.name}" added to your cart.`, "success");
+      showToast("Added to Cart", `"${escapeHtml(_ipItem.name)}" added to your cart.`, "success");
       bumpCartBadge(1);
     } else if (data.error === "already_in_cart") {
       showToast("Already in Cart", "This item is already in your cart.", "warning");

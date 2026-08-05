@@ -51,7 +51,9 @@
     if (message) {
       var messageEl = document.createElement("p");
       messageEl.className = "toast-message";
-      messageEl.textContent = message;
+      // message may contain trusted markup (icons, <br>); callers must
+      // escapeHtml() any user-supplied values before interpolating them.
+      messageEl.innerHTML = message;
       body.appendChild(messageEl);
     }
 

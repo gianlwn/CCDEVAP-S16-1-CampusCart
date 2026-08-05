@@ -384,7 +384,7 @@ function saveNewAdmin() {
     closeModal();
     _adminsData.unshift(data);
     renderAdminPage();
-    showToast('Added', `${data.username} has been added as an administrator.`, 'success');
+    showToast('Added', `${escapeHtml(data.username)} has been added as an administrator.`, 'success');
   }).catch(() => showToast('Error', 'Could not add administrator.', 'error'));
 }
 
@@ -401,7 +401,7 @@ function handleAdmin(action, userId) {
           if (!ok) { showToast('Error', 'Failed to revoke admin access. Please try again.', 'error'); return; }
           _adminsData = _adminsData.filter(a => a.user_id !== userId);
           renderAdminPage();
-          showToast('Access Revoked', `${admin.username}'s admin access has been revoked.`, 'warning');
+          showToast('Access Revoked', `${escapeHtml(admin.username)}'s admin access has been revoked.`, 'warning');
         }).catch(() => showToast('Error', 'Failed to revoke admin access. Please try again.', 'error'));
       },
       'Revoke', 'revoke'
@@ -600,7 +600,7 @@ function handleUserAction(action, userId) {
       user.status = cfg.status;
       renderUsersPage();
       renderUserEditModal(userId);
-      showToast('Updated', `${user.username}'s account has been ${cfg.status === 'active' ? 'reactivated' : cfg.status}.`, cfg.toastType);
+      showToast('Updated', `${escapeHtml(user.username)}'s account has been ${cfg.status === 'active' ? 'reactivated' : cfg.status}.`, cfg.toastType);
     }).catch(() => showToast('Error', 'Failed to update the user. Please try again.', 'error'));
   }, cfg.ok, cfg.icon);
 }
@@ -712,9 +712,9 @@ function handleApproval(action, listingId, btn) {
     if (_approvalPage > maxPage) _approvalPage = maxPage;
     renderApprovalPage();
     if (action === 'approve') {
-      showToast('Approved', `${listingName} has been approved.`, 'success');
+      showToast('Approved', `${escapeHtml(listingName)} has been approved.`, 'success');
     } else {
-      showToast('Rejected', `${listingName} has been rejected.`, 'error');
+      showToast('Rejected', `${escapeHtml(listingName)} has been rejected.`, 'error');
     }
   });
 }
@@ -800,7 +800,7 @@ function saveNewCategory() {
     closeModal();
     _categoriesData.push(data);
     renderCategoryPage();
-    showToast('Added', `Category "${name}" created.`, 'success');
+    showToast('Added', `Category "${escapeHtml(name)}" created.`, 'success');
   });
 }
 
@@ -830,13 +830,13 @@ function handleCategory(action, categoryId) {
         deleteCategoryAPI(categoryId).then(({ ok, data }) => {
           if (!ok) {
             const message = data?.error === 'category_in_use'
-              ? `"${category.category_name}" is still used by active listings. Reassign or remove those listings first.`
+              ? `"${escapeHtml(category.category_name)}" is still used by active listings. Reassign or remove those listings first.`
               : 'Could not delete category.';
             showToast('Error', message, 'error');
             return;
           }
           _categoriesData = _categoriesData.filter(c => c.category_id !== categoryId);
-          showToast('Deleted', `"${category.category_name}" removed.`, 'success');
+          showToast('Deleted', `"${escapeHtml(category.category_name)}" removed.`, 'success');
           renderCategoryPage();
         });
       }
@@ -857,7 +857,7 @@ function saveEditCategory(categoryId) {
     const category = _categoriesData.find(c => c.category_id === categoryId);
     if (category) category.category_name = data.category_name;
     renderCategoryPage();
-    showToast('Updated', `Category renamed to "${newName}".`, 'success');
+    showToast('Updated', `Category renamed to "${escapeHtml(newName)}".`, 'success');
   });
 }
 
