@@ -1,5 +1,5 @@
-function handleAdminSignOut() {
-  logoutAPI();
+async function handleAdminSignOut() {
+  await logoutAPI();
   localStorage.removeItem("session_email");
   localStorage.removeItem("session_role");
   localStorage.removeItem("session_user_id");

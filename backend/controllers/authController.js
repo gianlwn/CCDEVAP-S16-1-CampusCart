@@ -233,8 +233,13 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = (req, res) => {
-  clearSession(res);
-  res.json({ success: true });
+  try {
+    clearSession(res);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error" });
+  }
 };
 
 exports.me = async (req, res) => {
